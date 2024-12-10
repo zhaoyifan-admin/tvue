@@ -62,21 +62,21 @@ function handleType(oldVersion, type) {
   let secondNum = +oldVersionArr[1];
   // 版本号第三位 如：1.2.3 则为 3
   let thirdNum = +oldVersionArr[2];
-  switch (type) {
-    case 'release':
-      // release分支的处理逻辑
-      ++secondNum;
-      thirdNum = 0;
-      break;
-    case 'hotfix':
-      // hotfix分支的处理逻辑
-      ++thirdNum;
-      break;
-    default:
-      // 默认按照最小版本处理
-      ++thirdNum;
-      break;
-  }
+  // switch (type) {
+  //   case 'release':
+  //     // release分支的处理逻辑
+  //     ++secondNum;
+  //     thirdNum = 0;
+  //     break;
+  //   case 'hotfix':
+  //     // hotfix分支的处理逻辑
+  //     ++thirdNum;
+  //     break;
+  //   default:
+  //     // 默认按照最小版本处理
+  //     ++thirdNum;
+  //     break;
+  // }
   return firstNum + '.' + secondNum + '.' + thirdNum;
 }
 
