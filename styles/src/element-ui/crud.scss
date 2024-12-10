@@ -3,7 +3,7 @@ $space-width: 15px;
 
 .tvue-crud {
   .el-card+.el-card {
-    margin-top: 8px;
+    margin-top: 10px;
   }
 
   &--card {
@@ -77,7 +77,7 @@ $space-width: 15px;
     justify-content: space-between;
     position: relative;
     width: 100%;
-    min-height: 40px;
+    min-height: 30px;
     height: auto;
     overflow: hidden;
     margin-bottom: 5px;
