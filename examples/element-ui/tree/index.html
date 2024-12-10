@@ -16,13 +16,13 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{form}}
-    <avue-tree @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave"
+    <tvue-tree @node-drag-start="handleDragStart" @node-drag-enter="handleDragEnter" @node-drag-leave="handleDragLeave"
       @node-drag-over="handleDragOver" @node-drag-end="handleDragEnd" @node-drop="handleDrop" :before-open="beforeOpen"
       :before-close="beforeClose" v-model="form" ref="tree" :filter-node-method="filterNodeMethod"
       :permission="getPermission" :option="option" :data="data" @node-click="nodeClick" @update="update" @save="save"
@@ -34,9 +34,9 @@
         </span>
       </span>
       <template slot-scope="scope" slot="menu">
-        <div class="avue-tree__item" @click="tip(scope.node,scope.data)">自定义按钮</di>
+        <div class="tvue-tree__item" @click="tip(scope.node,scope.data)">自定义按钮</di>
       </template>
-    </avue-tree>
+    </tvue-tree>
 
   </div>
 </body>

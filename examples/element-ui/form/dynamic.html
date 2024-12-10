@@ -14,16 +14,16 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-form :option="option" v-model="obj" @submit="submit" @error="error">
+    <tvue-form :option="option" v-model="obj" @submit="submit" @error="error">
       <template slot-scope="scope" slot="input">
         <el-tag>{{scope.row}}</el-tag>
       </template>
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>

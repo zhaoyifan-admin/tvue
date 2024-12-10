@@ -15,12 +15,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud ref="crud" :option="option" :data="data" :page="page" @on-load="onLoad" @expand-change="expandChange"
+    <tvue-crud ref="crud" :option="option" :data="data" :page="page" @on-load="onLoad" @expand-change="expandChange"
       @sort-change="sortChange">
       <template slot="expand" slot-scope="scope">
         {{scope}}
@@ -30,7 +30,7 @@
           :inactive-value="1">
         </el-switch>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

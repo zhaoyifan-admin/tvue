@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "2.0.3",
+  "version": "2.0.5",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/tvue.min.js",
   "unpkg": "lib/tvue.min.js",
@@ -16,9 +16,6 @@
     "hotfix": "node build.js --type=hotfix --github=origin:2.x",
     "default": "node build.js --type=default --github=origin:2.x"
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "keywords": [
     "vue",
     "element-ui",
@@ -26,14 +23,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://gitee.com/zhaoyifannangit/tvue.git"
   },
   "author": "zhaoyifannan",
   "license": "MIT",
   "bugs": {
-    "url": ""
+    "url": "https://gitee.com/zhaoyifannangit/tvue/issues"
   },
-  "homepage": "",
+  "homepage": "https://gitee.com/zhaoyifannangit/tvue/blob/master/README.md",
   "devDependencies": {
     "axios": "^0.21.1",
     "@babel/core": "^7.13.14",

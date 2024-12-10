@@ -17,14 +17,14 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{defaults}}
-    <avue-crud :defaults.sync="defaults" :data="list" :option="option" @sortable-change="sortableChange">
-    </avue-crud>
+    <tvue-crud :defaults.sync="defaults" :data="list" :option="option" @sortable-change="sortableChange">
+    </tvue-crud>
   </div>
 </body>
 <script>

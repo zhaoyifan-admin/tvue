@@ -44,7 +44,6 @@ import Video from 'packages/element-ui/video';
 import Login from 'packages/element-ui/login';
 import Arrays from 'packages/element-ui/array';
 import textEllipsis from 'packages/element-ui/text-ellipsis';
-import treeTransfer from 'packages/element-ui/tree-transfer';
 export default {
   Arrays,
   Affix,
@@ -89,7 +88,6 @@ export default {
   Video,
   Verifys,
   textEllipsis,
-  treeTransfer,
   Skeleton,
   Sign,
   Login

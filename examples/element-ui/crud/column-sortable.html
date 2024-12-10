@@ -20,13 +20,13 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <script src="https://cdn.staticfile.org/Sortable/1.10.0-rc2/Sortable.min.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{defaults}}
-    <avue-crud :defaults.sync="defaults" ref="crud" :option="option" :data="data"></avue-crud>
+    <tvue-crud :defaults.sync="defaults" ref="crud" :option="option" :data="data"></tvue-crud>
   </div>
 </body>
 <script>

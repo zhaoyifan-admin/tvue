@@ -64,7 +64,7 @@ function genConfig (name) {
       chunkFilename: '[id].js',
       libraryExport: "default",
       libraryTarget: 'umd',
-      library: 'AVUE',
+      library: 'TVUE',
       umdNamedDefine: true,
       globalObject: 'this'
     },

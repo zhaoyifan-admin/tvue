@@ -16,19 +16,19 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-input-tree :dic="list" ref="tree" v-model="data">
+    <tvue-input-tree :dic="list" ref="tree" v-model="data">
       <span class="el-tree-node__label" slot-scope="{ item }">
         <span>
           <i class="el-icon-user-solid"></i>
           {{ item.label }}
         </span>
       </span>
-    </avue-input-tree>
+    </tvue-input-tree>
   </div>
 </body>
 <script>

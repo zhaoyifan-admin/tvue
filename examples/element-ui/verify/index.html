@@ -14,13 +14,13 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{obj}}
-    <avue-verify ref="verify" v-model="obj"></avue-verify>
+    <tvue-verify ref="verify" v-model="obj"></tvue-verify>
     <el-button @click="$refs.verify.randomn()">刷新</el-button>
   </div>
 </body>

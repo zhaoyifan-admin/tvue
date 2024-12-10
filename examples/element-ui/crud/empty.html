@@ -19,12 +19,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud ref="crud" :option="option" :data="data">
+    <tvue-crud ref="crud" :option="option" :data="data">
       <template slot="nameHeader" slot-scope="{column}">
         <el-tag>{{column.label}}({{column.prop}})</el-tag>
       </template>
@@ -34,7 +34,7 @@
       <!-- <template slot="empty">
         自定义提示
       </template> -->
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

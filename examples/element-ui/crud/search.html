@@ -15,13 +15,13 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{search}}
-    <avue-crud ref="crud" @search-icon-click="searchIconClick" :page.sync="page" :search.sync="search" :option="option"
+    <tvue-crud ref="crud" @search-icon-click="searchIconClick" :page.sync="page" :search.sync="search" :option="option"
       :data="data" @search-change="searchChange">
       <el-tag slot="header">头部</el-tag>
       <template slot="searchMenu" slot-scope="{size,row}">
@@ -35,7 +35,7 @@
       </template>
       <el-tag slot="footer">尾部</el-tag>
       <el-tag slot="page">分页</el-tag>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

@@ -29,7 +29,7 @@
       <slot :name="crud.getSlotName(column,'H')"
             v-if="crud.getSlotName(column,'H',crud.$scopedSlots)"
             v-bind="{column,$index}"></slot>
-      <span v-else>{{column.label}}</span>
+      <span class="headers" v-else>{{column.label}}</span>
     </template>
     <template slot-scope="{row,column:tableColumn,$index}">
       <el-form-item :prop="crud.isTree?'':`list.${$index}.${column.prop}`"

@@ -19,12 +19,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud @row-click="handleRowClick" ref="crud" :option="option" :data="data" :table-loading="loading"
+    <tvue-crud @row-click="handleRowClick" ref="crud" :option="option" :data="data" :table-loading="loading"
       v-model="obj" @on-load="onLoad" @row-update="rowUpdate" @row-del="rowDel">
       <template slot="menuLeft" slot-scope="scope">
         <el-button @click="addRow" size="small">添加10条</el-button>
@@ -38,7 +38,7 @@
       <template slot="nameForm" slot-scope="{row,size,$cell}">
         <el-input v-model="row.name" :size="size"></el-input>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>
@@ -86,7 +86,7 @@
               ],
               dicData: [
                 {
-                  label: 'smallwei',
+                  label: 'zhaoyifannan',
                   value: '0'
                 },
                 {
@@ -309,7 +309,7 @@
           {
             id: '0',
             img:
-              'https://gitee.com/smallweigit/avue/badge/star.svg?theme=white',
+              'https://gitee.com/zhaoyifannangit/tvue/badge/star.svg?theme=white',
             img1: [
               {
                 label: 'test',

@@ -16,12 +16,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-form :option="option" v-model="obj">
+    <tvue-form :option="option" v-model="obj">
       <template slot="provinceType" slot-scope="{item,value,label}">
         <span>{{item}}</span>
       </template>
@@ -31,7 +31,7 @@
       <template slot="codesType" slot-scope="{item,value,label}">
         <span>{{item}}</span>
       </template>
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>

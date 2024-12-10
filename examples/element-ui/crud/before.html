@@ -15,14 +15,14 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{form}}
-    <avue-crud :data="data" v-model="form" :before-open="beforeOpen" :before-close="beforeClose" :option="option">
-    </avue-crud>
+    <tvue-crud :data="data" v-model="form" :before-open="beforeOpen" :before-close="beforeClose" :option="option">
+    </tvue-crud>
   </div>
 </body>
 <script>

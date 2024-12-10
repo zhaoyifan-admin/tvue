@@ -14,21 +14,21 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{obj}}
     {{search}}
-    <avue-crud :option="option" v-model="obj" :data="data" :search.sync="search">
+    <tvue-crud :option="option" v-model="obj" :data="data" :search.sync="search">
       <template slot-scope="scope" slot="namesForm">
         <div>
           <span>{{obj.names}}</span>
-          <avue-input :disabled="scope.disabled" :label="scope.column.label" v-model="obj.names"></avue-input>
+          <tvue-input :disabled="scope.disabled" :label="scope.column.label" v-model="obj.names"></tvue-input>
         </div>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

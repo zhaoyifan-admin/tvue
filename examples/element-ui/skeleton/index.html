@@ -14,28 +14,28 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 
 </head>
 
 <body>
   <div id="app">
-    <avue-skeleton></avue-skeleton>
+    <tvue-skeleton></tvue-skeleton>
     <br />
-    <avue-skeleton block></avue-skeleton>
+    <tvue-skeleton block></tvue-skeleton>
     <br />
-    <avue-skeleton avatar></avue-skeleton>
+    <tvue-skeleton avatar></tvue-skeleton>
     <br />
-    <avue-skeleton avatar :rows="5"></avue-skeleton>
+    <tvue-skeleton avatar :rows="5"></tvue-skeleton>
     <br />
-    <avue-skeleton avatar :rows="4" :number="3"></avue-skeleton>
+    <tvue-skeleton avatar :rows="4" :number="3"></tvue-skeleton>
     <br />
     <el-switch :active-value="false" :inactive-value="true" v-model="loading" active-color="#13ce66"
       inactive-color="#ff4949">
     </el-switch>
-    <avue-skeleton :loading="loading">
+    <tvue-skeleton :loading="loading">
       <span>加载的内容</span>
-    </avue-skeleton>
+    </tvue-skeleton>
   </div>
 </body>
 <script>

@@ -16,12 +16,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-tabs ref="tabs" :option="option" @change="handleChange"></avue-tabs>
+    <tvue-tabs ref="tabs" :option="option" @change="handleChange"></tvue-tabs>
     <span v-if="type.prop==='tab1'">选项卡内容1</span>
     <span v-else-if="type.prop==='tab2'">选项卡内容2</span>
   </div>

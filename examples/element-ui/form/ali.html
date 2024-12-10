@@ -15,27 +15,27 @@
   <script src="https://cdn.staticfile.org/ali-oss/6.10.0/aliyun-oss-sdk.min.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-form :option="option" v-model="form" :upload-preview="uploadPreview" :upload-delete="uploadDelete"
-      :upload-before="uploadBefore" :upload-after="uploadAfter"> </avue-form>
+    <tvue-form :option="option" v-model="form" :upload-preview="uploadPreview" :upload-delete="uploadDelete"
+      :upload-before="uploadBefore" :upload-after="uploadAfter"> </tvue-form>
   </div>
 </body>
 <script>
   //https://help.aliyun.com/document_detail/32077.html
   axios.get('https://api.avuejs.com/sts').then(token => {
     token = token.data;
-    Vue.use(AVUE, {
+    Vue.use(TVUE, {
       ali: {
         region: 'oss-cn-beijing',
         endpoint: 'oss-cn-beijing.aliyuncs.com',
         accessKeyId: token.AccessKeyId,
         accessKeySecret: token.AccessKeySecret,
         stsToken: token.SecurityToken,
-        bucket: 'avue',
+        bucket: 'tvue',
       }
     })
   })
@@ -56,7 +56,7 @@
               type: 'upload',
               listType: 'picture-img',
               canvasOption: {
-                text: 'avue',
+                text: 'tvue',
                 ratio: 0.1
               },
               cropperOption: {

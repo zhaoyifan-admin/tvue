@@ -19,15 +19,15 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     <input id="text" v-model="text">
     <input id="text2" v-model="text2">
-    <avue-keyboard ref="kb" :ele="ele" :keys="keys" @click="handleKeyboardClick" style="width: 800px; height: 300px">
-    </avue-keyboard>
+    <tvue-keyboard ref="kb" :ele="ele" :keys="keys" @click="handleKeyboardClick" style="width: 800px; height: 300px">
+    </tvue-keyboard>
   </div>
 </body>
 

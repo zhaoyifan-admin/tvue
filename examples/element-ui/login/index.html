@@ -14,23 +14,23 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <script src="https://cdn.staticfile.org/Mock.js/1.0.1-beta3/mock-min.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     <h2>普通用户登录</h2>
-    <avue-login :option="option" @submit="submit">
-    </avue-login>
+    <tvue-login :option="option" @submit="submit">
+    </tvue-login>
     <h2>图片验证码登录</h2>
-    <avue-login :option="option1" @refresh="refresh" :codesrc="codesrc" @submit="submit">
-    </avue-login>
+    <tvue-login :option="option1" @refresh="refresh" :codesrc="codesrc" @submit="submit">
+    </tvue-login>
     <h2>手机号登录</h2>
-    <avue-login :option="option2" @submit="submit" @send="send">
-    </avue-login>
+    <tvue-login :option="option2" @submit="submit" @send="send">
+    </tvue-login>
     <h2>调整边距</h2>
-    <avue-login :option="option3" @submit="submit" @send="send">
-    </avue-login>
+    <tvue-login :option="option3" @submit="submit" @send="send">
+    </tvue-login>
   </div>
 </body>
 <script>

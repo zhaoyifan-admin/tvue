@@ -14,7 +14,7 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
   <style>
     body,
     html,
@@ -32,14 +32,14 @@
 <body>
   <div id="app">
     <div style="position:relative;height:400px;">
-      <avue-draggable :left="200" :top="200" @blur="handleBlur" @focus="handleFocus">
+      <tvue-draggable :left="200" :top="200" @blur="handleBlur" @focus="handleFocus">
         <div style="width:200px;height:200px;background:red">
         </div>
-      </avue-draggable>
-      <avue-draggable :left="500" :top="200" :scale="3">
+      </tvue-draggable>
+      <tvue-draggable :left="500" :top="200" :scale="3">
         <div style="width:200px;height:200px;background:red">
         </div>
-      </avue-draggable>
+      </tvue-draggable>
     </div>
   </div>
 </body>

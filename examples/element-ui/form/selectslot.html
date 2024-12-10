@@ -14,13 +14,13 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{obj}}
-    <avue-form :option="option" v-model="obj">
+    <tvue-form :option="option" v-model="obj">
       <template slot="provinceType" slot-scope="{item,value,label}">
         <div>
           <span style="float: left">{{ item[value] }}</span>
@@ -39,7 +39,7 @@
           <span style="float: right; color: #8492a6; font-size: 13px">{{ item[label] }}</span>
         </div>
       </template>
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>
