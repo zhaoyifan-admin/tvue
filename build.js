@@ -35,14 +35,14 @@ if (newVersion) {
   version = handleType(version, type);
 } else {
   version = null;
-  console.log('==========没有改变version==========');
+  console.log('==========> 没有改变version <==========');
 }
 // 修改了version则写入
 if (version) {
   packageJSON.version = version;
   // 同步写入package.json文件
   fs.writeFileSync('package.json', JSON.stringify(packageJSON, null, 2));
-  console.log('==========更新package的version为：%s参数成功==========', version);
+  console.log('==========> 更新package的version为：%s参数成功 <==========', version);
   // handleGitAdd('./package.json')
   // pullRemote();
   handleGitCheckOut(github);
@@ -62,21 +62,17 @@ function handleType(oldVersion, type) {
   let secondNum = +oldVersionArr[1];
   // 版本号第三位 如：1.2.3 则为 3
   let thirdNum = +oldVersionArr[2];
-  // switch (type) {
-  //   case 'release':
-  //     // release分支的处理逻辑
-  //     ++secondNum;
-  //     thirdNum = 0;
-  //     break;
-  //   case 'hotfix':
-  //     // hotfix分支的处理逻辑
-  //     ++thirdNum;
-  //     break;
-  //   default:
-  //     // 默认按照最小版本处理
-  //     ++thirdNum;
-  //     break;
-  // }
+  switch (type) {
+    case 'release':
+      ++secondNum;
+      thirdNum = 0;
+      break;
+    case 'hotfix':
+      ++thirdNum;
+      break;
+    default:
+      break;
+  }
   return firstNum + '.' + secondNum + '.' + thirdNum;
 }
 
@@ -108,7 +104,7 @@ function handleType(oldVersion, type) {
 function handleGitCheckOut(github) {
   // eslint-disable-next-line handle-callback-err
   exec('git checkout ' + github, function(error, stdout, stderr) {
-    console.log('==========切换新分支:%s DONE==========', github);
+    console.log('==========> 切换新分支:%s DONE <==========', github);
     // 添加修改文件
     handleGitAdd('./package.json');
   });
@@ -148,7 +144,7 @@ function handleGitPush() {
   console.log('handleGitPush')
   exec('git push ', function(error, stdout, stderr) {
     console.log('[推送至分支:%s输出：%s]', stdout || error || stderr);
-    console.log('==========提交修改文件完成==========');
+    console.log('==========> 提交修改文件完成 <==========');
   });
 }
 
