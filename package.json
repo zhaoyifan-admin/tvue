@@ -12,7 +12,7 @@
     "dev": "yarn gen:version && cross-env TARGET=dev UINAME=element-ui gulp watch",
     "build": "yarn gen:version && cross-env TARGET=prod UINAME=element-ui gulp build",
     "all": "yarn build && yarn dev",
-    "hotfix": "node build.js --type=hotfix --github=HEAD:2.x"
+    "hotfix": "node build.js --type=hotfix --github=origin:2.x"
   },
   "publishConfig": {
     "access": "public"
