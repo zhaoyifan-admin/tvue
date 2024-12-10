@@ -1,17 +1,17 @@
 // build.js文件
-var exec = require('child_process').exec; // 异步子进程
-var fs = require('fs');
-var packageJSON = require('./package.json');
+let exec = require('child_process').exec; // 异步子进程
+let fs = require('fs');
+let packageJSON = require('./package.json');
 /** package.json文件的version参数 */
-var version = packageJSON.version;
+let version = packageJSON.version;
 /** 命令行的所有参数 */
-var options = process.argv;
+let options = process.argv;
 /** 命令行的type参数 */
-var type = null;
+let type = null;
 /** 命令行的github参数 */
-var github = null;
+let github = null;
 /** 新的version参数 */
-var newVersion = null;
+let newVersion = null;
 // 判断命令行是否存在type参数或version参数进行逻辑处理
 for (let i = 0; i < options.length; i++) {
   if (options[i].indexOf('type') > -1) {
@@ -55,13 +55,13 @@ if (version) {
  * @private
  */
 function handleType(oldVersion, type) {
-  var oldVersionArr = oldVersion.split('.');
+  let oldVersionArr = oldVersion.split('.');
   // 版本号第一位 如：1.2.3 则为 1
-  var firstNum = +oldVersionArr[0];
+  let firstNum = +oldVersionArr[0];
   // 版本号第二位 如：1.2.3 则为 2
-  var secondNum = +oldVersionArr[1];
+  let secondNum = +oldVersionArr[1];
   // 版本号第三位 如：1.2.3 则为 3
-  var thirdNum = +oldVersionArr[2];
+  let thirdNum = +oldVersionArr[2];
   switch (type) {
     case 'release':
       // release分支的处理逻辑
@@ -145,6 +145,7 @@ function handleGitCommit(prompt) {
  * 推送分支
  */
 function handleGitPush() {
+  console.log('handleGitPush')
   exec('git push ', function(error, stdout, stderr) {
     console.log('[推送至分支:%s输出：%s]', stdout || error || stderr);
     console.log('==========提交修改文件完成==========');
