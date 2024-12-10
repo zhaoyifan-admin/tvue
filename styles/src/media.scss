@@ -1,0 +1,17 @@
+@media screen and (max-width: 992px) {
+  .tvue-crud {
+    .tvue-crud__menu{
+      display: block;
+    }
+    .tvue-crud__left,.tvue-crud__right{
+      margin: 5px 0;
+      width: 100%;
+    }
+    .tvue-crud__right{
+      text-align: right;
+    }
+    .el-button+.el-button {
+      margin-left: 0;
+    }
+  }
+}
