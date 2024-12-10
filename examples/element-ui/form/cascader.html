@@ -14,17 +14,17 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-form v-model="form" :option="option">
+    <tvue-form v-model="form" :option="option">
       <template slot="cascader3Type" slot-scope="{node,data}">
         <span></span>
         <span v-if="!node.isLeaf">{{data.label}}({{data.children.length}}) </span>
       </template>
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>

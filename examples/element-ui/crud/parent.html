@@ -15,17 +15,17 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud :option="option" :data="data" v-model="form">
+    <tvue-crud :option="option" :data="data" v-model="form">
       <template slot="infoForm" slot-scope="scope">
-        <avue-crud :option="infoOption" :data="infoData">
-        </avue-crud>
+        <tvue-crud :option="infoOption" :data="infoData">
+        </tvue-crud>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

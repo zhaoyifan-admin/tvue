@@ -19,12 +19,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud v-model="form" :option="option" :data="data" ref="crud" @row-save="rowSave" @row-update="rowUpdate"
+    <tvue-crud v-model="form" :option="option" :data="data" ref="crud" @row-save="rowSave" @row-update="rowUpdate"
       @row-del="rowDel">
       <template slot="icon" slot-scope="scope">
         <i :class="scope.row.icon" style="font-size:24px"></i>
@@ -32,7 +32,7 @@
       <template slot="menu" slot-scope="{row,size,type}">
         <el-button :size="size" :type="type" @click="handleAdd(row)">新增子级</el-button>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

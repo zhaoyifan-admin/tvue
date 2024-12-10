@@ -16,17 +16,17 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-search :option="option" v-model="form" @change="handleChange">
+    <tvue-search :option="option" v-model="form" @change="handleChange">
       <template slot="zdy" slot-scope="scope">
         <el-tag>自定义</el-tag>
       </template>
-    </avue-search>
-    <avue-crud :option="tableOption" :data="data"></avue-crud>
+    </tvue-search>
+    <tvue-crud :option="tableOption" :data="data"></tvue-crud>
   </div>
 </body>
 <script>

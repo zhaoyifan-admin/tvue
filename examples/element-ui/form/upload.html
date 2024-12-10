@@ -14,15 +14,15 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <script src="http://qtestbucket.qiniudn.com/demo/CryptoJS.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{form}}
-    <avue-form :option="option" v-model="form" :upload-error="uploadError" :upload-delete="uploadDelete"
+    <tvue-form :option="option" v-model="form" :upload-error="uploadError" :upload-delete="uploadDelete"
       :upload-before="uploadBefore" :upload-exceed="uploadExceed" :upload-after="uploadAfter">
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>
@@ -31,7 +31,7 @@
     data() {
       return {
         form: {
-          imgUrl: [{ "label": "video", "value": "https://www.w3school.com.cn/i/video/shanghai.mp4" }, { "label": "avue@226d5c1a_logo.png", "value": "https://avuejs.com/images/logo.png" },{"label":'audio',"value":"https://www.jb51.net/w3school/i/horse.ogg"}],
+          imgUrl: [{ "label": "video", "value": "https://www.w3school.com.cn/i/video/shanghai.mp4" }, { "label": "tvue@226d5c1a_logo.png", "value": "https://avuejs.com/images/logo.png" },{"label":'audio',"value":"https://www.jb51.net/w3school/i/horse.ogg"}],
           imgUrl3: 'https://www.w3school.com.cn/i/video/shanghai.mp4',
           string: 'https://avuejs.com/images/logo.png,/images/logo.png,https://www.jb51.net/w3school/i/horse.ogg',
           img: ['https://www.w3school.com.cn/i/video/shanghai.mp4', 'https://avuejs.com/images/logo.png']
@@ -68,7 +68,7 @@
                 fixedNumber: [346, 148]
               },
               canvasOption: {
-                text: 'avue',
+                text: 'tvue',
                 ratio: 0.1
               },
               tip: '只能上传jpg/png用户头像，且不超过500kb',

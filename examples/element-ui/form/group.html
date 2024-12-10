@@ -14,17 +14,17 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     <el-button @click="handle" style="margin-left: 20px">{{title}}</el-button>
-    <avue-form :option="option" v-model="obj" @submit="submit">
+    <tvue-form :option="option" v-model="obj" @submit="submit">
       <template slot="names" slot-scope="{row,disabled}">
-        <avue-input v-model="obj.names" :disabled="disabled"></avue-input>
+        <tvue-input v-model="obj.names" :disabled="disabled"></tvue-input>
       </template>
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>

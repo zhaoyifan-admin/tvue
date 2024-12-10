@@ -15,14 +15,14 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{page}}
-    <avue-crud ref="crud" :option="option" @size-change="sizeChange" @current-change="currentChange" :data="data"
-      :page.sync="page" @on-load="onLoad" @error="error"></avue-crud>
+    <tvue-crud ref="crud" :option="option" @size-change="sizeChange" @current-change="currentChange" :data="data"
+      :page.sync="page" @on-load="onLoad" @error="error"></tvue-crud>
   </div>
 </body>
 <script>

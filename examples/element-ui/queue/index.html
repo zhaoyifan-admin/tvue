@@ -14,7 +14,7 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
   <style>
     .div2 {
       margin: 5px;
@@ -29,18 +29,18 @@
 <body>
   <div id="app">
     <div style="margin-top: 1000px;margin-bottom: 400px;">
-      <avue-queue enter="bounceInLeft" block>
+      <tvue-queue enter="bounceInLeft" block>
         <div class="div2"></div>
-      </avue-queue>
-      <avue-queue enter="bounceInLeft" :delay="100" block>
+      </tvue-queue>
+      <tvue-queue enter="bounceInLeft" :delay="100" block>
         <div class="div2"></div>
-      </avue-queue>
-      <avue-queue enter="bounceInLeft" :delay="200" block>
+      </tvue-queue>
+      <tvue-queue enter="bounceInLeft" :delay="200" block>
         <div class="div2"></div>
-      </avue-queue>
-      <avue-queue enter="bounceInLeft" :delay="300" block>
+      </tvue-queue>
+      <tvue-queue enter="bounceInLeft" :delay="300" block>
         <div class="div2"></div>
-      </avue-queue>
+      </tvue-queue>
     </div>
   </div>
 </body>

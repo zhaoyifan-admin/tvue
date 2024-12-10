@@ -19,21 +19,21 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{defaults}}
-    <avue-crud :defaults.sync="defaults" ref="crud" :option="option" :data="data">
+    <tvue-crud :defaults.sync="defaults" ref="crud" :option="option" :data="data">
       <template slot="menuLeft" slot-scope="{size}">
         <el-button @click="saveOption" type="danger" :size="size">保存配置</el-button>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>
-  let key = 'avue-column';
+  let key = 'tvue-column';
   new Vue({
     el: '#app',
     data() {

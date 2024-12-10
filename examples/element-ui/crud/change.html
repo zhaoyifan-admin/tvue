@@ -19,16 +19,16 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud ref="crud" :data="data" :option="option">
+    <tvue-crud ref="crud" :data="data" :option="option">
       <template slot="menuLeft">
         <el-button type="primary" size="small" @click="handleSwitch" icon="el-icon-sort">切 换</el-button>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>
@@ -41,13 +41,13 @@
           {
             name: '张三',
             sex: '男',
-            username: 'smallwei',
-            password: 'smallwei'
+            username: 'zhaoyifannan',
+            password: 'zhaoyifannan'
           }, {
             name: '李四',
             sex: '女',
-            username: 'avue',
-            password: 'avue'
+            username: 'tvue',
+            password: 'tvue'
           }
         ],
         option: {},

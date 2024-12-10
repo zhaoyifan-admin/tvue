@@ -14,13 +14,13 @@
   <script src="../../cdn/element-ui/index.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{form}}
-    <avue-form v-model="form" :option="option" @submit="submit">
+    <tvue-form v-model="form" :option="option" @submit="submit">
       <template slot-scope="{}" slot="daterangeLabel">
         <span>姓名&nbsp;&nbsp;</span>
         <el-tooltip class="item" effect="dark" content="文字提示" placement="top-start">
@@ -30,7 +30,7 @@
       <template slot-scope="{error}" slot="daterangeError">
         <p style="color:green">自定义提示</p>
       </template>
-    </avue-form>
+    </tvue-form>
   </div>
 </body>
 <script>

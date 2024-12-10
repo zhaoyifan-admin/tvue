@@ -14,18 +14,18 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 
 </head>
 
 <body>
   <div id="app">
-    <avue-card :option="option" :data="data" @row-click="tip" @row-add="tip">
+    <tvue-card :option="option" :data="data" @row-click="tip" @row-add="tip">
       <template slot="menu" slot-scope="scope">
         <span @click.stop="tip(scope.row,scope.index)">操作1</span>
         <span @click.stop="tip(scope.row,scope.index)">操作2</span>
       </template>
-    </avue-card>
+    </tvue-card>
   </div>
 </body>
 <script>

@@ -20,12 +20,12 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud ref="crud" :option="option" :data="data" :page="page" :table-loading="loading" v-model="obj"
+    <tvue-crud ref="crud" :option="option" :data="data" :page="page" :table-loading="loading" v-model="obj"
       :upload-before="uploadBefore" :upload-after="uploadAfter" :before-open="handleBeforeOpen"
       :before-close="handleBeforeClose" @selection-change="selectionChange" @on-load="onLoad"
       @row-dblclick="handleRowDBLClick" @row-click="handleRowClick" @current-row-change=" " @date-change="dateChange"
@@ -64,7 +64,7 @@
       <template slot-scope="scope" slot="menu">
         <el-button :size="scope.size" :disabled="scope.disabled" :type="scope.type" icon="el-icon-plus">自定义</el-button>
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>
@@ -135,7 +135,7 @@
               ],
               dicData: [
                 {
-                  label: 'smallwei',
+                  label: 'zhaoyifannan',
                   value: '0'
                 },
                 {
@@ -416,7 +416,7 @@
           {
             id: '0',
             img:
-              'https://gitee.com/smallweigit/avue/badge/star.svg?theme=white',
+              'https://gitee.com/zhaoyifannangit/tvue/badge/star.svg?theme=white',
             img1: [
               {
                 label: 'test',

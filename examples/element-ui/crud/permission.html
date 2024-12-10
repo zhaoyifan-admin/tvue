@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
@@ -23,11 +23,11 @@
     权限开关<el-switch :active-value="false" :inactive-value="true" v-model="text" active-color="#13ce66"
       inactive-color="#ff4949">
     </el-switch>
-    <avue-crud ref="crud" :permission="permission" :option="option" :data="data" @expand-change="expandChange">
+    <tvue-crud ref="crud" :permission="permission" :option="option" :data="data" @expand-change="expandChange">
       <template slot="expand" slot-scope="scope">
         {{scope}}
       </template>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

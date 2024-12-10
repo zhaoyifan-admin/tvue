@@ -14,13 +14,13 @@
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 
 </head>
 
 <body>
   <div id="app">
-    <avue-sign ref="sign"></avue-sign>
+    <tvue-sign ref="sign"></tvue-sign>
     <el-button type="primary" @click="handleSubmit">生成</el-button>
     <el-button type="primary" @click="$refs.sign.getStar('这里是用途','这里是单位的名称','1221332')">印章</el-button>
     <el-button @click="$refs.sign.clear()">清空</el-button>

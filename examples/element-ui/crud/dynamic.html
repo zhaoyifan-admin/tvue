@@ -16,16 +16,16 @@
   <script src="https://cdn.staticfile.org/FileSaver.js/2014-11-29/FileSaver.min.js"></script>
   <script src="https://cdn.staticfile.org/xlsx/0.18.2/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-crud :option="option" :data="data">
+    <tvue-crud :option="option" :data="data">
       <div slot-scope="scope" slot="inputForm">
         <el-tag>{{scope.row}}</el-tag>
       </div>
-    </avue-crud>
+    </tvue-crud>
   </div>
 </body>
 <script>

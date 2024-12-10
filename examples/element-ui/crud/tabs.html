@@ -19,17 +19,17 @@
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     <el-tabs v-model="activeName">
       <el-tab-pane label="用户管理" name="1">
-        <avue-crud :data="data1" :option="option1"></avue-crud>
+        <tvue-crud :data="data1" :option="option1"></tvue-crud>
       </el-tab-pane>
       <el-tab-pane label="配置管理" name="2">
-        <avue-crud :data="data2" :option="option2"></avue-crud>
+        <tvue-crud :data="data2" :option="option2"></tvue-crud>
       </el-tab-pane>
     </el-tabs>
   </div>

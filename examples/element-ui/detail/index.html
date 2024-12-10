@@ -12,22 +12,22 @@
   <script src="../../cdn/vue/vue.js"></script>
   <link rel="stylesheet" href="../../cdn/element-ui/theme-chalk/index.css" />
   <script src="../../cdn/element-ui/index.js"></script>
-  <script src="https://avuex.avue.top/cdn/aliyun-oss-sdk.min.js"></script>
+  <script src="https://avuex.tvue.top/cdn/aliyun-oss-sdk.min.js"></script>
 
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
-    <avue-detail :option="option" v-model="form">
+    <tvue-detail :option="option" v-model="form">
       <template slot="text1" slot-scope="scope">
         <el-tag>{{scope.row.text1}}</el-tag>
       </template>
       <template slot="test" slot-scope="scope">
         <span>{{scope.row}}</span>
       </template>
-    </avue-detail>
+    </tvue-detail>
   </div>
 </body>
 

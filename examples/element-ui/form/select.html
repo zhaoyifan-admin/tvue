@@ -15,14 +15,14 @@
   <!-- 导入拖拽需要的包 -->
   <script src="https://cdn.staticfile.org/Sortable/1.10.0-rc2/Sortable.min.js"></script>
   <link rel="stylesheet" href="../../../lib/index.css" />
-  <script src="../../../lib/avue.js"></script>
+  <script src="../../../lib/tvue.js"></script>
 </head>
 
 <body>
   <div id="app">
     {{form}}
-    <avue-form ref="crud" :option="option" v-model="form">
-    </avue-form>
+    <tvue-form ref="crud" :option="option" v-model="form">
+    </tvue-form>
   </div>
 </body>
 <script>
