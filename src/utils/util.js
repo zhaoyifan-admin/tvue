@@ -8,6 +8,7 @@ import {
 import {
   typeList
 } from 'global/variable';
+
 export const isMediaType = (url, type) => {
   if (validatenull(url)) return null;
   if (typeList.audio.test(url) || typeList.audio.test(type) || type == 'audio') {
@@ -32,9 +33,11 @@ export const uuid = () => {
   var uuid = s.join('');
   return uuid;
 };
+
 export function getFixed(val = 0, len = 2) {
   return Number(val.toFixed(len));
 }
+
 export function getAsVal(obj, bind = '') {
   let result = deepClone(obj);
   if (validatenull(bind)) return result;
@@ -73,6 +76,7 @@ export function setAsVal(obj, bind = '', value) {
   eval(result);
   return obj;
 }
+
 export const loadScript = (type = 'js', url, dom = 'body') => {
   let flag = false;
   return new Promise((resolve) => {
@@ -97,11 +101,12 @@ export const loadScript = (type = 'js', url, dom = 'body') => {
       script.href = url;
     }
     head.appendChild(script);
-    script.onload = function () {
+    script.onload = function() {
       resolve();
     };
   });
 };
+
 export function downFile(url, saveName) {
   if (typeof url === 'object' && url instanceof Blob) {
     url = URL.createObjectURL(url); // 创建blob地址
@@ -119,6 +124,7 @@ export function downFile(url, saveName) {
   }
   aLink.dispatchEvent(event);
 }
+
 export function extend() {
   var target = arguments[0] || {};
   var deep = false;
@@ -155,6 +161,7 @@ export function extend() {
   }
   return target;
 }
+
 export function createObj(obj, bind) {
   let list = bind.split('.');
   let first = list.splice(0, 1)[0];
@@ -177,6 +184,7 @@ export function createObj(obj, bind) {
   obj = extend(true, obj, deep);
   return obj;
 }
+
 export function dataURLtoFile(dataurl, filename) {
   let arr = dataurl.split(',');
   let mime = arr[0].match(/:(.*?);/)[1];
@@ -215,6 +223,7 @@ export function findObject(list = [], value, prop = 'prop') {
   }
   return result;
 }
+
 /**
  * 生成随机数
  */
@@ -227,6 +236,7 @@ export function randomId() {
   }
   return id;
 }
+
 export const getObjType = obj => {
   var toString = Object.prototype.toString;
   var map = {
@@ -468,4 +478,19 @@ export const vaildData = (val, dafult) => {
     return val;
   }
   return !validatenull(val) ? val : dafult;
+};
+
+// 判断是否为空数据
+export const isFieldEmpty = (obj, field) => {
+  return obj[field] === null || obj[field] === undefined || obj[field] === '' || Array.isArray(obj[field]) && obj[field].length === 0;
+};
+
+// 将冗余空字段或数据进行删除
+export const deleteField = (obj) => {
+  return Object.keys(obj).reduce((result, key) => {
+    if (!isFieldEmpty(obj, key)) {
+      result[key] = obj[key];
+    }
+    return result;
+  }, {});
 };

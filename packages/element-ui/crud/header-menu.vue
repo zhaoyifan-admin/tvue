@@ -87,7 +87,6 @@
                  @click="crud.handleGridShow()"
                  v-permission="crud.getPermission('gridBtn')"
                  v-if="vaildData(crud.tableOption.gridBtn,config.gridBtn)"></el-button>
-
     </div>
   </div>
 </template>
