@@ -171,11 +171,10 @@
 
 <script>
 import { differenceBy } from "lodash";
-import { findParents } from "../assets/js";
-import {flattenDeep, arrayToTree} from "../../js";
+import { findParents, flattenDeep, arrayToTree } from "../assets/js";
 
 export default {
-  name: "TransferTree",
+  name: "Transfer",
   props: {
     // 标题
     title: {

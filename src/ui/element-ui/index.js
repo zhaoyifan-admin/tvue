@@ -35,6 +35,7 @@ import Sign from 'packages/element-ui/sign';
 import Slider from 'packages/element-ui/slider';
 import Keyboard from 'packages/element-ui/keyboard';
 import Tree from 'packages/element-ui/tree';
+import treeTransfer from 'packages/element-ui/tree-transfer';
 import Title from 'packages/element-ui/title';
 import Search from 'packages/element-ui/search';
 import Skeleton from 'packages/element-ui/skeleton';
@@ -88,6 +89,7 @@ export default {
   Video,
   Verifys,
   textEllipsis,
+  treeTransfer,
   Skeleton,
   Sign,
   Login

@@ -17,8 +17,10 @@ import {
   setPx,
   isJson,
   downFile,
+  deleteField,
   loadScript
 } from 'utils/util';
+import {bd09Togps84, gcj02ToBd09, gcj02ToGps84, gps84Tobd09} from 'utils/gps';
 import dialogDrag from 'packages/core/directive/dialog-drag';
 import contextmenu from 'packages/core/directive/contextmenu';
 import $Export from 'plugin/export/';
@@ -52,17 +54,21 @@ let prototypes = {
   findNode,
   validatenull,
   downFile,
+  deleteField,
   loadScript,
   watermark,
   findObject,
-  randomId
-
+  randomId,
+  bd09Togps84,
+  gcj02ToBd09,
+  gcj02ToGps84,
+  gps84Tobd09
 };
 let directive = {
   dialogDrag,
   contextmenu
 };
-const install = function (Vue, opts = {}) {
+const install = function(Vue, opts = {}) {
   if (opts.theme === 'dark') document.documentElement.className = 'tvue-theme--dark';
   const defaultOption = {
     size: opts.size || 'small',
