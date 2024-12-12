@@ -8,7 +8,7 @@ const banner =
   ' Tvue.js v' +
   version +
   '\n' +
-  ' (c) 2017-' +
+  ' (c) 2023-' +
   new Date().getFullYear() +
   ' zhaoyifannan\n' +
   ' Released under the MIT License.\n';

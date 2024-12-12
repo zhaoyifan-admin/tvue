@@ -7,7 +7,7 @@ import { t } from 'locale';
  */
 export const calcCascader = (list = []) => {
   list.forEach(ele => {
-    let cascader = ele.cascader
+    let cascader = ele.cascader;
     if (!validatenull(cascader)) {
       let parentProp = ele.prop;
       cascader.forEach(citem => {
@@ -41,7 +41,7 @@ export const calcCount = (ele, spanDefault = 12, init = false) => {
  * 初始化数据格式
  */
 export const initVal = (value, safe) => {
-  let { type, multiple, dataType, separator = DIC_SPLIT, alone, emitPath, range } = safe
+  let { type, multiple, dataType, separator = DIC_SPLIT, alone, emitPath, range } = safe;
   let list = value;
   if (
     (MULTIPLE_LIST.includes(type) && multiple == true) ||
@@ -53,7 +53,7 @@ export const initVal = (value, safe) => {
         list = [];
       } else {
         if (dataType == 'json') {
-          list = JSON.parse(list)
+          list = JSON.parse(list);
         } else {
           list = (list + '').split(separator) || [];
         }
@@ -65,7 +65,7 @@ export const initVal = (value, safe) => {
     });
     if (ARRAY_LIST.includes(type) && validatenull(list) && alone) list = [''];
   } else {
-    list = detailDataType(list, dataType)
+    list = detailDataType(list, dataType);
   }
   return list;
 };
@@ -129,7 +129,7 @@ export const formInitVal = (list = []) => {
     ) {
       tableForm[ele.prop] = [];
     } else if (RANGE_LIST.includes(ele.type) && ele.range == true) {
-      tableForm[ele.prop] = [0, 0]
+      tableForm[ele.prop] = [0, 0];
     } else if (
       ['rate', 'slider', 'number'].includes(ele.type) ||
       ele.dataType === 'number'
@@ -151,7 +151,7 @@ export const formInitVal = (list = []) => {
   };
 };
 
-export const getPlaceholder = function (column) {
+export const getPlaceholder = function(column) {
   const placeholder = column.placeholder;
   const label = column.label;
   if (validatenull(placeholder)) {

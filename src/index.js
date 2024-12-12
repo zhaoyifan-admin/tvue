@@ -79,7 +79,7 @@ const install = function(Vue, opts = {}) {
     modalAppendToBody: vaildData(opts.modalAppendToBody, true),
     appendToBody: vaildData(opts.appendToBody, true),
     canvas: Object.assign({
-      text: 'avuejs.com',
+      text: 'tvuejs.com',
       fontFamily: 'microsoft yahei',
       color: '#999',
       fontSize: 16,

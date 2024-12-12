@@ -1,5 +1,5 @@
 <template>
-  <div class="tree-transfer transfer" :style="{ width, height }">
+  <div :class="b()" class="tvue-tree-transfer transfer" :style="{ width, height }">
     <component
         :is="isComponent"
         v-bind="$props"
@@ -46,8 +46,9 @@
 <script>
 import Transfer from "./components/transfer.vue";
 import AddressBook from "./components/address.vue";
+import create from "core/create";
 
-export default {
+export default create({
   name: "tree-transfer",
   components: { Transfer, AddressBook },
   props: {
@@ -320,5 +321,5 @@ export default {
       this.$refs["tree-transfer-component"].clearFilter(type);
     },
   },
-};
+});
 </script>

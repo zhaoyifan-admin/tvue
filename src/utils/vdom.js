@@ -9,11 +9,11 @@ export function isVNode(node) {
 };
 
 export function isDom(obj) {
-  return typeof HTMLElement === 'object' ?
-    (function () {
+  return typeof HTMLElement === 'object'
+    ? (function() {
       return obj instanceof HTMLElement;
-    })() :
-    (function () {
-      return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
     })()
+    : (function() {
+      return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
+    })();
 }
