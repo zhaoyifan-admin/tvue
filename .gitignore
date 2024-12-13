@@ -9,6 +9,11 @@ yarn-error.log*
 .project
 yarn.lock
 package-lock.json
+docs/.vuepress/website.js
+docs/.vuepress/components
+docs/.vuepress/dist
+docs/views
+build.sh
 
 # Editor directories and files
 .idea
