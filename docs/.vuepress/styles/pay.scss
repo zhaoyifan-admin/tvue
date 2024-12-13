@@ -1,0 +1,217 @@
+.pay {
+  padding-top: 30px;
+  &__footer {
+    width: 100%;
+    height: 62px;
+    background: #fff;
+    box-shadow: 0 -1px 0 0 hsla(0, 0%, 71%, 0.18);
+    position: fixed;
+    left: 0;
+    bottom: 30px;
+    &-box {
+      width: 1203px;
+      margin: 0 auto;
+      height: 100%;
+      position: relative;
+    }
+    &-menu {
+      width: 135px;
+      line-height: 44px;
+      position: absolute;
+      right: 0;
+      top: 9px;
+      background: #3369ff;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      color: #fff;
+      letter-spacing: 1px;
+      cursor: pointer;
+      user-select: none;
+      border: none;
+      border-radius: 24px;
+    }
+    &-money {
+      display: inline-block;
+      margin-left: 550px;
+      span {
+        &:first-child {
+          font-size: 12px;
+          color: #545454;
+          font-weight: 700;
+        }
+        &:nth-child(2) {
+          margin-left: 9px;
+          font-size: 22px;
+          color: #3369ff;
+          font-weight: 700;
+          height: 28px;
+        }
+      }
+    }
+    &-name {
+      display: inline-block;
+      line-height: 62px;
+      width: 330px;
+      span {
+        color: #545454;
+        font-weight: 700;
+        font-size: 14px;
+        margin-left: 20px;
+        width: 80%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+  &__title {
+    display: flex;
+    align-items: center;
+    img {
+      margin-right: 10px;
+    }
+    span {
+      margin-bottom: 2px;
+      color: #545454;
+      font-size: 16px;
+      font-weight: 700;
+      margin-left: 3px;
+    }
+  }
+  &__item {
+    display: inline-block;
+    vertical-align: middle;
+    height: 84px;
+    min-width: 182px;
+    padding-left: 18px;
+    padding-right: 26px;
+    background: #fff;
+    border: 2px solid #f1f4fb;
+    box-shadow: 0 4px 10px 0 rgba(135, 142, 154, 0.14);
+    border-radius: 10px;
+    margin-right: 11px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    line-height: 1.5;
+    &-name {
+      color: #545454;
+      font-size: 14px;
+      font-weight: 400;
+      margin-top: 16px;
+      margin-bottom: 5px;
+    }
+    &-img {
+      position: absolute;
+      right: -1px;
+      bottom: -1px;
+      border-radius: 0 0 10px 0;
+    }
+    &-money {
+      color: #3369ff;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    &-detail {
+      text-align: right;
+      color: #0db26a;
+      font-size: 12px;
+    }
+    &--active {
+      color: #3369ff;
+      border: 2px solid #3369ff;
+      .pay__item-name {
+        color: #3369ff;
+      }
+    }
+    &--disabled {
+      color: #c0c4cc;
+      .pay__item-name,
+      .pay__item-money,
+      .pay__item-detail {
+        color: #c0c4cc;
+      }
+    }
+  }
+  &__content {
+    margin: 20px auto 0 auto;
+    width: 100%;
+  }
+  &__name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #000;
+  }
+  &--green {
+    border-color: #5ac33c;
+    color: #5ac33c;
+  }
+  &--bule {
+    border-color: #48a9e9;
+    color: #48a9e9;
+  }
+  &__dialog {
+    .el-dialog__body {
+      padding: 0;
+    }
+    .header {
+      text-align: center;
+    }
+    .money {
+      color: #000;
+      font-size: 42px;
+      font-weight: 500;
+      padding: 0;
+      margin: 0;
+    }
+    .datetime {
+      padding: 0;
+      margin: 0;
+      font-size: 30px;
+      font-weight: bold;
+      span {
+        text-align: center;
+        width: 25px;
+        display: inline-block;
+        margin: 0 3px;
+      }
+    }
+    .code {
+      display: block;
+      margin: 10px auto 5px auto;
+      width: 180px;
+    }
+    .body {
+      color: #000;
+      margin: 0 auto;
+      width: 240px;
+      padding: 30px 0;
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+        line-height: 25px;
+      }
+    }
+    .tip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .text {
+        font-weight: 500;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: left;
+        margin-left: 15px;
+        font-size: 16px;
+        line-height: 28px;
+      }
+    }
+  }
+  &__money {
+    font-size: 26px;
+    color: #ff5722;
+  }
+}

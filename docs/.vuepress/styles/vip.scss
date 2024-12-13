@@ -1,0 +1,36 @@
+.vip {
+  &-box {
+    padding-top: 10px;
+  }
+  &-content {
+    margin: 10px auto;
+  }
+  .title {
+    margin-top: 10px;
+    text-align: center;
+  }
+  .tvue-data-pay {
+    padding-bottom: 30px;
+    .item {
+      width: 96%;
+      min-height: 820px;
+    }
+    .list-item {
+      margin-bottom: 7px;
+      font-size: 13px;
+      padding: 0 20px;
+      line-height: 25px;
+      a {
+        color: #515a6e;
+      }
+    }
+    .list-item--link {
+      display: inline-block;
+      &:hover {
+        color: red;
+        cursor: pointer;
+        transform: scale(1.2);
+      }
+    }
+  }
+}
