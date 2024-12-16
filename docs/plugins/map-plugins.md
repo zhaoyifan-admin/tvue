@@ -1,7 +1,7 @@
 # 地图坐标选择器
 
 ## 代码
-[代码地址](https://gitee.com/smallweigit/tvue-plugin-map)
+[代码地址](https://gitee.com/smallweigit/avue-plugin-map)
 
 ## 新特性
 - 基于高德地图开发
@@ -9,8 +9,8 @@
 - 可以模糊搜索
 
 ## 使用
-- 1.npm install tvue-plugin-map --save
-- 2.import TvueMap from 'tvue-plugin-map'
+- 1.npm install avue-plugin-map --save
+- 2.import TvueMap from 'avue-plugin-map'
 - 3.Vue.use(TvueMap);
 - 4.参考如下代码使用
 

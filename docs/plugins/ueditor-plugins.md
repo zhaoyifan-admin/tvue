@@ -7,7 +7,7 @@
 ```
 
 ## 代码
-[代码地址](https://gitee.com/smallweigit/tvue-plugin-ueditor)
+[代码地址](https://gitee.com/smallweigit/avue-plugin-ueditor)
 
 ## 新特性
 - 基于wangeditor二次开发
@@ -16,8 +16,8 @@
 - 支持粘贴和ctrl+v粘贴图片
 
 ## 使用
-- 1.npm install tvue-plugin-ueditor --save
-- 2.import TvueUeditor from 'tvue-plugin-ueditor'
+- 1.npm install avue-plugin-ueditor --save
+- 2.import TvueUeditor from 'avue-plugin-ueditor'
 - 3.Vue.use(TvueUeditor);
 - 4.参考如下代码使用
 
@@ -27,7 +27,7 @@
               v-bind="options"></tvue-ueditor>
 <span class="tvue-ueditor__code">{{text}}</span>
 <script>
-import avueUeditor from 'tvue-plugin-ueditor'
+import avueUeditor from 'avue-plugin-ueditor'
 export default {
   component:{
     avueUeditor

@@ -25,8 +25,8 @@ export default async ({ Vue, isServer }) => {
         ali: website.ALI
       })
     })
-    await import('tvue-plugin-map').then(module => Vue.use(module))
-    await import('tvue-plugin-ueditor').then(module => Vue.use(module))
+    await import('avue-plugin-map').then(module => Vue.use(module))
+    await import('avue-plugin-ueditor').then(module => Vue.use(module))
     Bmob.initialize(website.Bmob.AK, website.Bmob.SK);
     Vue.prototype.Bmob = Bmob;
   }
