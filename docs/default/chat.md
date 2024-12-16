@@ -18,7 +18,7 @@ export default {
     data() {
       return {
         config: {
-          img: 'https://gitee.com/uploads/61/632261_smallweigit.jpg',
+          img: 'https://gitee.com/uploads/61/632261_zhaoyifannan.jpg',
           name: 'avue自助机器人',
           dept: '这是一个神奇的前端框架'
         },

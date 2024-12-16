@@ -30,7 +30,7 @@ Vue.use(Tvue, { locale:enLocale })
 #### Tvue-cli中的引入
 ``` javascript
 //参考文件
-//https://gitee.com/smallweigit/tvue-cli/blob/2.x/src/lang/index.js
+//https://gitee.com/zhaoyifannan/tvue-cli/blob/2.x/src/lang/index.js
 import zhLocale from '@zhaoyifannan/tvue/lib/locale/lang/zh'
 import enLocale from '@zhaoyifannan/tvue/lib/locale/lang/en'
 const messages = {

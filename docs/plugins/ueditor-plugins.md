@@ -7,7 +7,7 @@
 ```
 
 ## 代码
-[代码地址](https://gitee.com/smallweigit/avue-plugin-ueditor)
+[代码地址](https://gitee.com/zhaoyifannan/avue-plugin-ueditor)
 
 ## 新特性
 - 基于wangeditor二次开发

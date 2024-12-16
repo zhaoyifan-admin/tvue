@@ -39,7 +39,7 @@ JSON 配置使得 Tvue 更适合做有大量常见 UI 组件的页面，但对�
 ### 快速上手
 请参考[快速上手](./installation.md)章节。
 
-使用过程中发现任何问题都可以提 [Issue](https://gitee.com/smallweigit/avue/issues) 给我们，当然，我们也非常欢迎你给我们发 [PR](https://gitee.com/smallweigit/avue/pulls)。
+使用过程中发现任何问题都可以提 [Issue](https://gitee.com/zhaoyifannan/avue/issues) 给我们，当然，我们也非常欢迎你给我们发 [PR](https://gitee.com/zhaoyifannan/avue/pulls)。
 
 ### 开源协议
-本项目基于 [MIT](https://gitee.com/smallweigit/avue/blob/master/LICENSE) 协议，请自由地享受和参与开源
+本项目基于 [MIT](https://gitee.com/zhaoyifannan/avue/blob/master/LICENSE) 协议，请自由地享受和参与开源

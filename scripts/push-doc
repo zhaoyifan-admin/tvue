@@ -1,0 +1,11 @@
+# 进入Doc开发文件
+cd ../docs/.vuepress/dist/
+# 创建.nojekyll文件禁用Jekyll或在_config.yml中配置include解决
+touch .nojekyll
+
+git init
+git add .
+git commit -m 'deploy'
+git branch -M pages
+git remote add origin git@github.com:zhaoyifan-admin/tvue.git
+git push -f origin pages

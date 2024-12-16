@@ -6,9 +6,9 @@
 [在线体验](https://cli.avuejs.com)  
 
 ## 代码地址
-[🎉 vue2.x + element-ui](https://gitee.com/smallweigit/tvue-cli/tree/2.x/)
+[🎉 vue2.x + element-ui](https://gitee.com/zhaoyifannan/tvue-cli/tree/2.x/)
 
-[⚡️ vue3.x + element-plus](https://gitee.com/smallweigit/tvue-cli)
+[⚡️ vue3.x + element-plus](https://gitee.com/zhaoyifannan/tvue-cli)
 
 
 ## 在线文档

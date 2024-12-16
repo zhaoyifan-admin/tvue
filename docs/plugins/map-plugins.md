@@ -1,7 +1,7 @@
 # 地图坐标选择器
 
 ## 代码
-[代码地址](https://gitee.com/smallweigit/avue-plugin-map)
+[代码地址](https://gitee.com/zhaoyifannan/avue-plugin-map)
 
 ## 新特性
 - 基于高德地图开发

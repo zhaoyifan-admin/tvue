@@ -9,7 +9,7 @@
 我们非常重视文档，并欣然接受这些方面的改进。
 ::::
 
-## [文档源码地址](https://gitee.com/smallweigit/tvue-doc)
+## [文档源码地址](https://gitee.com/zhaoyifannan/tvue-doc)
 
 ## 点击编辑
 

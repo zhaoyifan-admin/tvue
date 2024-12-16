@@ -4,7 +4,8 @@ const {
 module.exports = config({
   lang: 'zh-CN',
   title: 'Tvue',
-  description: '前端搬砖神器,让数据驱动视图,更加贴合企业开发✨',
+    base: '/tvue/',
+  description: '意想不到的搬砖神器✨',
   themeConfig: {
     darkmode: 'disable',
     anchorDisplay: false,
@@ -26,6 +27,9 @@ module.exports = config({
       }, {
         text: 'Default组件',
         link: '/default/contextmenu'
+      }, {
+        text: 'treeTransfer组件',
+        link: '/transfer/transfer-doc'
       }, {
         text: 'Data组件',
         link: '/data/data0'
@@ -121,6 +125,11 @@ module.exports = config({
         '/crud/api-crud-big',
         '/crud/api-crud-temp',
         '/crud/api-crud-fun',
+      ],
+      '/transfer': [
+        "/transfer/transfer-doc",
+        "/transfer/transfer",
+        "/transfer/address",
       ],
       '/data': [
         '/data/data0',

@@ -20,7 +20,7 @@ export default {
               },
               title: 'smallwei',
               subtitle: 'avue部门-前端研发工程师',
-              img: 'https://avatar.gitee.com/uploads/61/632261_smallweigit.jpg!avatar100?1518660401',
+              img: 'https://avatar.gitee.com/uploads/61/632261_zhaoyifannan.jpg!avatar100?1518660401',
               color: '#00a7d0',
               list: [{
                 label: '点赞',
@@ -39,7 +39,7 @@ export default {
               },
               title: 'smallwei',
               subtitle: 'avue部门-前端研发工程师',
-              img: 'https://avatar.gitee.com/uploads/61/632261_smallweigit.jpg!avatar100?1518660401',
+              img: 'https://avatar.gitee.com/uploads/61/632261_zhaoyifannan.jpg!avatar100?1518660401',
               color: '#f39c12',
               list: [{
                 label: '点赞',
@@ -58,7 +58,7 @@ export default {
               },
               title: 'smallwei',
               subtitle: 'avue部门-前端研发工程师',
-              img: 'https://avatar.gitee.com/uploads/61/632261_smallweigit.jpg!avatar100?1518660401',
+              img: 'https://avatar.gitee.com/uploads/61/632261_zhaoyifannan.jpg!avatar100?1518660401',
               colorImg: 'http://img.sccnn.com/bimg/337/15595.jpg',
               list: [{
                 label: '点赞',
