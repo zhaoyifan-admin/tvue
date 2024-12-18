@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/tvue.min.js",
   "unpkg": "lib/tvue.min.js",
