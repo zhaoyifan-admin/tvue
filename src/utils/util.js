@@ -1,21 +1,13 @@
-import {
-  validatenull
-} from './validate';
-import {
-  DIC_PROPS,
-  CHILDREN_LIST
-} from 'global/variable';
-import {
-  typeList
-} from 'global/variable';
+import {validatenull} from './validate';
+import {CHILDREN_LIST, DIC_PROPS, typeList} from 'global/variable';
 
 export const isMediaType = (url, type) => {
   if (validatenull(url)) return null;
-  if (typeList.audio.test(url) || typeList.audio.test(type) || type == 'audio') {
+  if (typeList.audio.test(url) || typeList.audio.test(type) || type === 'audio') {
     return 'audio';
-  } else if (typeList.video.test(url) || typeList.video.test(type) || type == 'video') {
+  } else if (typeList.video.test(url) || typeList.video.test(type) || type === 'video') {
     return 'video';
-  } else if (typeList.img.test(url) || typeList.img.test(type) || type == 'img') {
+  } else if (typeList.img.test(url) || typeList.img.test(type) || type === 'img') {
     return 'img';
   }
   return null;
@@ -30,8 +22,7 @@ export const uuid = () => {
   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
   s[8] = s[13] = s[18] = s[23] = '-';
 
-  var uuid = s.join('');
-  return uuid;
+  return s.join('');
 };
 
 export function getFixed(val = 0, len = 2) {
@@ -73,14 +64,14 @@ export function setAsVal(obj, bind = '', value) {
       result = `obj.${bind}='${value}'`;
     }
   }
-  eval(result);
+  console.log(result);
   return obj;
 }
 
 export const loadScript = (type = 'js', url, dom = 'body') => {
   let flag = false;
   return new Promise((resolve) => {
-    const head = dom == 'head' ? document.getElementsByTagName('head')[0] : document.body;
+    const head = dom === 'head' ? document.getElementsByTagName('head')[0] : document.body;
     for (let i = 0; i < head.children.length; i++) {
       let ele = head.children[i];
       if ((ele.src || '').indexOf(url) !== -1) {
@@ -143,7 +134,7 @@ export function extend() {
         copy = options[key];
         src = target[key];
         // 如果对象中value值任然是一个引用类型
-        if (deep && (toString.call(copy) === '[object Object]' || (isArray = toString.call(copy) == '[object Array]'))) {
+        if (deep && (toString.call(copy) === '[object Object]' || (isArray = toString.call(copy) === '[object Array]'))) {
           if (isArray) { // 如果引用类型是数组
             // 如果目标对象target存在当前key，且数据类型是数组，那就还原此值，如果不是就定义成一个空数组;
             src = toString.call(src) === '[object Array]' ? src : [];
@@ -410,9 +401,9 @@ export const filterParams = (form, list = ['', '$'], deep = true) => {
 export const findArray = (list = [], value, valueKey = DIC_PROPS.value, index = false) => {
   let node;
   if (index) {
-    node = list.findIndex(ele => ele[valueKey] == value);
+    node = list.findIndex(ele => ele[valueKey] === value);
   } else {
-    node = list.find(ele => ele[valueKey] == value);
+    node = list.find(ele => ele[valueKey] === value);
   }
   return node;
 };
@@ -421,7 +412,7 @@ export const findNode = (list = [], props = {}, value) => {
   let childrenKey = props.children || DIC_PROPS.children;
   for (let i = 0; i < list.length; i++) {
     const ele = list[i];
-    if (ele[valueKey] == value) {
+    if (ele[valueKey] === value) {
       if (value === 0 || ele[valueKey] === 0) {
         if (ele[valueKey] === value) {
           return ele;
