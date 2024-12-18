@@ -1,13 +1,7 @@
-import {
-  sendDic,
-  loadDic,
-  loadCascaderDic,
-  loadLocalDic
-} from 'core/dic';
-import {
-  DIC_PROPS
-} from 'global/variable';
+import {loadCascaderDic, loadDic, loadLocalDic, sendDic} from 'core/dic';
+import {DIC_PROPS} from 'global/variable';
 import slot from 'core/slot'
+
 export default function (name) {
   return {
     mixins: [slot],
@@ -99,11 +93,10 @@ export default function (name) {
     methods: {
       init(type) {
         let globOption = this.deepClone(this.$AVUE[`${name}Option`])
-        let option = {
+        this.tableOption = {
           ...globOption,
           ...this.option
-        }
-        this.tableOption = option;
+        };
         this.getIsMobile();
         this.handleLocalDic();
         if (type !== false) this.handleLoadDic()
