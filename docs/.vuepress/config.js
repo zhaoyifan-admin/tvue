@@ -4,21 +4,21 @@ const {
 module.exports = config({
   lang: 'zh-CN',
   title: 'Tvue',
-    base: '/tvue/',
+  base: '/tvue/',
   description: '意想不到的搬砖神器✨',
   themeConfig: {
     darkmode: 'disable',
     anchorDisplay: false,
     logo: '/images/logo.png',
     nav: [{
-      text: '开发指南',
-      link: '/docs/home'
-    }, {
       text: '首页',
       link: '/',
     }, {
       text: '文档',
       items: [{
+        text: '开发指南',
+        link: '/docs/home'
+      }, {
         text: 'Form组件',
         link: '/form/form-doc'
       }, {

@@ -10,12 +10,12 @@ action:
     link: /docs/changelog
 
 features:
-  - title: 易用灵活
+  - title: 开箱即用
     details: 已经会了 Vue Element-ui？即刻阅读文档开始使用吧。
   - title: 丰富组件
     details: 包含了大量的常用组件库以及插件库。
-  - title: 高效兼容
-    details: 兼容现在主流的浏览器，开箱即用的插件引入模式。
+  - title: 有点意思
+    details: 所有组件均采用单文件组件 SFC，单独使用，也没问题！
 
 footer: MIT Licensed | Copyright © 2024-present Tantanzi
 ---
