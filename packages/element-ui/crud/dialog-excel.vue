@@ -1,5 +1,5 @@
 <template>
-  <div v-if="box"> 
+  <div v-if="box">
     <el-dialog :title="t('crud.excelBtn')"
                lock-scroll
                :modal-append-to-body="$AVUE.modalAppendToBody"
