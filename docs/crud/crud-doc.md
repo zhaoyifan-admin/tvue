@@ -19,7 +19,7 @@ this.$refs.crud.$refs.table
 | value/v-model | 绑定值 | object | - | - |
 | data | 显示的数据 | array | - | - |
 | option | 表单配置项参考Option配置 | object | - | - |
-| before-open | 打开前的回调，会暂停Dialog的打开，done用于关闭Dialog,type为当前窗口的类型<el-tag size="mini">2.13.1</el-tag>新增loading方法  | function | - | (done,type,loading)=>{} |
+| before-open | 打开前的回调，会暂停Dialog的打开，done用于关闭Dialog,type为当前窗口的类型<el-tag size="mini">2.0.0</el-tag>新增loading方法  | function | - | (done,type,loading)=>{} |
 | before-close | 关闭前的回调，会暂停Dialog的关闭，done用于关闭Dialog,type为当前窗口的类型 | function | - | (done,type)=>{} |
 | permission   | 表格多个按钮权限控制，采用函数方式可以精确到行控制 | - | - | - |
 | search   | 搜索变量(需要sync修饰符) | object | - | - |
