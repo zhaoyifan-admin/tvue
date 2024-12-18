@@ -14,9 +14,9 @@
     "dev": "yarn gen:version && cross-env TARGET=dev UINAME=element-ui gulp watch",
     "build": "yarn gen:version && cross-env TARGET=prod UINAME=element-ui gulp build",
     "all": "yarn build && yarn dev",
-    "release": "node build.js --type=release --github=origin:2.x",
-    "hotfix": "node build.js --type=hotfix --github=origin:2.x",
-    "default": "node build.js --type=default --github=origin:2.x"
+    "release": "node scripts/build.js --type=release --github=origin:2.x",
+    "hotfix": "node scripts/build.js --type=hotfix --github=origin:2.x",
+    "default": "node scripts/build.js --type=default --github=origin:2.x"
   },
   "keywords": [
     "vue",

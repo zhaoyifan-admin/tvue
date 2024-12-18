@@ -1,7 +1,7 @@
 // build.js文件
 let exec = require('child_process').exec; // 异步子进程
 let fs = require('fs');
-let packageJSON = require('./package.json');
+let packageJSON = require('../package.json');
 /** package.json文件的version参数 */
 let version = packageJSON.version;
 /** 命令行的所有参数 */
@@ -141,7 +141,6 @@ function handleGitCommit(prompt) {
  * 推送分支
  */
 function handleGitPush() {
-  console.log('handleGitPush')
   exec('git push ', function(error, stdout, stderr) {
     console.log('[推送至分支:%s输出：%s]', stdout || error || stderr);
     console.log('==========> 提交修改文件完成 <==========');
