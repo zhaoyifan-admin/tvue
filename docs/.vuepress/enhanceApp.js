@@ -17,7 +17,7 @@ export default async ({ Vue, isServer }) => {
   Vue.prototype.website = website;
   if (!isServer) {
     window.axios = axios;
-    await import('@zhaoyifannan/tvue').then(module => {
+    await import('./public/lib/tvue.min').then(module => {
       Vue.use(module, {
         axios,
         cos: website.COS,

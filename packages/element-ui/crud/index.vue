@@ -39,7 +39,7 @@
                 v-bind="scope"></slot>
         </template>
       </header-menu>
-      <el-tag class="tvue-crud__tip"
+      <el-tag class="tvue-crud__tip p-relative"
               v-if="vaildData(tableOption.tip,config.tip) && tableOption.selection">
         <span class="tvue-crud__tip-name">
           {{t('crud.tipStartTitle')}}
@@ -48,6 +48,7 @@
         </span>
         <el-button type="text"
                    size="small"
+                   class="p-absolute right-10"
                    @click="clearSelection"
                    v-permission="getPermission('selectClearBtn')"
                    v-if="vaildData(tableOption.selectClearBtn,config.selectClearBtn) && tableOption.selection">{{t('crud.emptyBtn')}}</el-button>
@@ -117,9 +118,9 @@
             <div :class="b('empty')">
               <slot name="empty"
                     v-if="$slots.empty"></slot>
-              <el-empty v-else
+              <empty v-else
                         :image-size="100"
-                        :description="tableOption.emptyText || t('crud.emptyText')"></el-empty>
+                        :description="tableOption.emptyText || t('crud.emptyText')"></empty>
             </div>
           </template>
           <column :columnOption="columnOption">
@@ -220,6 +221,7 @@ import columnMenu from './column-menu'
 import columnDefault from './column-default'
 import config from "./config.js";
 import { calcCascader, formInitVal } from "core/dataformat";
+import empty from 'packages/element-ui/empty';
 import { DIC_PROPS } from 'global/variable';
 import { getColumn } from 'utils/util'
 export default create({
@@ -244,7 +246,8 @@ export default create({
     dialogColumn, //显隐列
     dialogFilter, //过滤器
     dialogExcel,//导出数据
-    dialogForm //分页,
+    dialogForm, //分页,
+    empty
   },
   data () {
     return {
