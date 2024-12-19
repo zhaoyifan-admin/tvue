@@ -191,56 +191,114 @@
   --link-10: var(--arcoblue-10);
 }
 
-.el-button--default {
-  &:focus {
-    border-color: rgb(var(--primary-6)) !important;
-    color: rgb(var(--primary-6));
+.tvue-crud__menu,.tvue-crud__header,.tvue-crud__dialog {
+  &__default {
+    &:focus {
+      border-color: rgb(var(--primary-6)) !important;
+      color: rgb(var(--primary-6));
+    }
+
+    &:hover {
+      border-color: rgb(var(--primary-6)) !important;
+      color: rgb(var(--primary-6));
+    }
+
+    &:active {
+      border-color: rgb(var(--primary-6)) !important;
+      color: rgb(var(--primary-6));
+    }
+
   }
 
-  &:hover {
-    border-color: rgb(var(--primary-6)) !important;
-    color: rgb(var(--primary-6));
+  .el-button--default {
+    &:focus {
+      border-color: rgb(var(--primary-6)) !important;
+      color: rgb(var(--primary-6));
+    }
+
+    &:hover {
+      border-color: rgb(var(--primary-6)) !important;
+      color: rgb(var(--primary-6));
+    }
+
+    &:active {
+      border-color: rgb(var(--primary-6)) !important;
+      color: rgb(var(--primary-6));
+    }
   }
 
-  &:active {
-    border-color: rgb(var(--primary-6)) !important;
-    color: rgb(var(--primary-6));
-  }
-}
-
-.el-button--primary {
-  color: #FFF;
-  background-color: rgb(var(--primary-6)) !important;
-  border: 1px solid transparent;
-
-  &:focus {
-    background-color: rgb(var(--primary-5)) !important;
-    border-color: transparent;
+  &__primary {
     color: #FFF;
+    background-color: rgb(var(--primary-6)) !important;
+    border: 1px solid transparent;
+
+    &:focus {
+      background-color: rgb(var(--primary-5)) !important;
+      border-color: transparent;
+      color: #FFF;
+    }
+
+    &:hover {
+      background-color: rgb(var(--primary-5)) !important;
+      border-color: transparent;
+      color: #FFF;
+    }
+
+    &:active {
+      background-color: rgb(var(--primary-7)) !important;
+      border-color: transparent;
+      color: #FFF;
+    }
+
   }
 
-  &:hover {
-    background-color: rgb(var(--primary-5)) !important;
-    border-color: transparent;
+  .el-button--primary {
     color: #FFF;
+    background-color: rgb(var(--primary-6)) !important;
+    border: 1px solid transparent;
+
+    &:focus {
+      background-color: rgb(var(--primary-5)) !important;
+      border-color: transparent;
+      color: #FFF;
+    }
+
+    &:hover {
+      background-color: rgb(var(--primary-5)) !important;
+      border-color: transparent;
+      color: #FFF;
+    }
+
+    &:active {
+      background-color: rgb(var(--primary-7)) !important;
+      border-color: transparent;
+      color: #FFF;
+    }
   }
 
-  &:active {
-    background-color: rgb(var(--primary-7)) !important;
-    border-color: transparent;
-    color: #FFF;
+  &__text {
+    color: rgb(var(--primary-6)) !important;
+
+    &:focus {
+      color: rgb(var(--primary-5)) !important;
+    }
+
+    &:hover {
+      color: rgb(var(--primary-5)) !important;
+    }
+
   }
-}
 
-.el-button--text {
-  color: rgb(var(--primary-6)) !important;
+  .el-button--text {
+    color: rgb(var(--primary-6)) !important;
 
-  &:focus {
-    color: rgb(var(--primary-5)) !important;
-  }
+    &:focus {
+      color: rgb(var(--primary-5)) !important;
+    }
 
-  &:hover {
-    color: rgb(var(--primary-5)) !important;
+    &:hover {
+      color: rgb(var(--primary-5)) !important;
+    }
   }
 }
 
