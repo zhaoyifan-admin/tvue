@@ -253,11 +253,7 @@ export const getObjType = obj => {
 
 export const isJson = str => {
   if (Array.isArray(str)) {
-    if (str[0] instanceof Object) {
-      return true;
-    } else {
-      return false;
-    }
+    return str[0] instanceof Object;
   } else if (str instanceof Object) {
     return true;
   }

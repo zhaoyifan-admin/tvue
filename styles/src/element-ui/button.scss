@@ -191,7 +191,7 @@
   --link-10: var(--arcoblue-10);
 }
 
-.tvue-crud__menu,.tvue-crud__header,.tvue-crud__dialog {
+.tvue-form,.tvue-crud__menu,.tvue-crud__header,.tvue-crud__dialog {
   &__default {
     &:focus {
       border-color: rgb(var(--primary-6)) !important;

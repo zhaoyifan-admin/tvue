@@ -17,7 +17,7 @@ module.exports = config({
       text: '文档',
       items: [{
         text: '开发指南',
-        link: '/docs/home'
+        link: '/docs/installation'
       }, {
         text: 'Form组件',
         link: '/form/form-doc'
@@ -36,6 +36,12 @@ module.exports = config({
       }, {
         text: 'Component单组件',
         link: '/component/input'
+      }]
+    }, {
+      text: '工具',
+      items:[{
+        text: '快速上手',
+        link: '/utils/home'
       }]
     }],
     sidebar: {
@@ -183,9 +189,8 @@ module.exports = config({
         "/default/tree"
       ],
       '/docs': [
-        '/docs/home',
-        '/docs/changelog',
         '/docs/installation',
+        '/docs/changelog',
         '/docs/global',
         '/docs/locale',
         '/docs/api'
@@ -212,6 +217,9 @@ module.exports = config({
         "/component/cascader",
         "/component/upload",
       ],
+      '/utils':[
+        '/utils/home'
+      ]
     },
 
   },
