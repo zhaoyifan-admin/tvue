@@ -29,6 +29,7 @@
         },
         data: [],
         option: {
+          height: 550,
           header:false,
           column:[{
             label:'姓名',
