@@ -191,7 +191,7 @@
   --link-10: var(--arcoblue-10);
 }
 
-.tvue-form,.tvue-crud__menu,.tvue-crud__header,.tvue-crud__dialog {
+.tvue-form, .tvue-crud__menu, .tvue-crud__header, .tvue-crud__dialog {
   &__default {
     &:focus {
       border-color: rgb(var(--primary-6)) !important;
@@ -302,7 +302,9 @@
   }
 }
 
-.el-pagination.is-background .el-pager li:not(.disabled).active {
-  color: #FFF;
-  background-color: rgb(var(--primary-6)) !important;
+.tvue-crud {
+  .el-select-dropdown__item.selected {
+    color: rgb(var(--primary-5)) !important;
+  }
 }
+
