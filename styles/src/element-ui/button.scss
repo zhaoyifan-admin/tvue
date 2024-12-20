@@ -301,10 +301,10 @@
     }
   }
 }
-
 .tvue-crud {
-  .el-select-dropdown__item.selected {
-    color: rgb(var(--primary-5)) !important;
+  .el-pagination.is-background .el-pager li:not(.disabled).active {
+    color: #FFF;
+    background-color: rgb(var(--primary-6)) !important;
   }
 }
 
