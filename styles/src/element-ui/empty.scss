@@ -4,7 +4,7 @@
     line-height: 22px;
     text-align: center;
   &__image{
-    height: 100px;
+    height: auto;
     margin-bottom: 8px;
     img{
       height: 100%;
@@ -12,7 +12,8 @@
       border-style: none;
     }
   }
-  &__desc{
+  &__description{
+    line-height: 40px;
     color: rgba(0,0,0,0.65);
   }
 }

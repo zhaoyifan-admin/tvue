@@ -39,9 +39,9 @@ export default {
 <tvue-crud ref="crud" :option="option" :data="data">
   <template slot="empty">
     <tvue-empty
+      :image-size="450"
         image="https://gw.alipayobjects.com/mdn/miniapp_social/afts/img/A*pevERLJC9v0AAAAAAAAAAABjAQAAAQ/original"
         desc="自定义的提示语">
-        <br />
         <el-button type="primary" @click="handleAdd">新增数据</el-button>
       </tvue-empty>
   </template>
