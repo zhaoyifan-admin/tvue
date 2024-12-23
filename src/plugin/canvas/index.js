@@ -24,7 +24,7 @@ let configDefault = {
   height: 200
 };
 let config = {
-  text: 'avueJS', // 文字
+  text: 'tuveJS', // 文字
   fontFamily: 'microsoft yahei', // 字体
   color: '#999', // 颜色
   fontSize: 16, // 大小
