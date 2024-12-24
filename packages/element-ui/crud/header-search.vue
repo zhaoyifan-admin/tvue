@@ -172,7 +172,7 @@ export default create({
       return detailOption(option)
     },
     isSearchIcon () {
-      return this.vaildData(this.crud.tableOption.searchIcon, this.$AVUE.searchIcon) && this.searchLen > this.searchIndex
+      return this.vaildData(this.crud.tableOption.searchIcon, this.$TVUE.searchIcon) && this.searchLen > this.searchIndex
     },
     searchLen () {
       let count = 0;

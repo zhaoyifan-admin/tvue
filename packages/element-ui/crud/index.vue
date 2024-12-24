@@ -64,7 +64,7 @@
                    :data="cellForm.list"
                    :row-key="rowKey"
                    :class="{'tvue-crud--indeterminate':vaildData(tableOption.indeterminate,false)}"
-                   :size="$AVUE.tableSize || controlSize"
+                   :size="$TVUE.tableSize || controlSize"
                    :lazy="vaildData(tableOption.lazy,false)"
                    :load="treeLoad"
                    :tree-props="treeProps"
@@ -325,7 +325,7 @@ export default create({
       return this.getSlotList(['Header', 'Form'], this.$scopedSlots, this.propOption).concat(result)
     },
     calcHeight () {
-      return (this.tableOption.calcHeight || 0) + this.$AVUE.calcHeight
+      return (this.tableOption.calcHeight || 0) + this.$TVUE.calcHeight
     },
     propOption () {
       let result = [];

@@ -85,8 +85,8 @@
                  :visible.sync="box"
                  :class="b('dialog')"
                  class="tvue-dialog tvue-dialog--none"
-                 :modal-append-to-body="$AVUE.modalAppendToBody"
-                 :append-to-body="$AVUE.appendToBody"
+                 :modal-append-to-body="$TVUE.modalAppendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  :before-close="hide"
                  :width="setPx(vaildData(option.dialogWidth,'50%'))">
         <tvue-form v-model="form"

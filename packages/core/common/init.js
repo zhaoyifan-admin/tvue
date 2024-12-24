@@ -87,12 +87,12 @@ export default function (name) {
         return this.controlSize;
       },
       controlSize() {
-        return this.tableOption.size || this.$AVUE.size;
+        return this.tableOption.size || this.$TVUE.size;
       }
     },
     methods: {
       init(type) {
-        let globOption = this.deepClone(this.$AVUE[`${name}Option`])
+        let globOption = this.deepClone(this.$TVUE[`${name}Option`])
         this.tableOption = {
           ...globOption,
           ...this.option

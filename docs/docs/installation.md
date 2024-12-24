@@ -37,7 +37,7 @@ window.axios = axios
 
 
 ##### 通过 CDN 安装
-使用 Tvue 最简单的方法是直接在 html 文件中引入 CDN 链接(引入的是最新的Tvue版本，当然你也可以制定版本号)，之后你可以通过全局变量 AVUE 访问到所有组件。
+使用 Tvue 最简单的方法是直接在 html 文件中引入 CDN 链接(引入的是最新的Tvue版本，当然你也可以制定版本号)，之后你可以通过全局变量 TVUE 访问到所有组件。
 
 ``` html
 <!-- 引入样式文件 -->
@@ -63,7 +63,7 @@ window.axios = axios
       return{}
     }
   });
-  app.use(AVUE);
+  app.use(TVUE);
 </script>
 ```
 你可以通过以下免费 CDN 服务来使用 Tvue:

@@ -17,8 +17,8 @@
                  :class="b()"
                  :width="setPx(dialogWidth)"
                  :before-close="beforeClose"
-                 :modal-append-to-body="$AVUE.modalAppendToBody"
-                 :append-to-body="$AVUE.appendToBody"
+                 :modal-append-to-body="$TVUE.modalAppendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  :title="placeholder"
                  :visible.sync="box">
         <tvue-crud :class="b('crud')"

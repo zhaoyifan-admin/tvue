@@ -176,7 +176,7 @@ export default create({
   },
   computed: {
     menuType () {
-      return this.crud.tableOption.menuType || this.$AVUE.menuType || 'button';
+      return this.crud.tableOption.menuType || this.$TVUE.menuType || 'button';
     },
     isIconMenu () {
       return this.menuType === "icon"

@@ -1,7 +1,7 @@
 # 全局配置
 在引入 Tvue 时，可以传入一个全局配置对象
 ``` js
-Vue.use(AVUE,{
+Vue.use(TVUE,{
   size:'',
   crudOption:{},
   formOption:{},

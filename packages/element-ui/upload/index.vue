@@ -504,7 +504,7 @@ export default create({
             hide();
             return;
           }
-          oss_config = this.cos || this.$AVUE.cos;
+          oss_config = this.cos || this.$TVUE.cos;
           oss = new COS({
             SecretId: oss_config.SecretId,
             SecretKey: oss_config.SecretKey
@@ -535,7 +535,7 @@ export default create({
             hide();
             return;
           }
-          oss_config = this.qiniu || this.$AVUE.qiniu;
+          oss_config = this.qiniu || this.$TVUE.qiniu;
           const token = getToken(oss_config.AK, oss_config.SK, {
             scope: oss_config.scope,
             deadline: new Date().getTime() + oss_config.deadline * 3600
@@ -550,7 +550,7 @@ export default create({
             hide();
             return;
           }
-          oss_config = this.ali || this.$AVUE.ali;
+          oss_config = this.ali || this.$TVUE.ali;
           client = getClient(oss_config);
 
           client.put(uploadFile.name, uploadFile, {

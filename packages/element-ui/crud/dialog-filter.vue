@@ -3,8 +3,8 @@
     <el-drawer :class="[b('dialog'),b('filter')]"
                lock-scroll
                class="tvue-dialog"
-               :modal-append-to-body="$AVUE.modalAppendToBody"
-               :append-to-body="$AVUE.appendToBody"
+               :modal-append-to-body="$TVUE.modalAppendToBody"
+               :append-to-body="$TVUE.appendToBody"
                :title="t('crud.filterTitle')"
                :size="crud.isMobile?'100%':'60%'"
                :visible.sync="box">

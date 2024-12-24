@@ -19,8 +19,8 @@
       <el-dialog class="tvue-dialog tvue-dialog--none"
                  :width="setPx(dialogWidth)"
                  :before-close="beforeClose"
-                 :modal-append-to-body="$AVUE.modalAppendToBody"
-                 :append-to-body="$AVUE.appendToBody"
+                 :modal-append-to-body="$TVUE.modalAppendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  :title="placeholder"
                  @close="handleClose"
                  :visible.sync="box">

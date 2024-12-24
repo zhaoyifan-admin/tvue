@@ -21,8 +21,8 @@
       <el-dialog class="tvue-dialog tvue-dialog--none"
                  :title="placeholder"
                  :before-close="beforeClose"
-                 :modal-append-to-body="$AVUE.modalAppendToBody"
-                 :append-to-body="$AVUE.appendToBody"
+                 :modal-append-to-body="$TVUE.modalAppendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  :visible.sync="box"
                  :width="setPx(dialogWidth)">
         <div :class="b('filter')">

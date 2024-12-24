@@ -16,7 +16,7 @@
 ```html
 <tvue-code syntax="javascript" :height="300">
       //在main.js中使用
-      Vue.use(AVUE);
+      Vue.use(TVUE);
     </tvue-code>
 <script>
 export default {

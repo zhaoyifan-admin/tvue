@@ -746,7 +746,7 @@ export default {
 ```
 ```js
 //入口处全局配置阿里云的参数
-Vue.use(AVUE, {
+Vue.use(TVUE, {
   ali: {
     region: 'oss-cn-beijing',
     endpoint: 'oss-cn-beijing.aliyuncs.com',
@@ -803,7 +803,7 @@ export default {
 ```
 
 ```js
-Vue.use(AVUE, {
+Vue.use(TVUE, {
   qiniu: {
     AK: '',//七牛云相关密钥
     SK: '',//七牛云相关密钥
@@ -853,7 +853,7 @@ export default {
 ```
 
 ```js
-Vue.use(AVUE, {
+Vue.use(TVUE, {
   cos: {
     SecretId: '',//腾讯云相关密钥
     SecretKey: '',//腾讯云相关密钥

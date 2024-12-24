@@ -15,7 +15,7 @@
           v-if="vaildData(option.menuBtn,true)"
           :class="'tvue-dialog__footer--'+menuPosition">
       <el-button @click="submit"
-                 :size="$AVUE.size"
+                 :size="$TVUE.size"
                  :icon="option.submitIcon"
                  :loading="disabled"
                  v-if="vaildData(option.submitBtn,true)"
@@ -23,7 +23,7 @@
       <el-button @click="reset"
                  v-if="vaildData(option.emptyBtn,true)"
                  :disabled="disabled"
-                 :size="$AVUE.size"
+                 :size="$TVUE.size"
                  :icon="option.emptyIcon ">{{option.emptyText}}</el-button>
     </span>
   </component>
