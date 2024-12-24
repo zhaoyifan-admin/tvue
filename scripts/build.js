@@ -119,7 +119,7 @@ function handleGitAdd(filePath) {
   exec('git add -A', function(error, stdout, stderr) {
     console.log('[添加修改文件输出：%s]', stdout);
     // 提交文件
-    handleGitCommit('tvue_2.x');
+    handleGitCommit('tvue_3.x');
   });
 }
 
