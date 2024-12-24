@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/tvue.min.js",
   "unpkg": "lib/tvue.min.js",
@@ -9,7 +9,10 @@
     "dev": "pnpm gen:version && cross-env TARGET=dev gulp watch",
     "gen:version": "node build/version.js",
     "build": "pnpm gen:version && cross-env TARGET=prod UINAME=element-plus gulp build",
-    "all": "pnpm build && pnpm dev"
+    "all": "pnpm build && pnpm dev",
+    "release": "node scripts/build.js --type=release --github=origin:main",
+    "hotfix": "node scripts/build.js --type=hotfix --github=origin:main",
+    "default": "node scripts/build.js --type=default --github=origin:main"
   },
   "keywords": [
     "vue",
