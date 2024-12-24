@@ -17,7 +17,7 @@ class waterMark {
     this.option = Object.assign({
       width: 400,
       height: 200,
-      text: 'avueJS',
+      text: 'tvueJS',
       fontSize: '30px',
       fontStyle: 'microsoft yahei',
       textAlign: 'center',

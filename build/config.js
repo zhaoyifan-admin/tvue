@@ -4,12 +4,12 @@ const webpack = require('webpack');
 const version = process.env.VERSION || require('../package.json').version;
 const prd = process.env.TARGET
 const banner =
-  ' Avue.js v' +
+  ' Tvue.js v' +
   version +
   '\n' +
-  ' (c) 2017-' +
+  ' (c) 2024-' +
   new Date().getFullYear() +
-  ' Smallwei\n' +
+  ' Zhaoyifannan\n' +
   ' Released under the MIT License.\n';
 const externals = {
   vue: {
@@ -39,14 +39,14 @@ const builds = {
   prod: {
     entry: resolve('src/index.js'),
     dest: resolve('lib'),
-    filename: 'avue.min.js',
+    filename: 'tvue.min.js',
     env: 'production',
     externals: externals
   },
   dev: {
     entry: resolve('src/index.js'),
     dest: resolve('lib'),
-    filename: 'avue.js',
+    filename: 'tvue.js',
     env: 'development',
     externals: externals
   }
@@ -62,7 +62,7 @@ function genConfig (name) {
       path: opts.dest,
       libraryExport: "default",
       libraryTarget: 'umd',
-      library: 'AVUE',
+      library: 'TVUE',
       umdNamedDefine: true,
       globalObject: 'this'
     },
@@ -85,8 +85,8 @@ function genConfig (name) {
 }
 
 if (prd == 'dev') {
-  console.log('\033[42;30m 提示 \033[40;32m 没有可视化界面，实时打包生成调试包avue.js到lib目录，运行examples目录下例子即可调试\033[0m')
+  console.log('\033[42;30m 提示 \033[40;32m 没有可视化界面，实时打包生成调试包tvue.js到lib目录，运行examples目录下例子即可调试\033[0m')
 } else if (prd == 'prod') {
-  console.log('\033[42;30m 提示 \033[40;32m 打包生成生产包avue.min.js到lib目录\033[0m')
+  console.log('\033[42;30m 提示 \033[40;32m 打包生成生产包tvue.min.js到lib目录\033[0m')
 }
 module.exports = genConfig(prd || 'prod');

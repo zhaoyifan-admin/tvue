@@ -1,4 +1,4 @@
-export const KEY_COMPONENT_NAME = 'avue-';
+export const KEY_COMPONENT_NAME = 'tvue-';
 export const KEY_ECHART_NAME = 'echart-';
 export const DIC_PROPS = {
   rowKey: 'id',

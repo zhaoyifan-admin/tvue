@@ -65,7 +65,7 @@ const install = function (Vue, opts = {}) {
     crudOption: opts.crudOption || {},
     appendToBody: validData(opts.appendToBody, true),
     canvas: Object.assign({
-      text: 'avuejs.com',
+      text: 'tvuejs.com',
       fontFamily: 'microsoft yahei',
       color: '#999',
       fontSize: 16,

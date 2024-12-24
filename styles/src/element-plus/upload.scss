@@ -1,4 +1,4 @@
-.avue-upload {
+.tvue-upload {
   &--upload{
     .el-upload--picture-img{
       display: inline-block;
@@ -9,11 +9,11 @@
   }
   &--picture-img{
     .el-upload.is-drag{
-      width: 148px; 
+      width: 148px;
     }
     .el-upload-dragger{
       padding: 0;
-    } 
+    }
   }
   &--picture-card{
     .el-upload-dragger{

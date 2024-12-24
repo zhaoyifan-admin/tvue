@@ -1,10 +1,10 @@
-.avue-comment{
+.tvue-comment{
   margin-bottom: 30px;
   display: flex;
   align-items: flex-start;
   &--reverse{
     flex-direction:row-reverse;
-    .avue-comment__main{
+    .tvue-comment__main{
       &:before,&:after{
         left: auto;
         right: -8px;
@@ -19,7 +19,7 @@
         margin-left: auto;
       }
     }
- 
+
   }
   &__avatar{
     width: 48px;

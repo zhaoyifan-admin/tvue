@@ -1,10 +1,10 @@
 {
-  "name": "@smallwei/avue",
-  "version": "3.6.0",
+  "name": "@zhaoyifannan/tvue",
+  "version": "3.0.0",
   "description": "A Magic Configurable Web Framework",
-  "main": "lib/avue.min.js",
-  "unpkg": "lib/avue.min.js",
-  "jsdelivr": "lib/avue.min.js",
+  "main": "lib/tvue.min.js",
+  "unpkg": "lib/tvue.min.js",
+  "jsdelivr": "lib/tvue.min.js",
   "scripts": {
     "dev": "pnpm gen:version && cross-env TARGET=dev gulp watch",
     "gen:version": "node build/version.js",
@@ -14,18 +14,18 @@
   "keywords": [
     "vue",
     "element-plus",
-    "avue"
+    "tvue"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://gitee.com/smallweigit/avue.git"
+    "url": "git+https://gitee.com/zhaoyifannangit/tvue.git"
   },
-  "author": "smallwei",
+  "author": "zhaoyifannan",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitee.com/smallweigit/avue/issues"
+    "url": "https://gitee.com/zhaoyifannangit/tvue/issues"
   },
-  "homepage": "https://gitee.com/smallweigit/avue/blob/master/README.md",
+  "homepage": "https://gitee.com/zhaoyifannangit/tvue/blob/master/README.md",
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.11.4",

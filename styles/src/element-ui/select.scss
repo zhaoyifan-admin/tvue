@@ -1,4 +1,4 @@
-.avue-select {
+.tvue-select {
   .sortable-ghost {
     opacity: .8;
     color: #fff!important;
@@ -8,13 +8,13 @@
     cursor: pointer;
   }
   &__desc{
-    float: right; 
-    color: #8492a6; 
+    float: right;
+    color: #8492a6;
     font-size: 13px;
   }
 }
 .el-select-dropdown{
-  .avue-select__check{
+  .tvue-select__check{
     box-sizing: border-box;
     text-align: right;
     width: 100%;

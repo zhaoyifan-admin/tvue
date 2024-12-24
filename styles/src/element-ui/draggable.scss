@@ -1,4 +1,4 @@
-.avue-draggable{
+.tvue-draggable{
   $active__color:rgba(115, 170, 229,.5);
   padding: 10px;
   position: absolute;
@@ -84,7 +84,7 @@
     background-color: #09f;
     &--left,&--right{
       &:hover{
-        cursor:ew-resize 
+        cursor:ew-resize
       }
       top:50%;
       transform: translateY(-50%);

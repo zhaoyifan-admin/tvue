@@ -1,4 +1,4 @@
-.avue-data-operatext {
+.tvue-data-operatext {
     .item{
         a{
             color:#333;
@@ -52,13 +52,13 @@
         &-list{
             display: flex;
             flex-wrap: wrap;
-            
+
         }
         &-row{
             box-sizing: border-box;
             width: 33.33%;
             text-align: center;
-           
+
         }
         &-label{
             margin-bottom: 5px;

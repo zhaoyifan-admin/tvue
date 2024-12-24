@@ -8,7 +8,7 @@ var canvas, ctx, configDefault = {
   height: 200
 };
 let config = {
-  text: 'avueJS', // 文字
+  text: 'tvueJS', // 文字
   fontFamily: 'microsoft yahei', // 字体
   color: '#999', // 颜色
   fontSize: 16, // 大小
@@ -20,7 +20,7 @@ let config = {
 
 /**
  * 参数 {Object} opt
- * @param {String} text    水印文本，默认'avue商用通用无敌大水印'
+ * @param {String} text    水印文本，默认'tvue商用通用无敌大水印'
  * @param {String} font    水印字体，默认'30px 黑体'
  * @param {Int} canvasWidth    单个水印容器宽度，默认500
  * @param {Int} canvasHeight    单个水印容器高度，默认200
@@ -79,7 +79,7 @@ export function detailImg(file, option = {}) {
       if (canvas === null) {
         canvas = document.createElement('canvas');
         canvas.id = 'canvas';
-        canvas.className = 'avue-canvas';
+        canvas.className = 'tvue-canvas';
         document.body.appendChild(canvas);
       }
       ctx = canvas.getContext('2d');

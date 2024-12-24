@@ -1,7 +1,7 @@
 $color-blue: #2196f3;
 $space-width: 15px;
 
-.avue-crud {
+.tvue-crud {
   .el-card+.el-card {
     margin-top: 8px;
   }
@@ -100,12 +100,12 @@ $space-width: 15px;
   }
 
   .el-table--small {
-    .avue-crud__color {
+    .tvue-crud__color {
       width: 30px;
       height: 30px;
     }
 
-    .avue-crud__icon {
+    .tvue-crud__icon {
       font-size: 30px;
     }
   }
@@ -355,7 +355,7 @@ $space-width: 15px;
 
     .title,
     .menu {
-      .avue-crud__grid__label {
+      .tvue-crud__grid__label {
         display: none;
       }
 
@@ -391,7 +391,7 @@ $space-width: 15px;
       width: 80%;
       margin-bottom: 12px;
 
-      .avue-crud__grid__value {
+      .tvue-crud__grid__value {
         font-size: 16px;
         font-weight: bold;
         line-height: 22px;

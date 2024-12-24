@@ -7,11 +7,11 @@ const list = {
   },
   'Map': {
     url: 'https://webapi.amap.com/maps?v=1.4.11&key=xxxxx&plugin=AMap.PlaceSearch,https://webapi.amap.com/ui/1.0/main.js?v=1.0.11',
-    title: '地图组件，需引入高德SDK',
+    title: '地图组件，需引入高德SDK'
   },
   'MapUi': {
     url: 'https://webapi.amap.com/ui/1.0/main.js?v=1.0.11',
-    title: '地图组件，需引入高德UISDK',
+    title: '地图组件，需引入高德UISDK'
   },
   'Sortable': {
     url: 'https://cdn.staticfile.org/Sortable/1.10.0-rc2/Sortable.min.js',
