@@ -18,7 +18,8 @@ import {
   isJson,
   downFile,
   deleteField,
-  loadScript
+  loadScript,
+  consoleLog
 } from 'utils/util';
 import {bd09Togps84, gcj02ToBd09, gcj02ToGps84, gps84Tobd09} from 'utils/gps';
 import dialogDrag from 'packages/core/directive/dialog-drag';
@@ -45,6 +46,7 @@ let prototypes = {
   $Log,
   $NProgress,
   $Screenshot,
+  consoleLog,
   deepClone,
   dataURLtoFile,
   isJson,
