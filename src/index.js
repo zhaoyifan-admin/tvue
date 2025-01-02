@@ -17,7 +17,8 @@ import {
   setPx,
   isJson,
   downFile,
-  loadScript
+  loadScript,
+  consoleLog
 } from 'utils/util';
 import contextmenu from 'packages/core/directive/contextmenu';
 import $Export from 'plugin/export/';
@@ -39,6 +40,7 @@ let plugins = {
   $Watermark,
   $Log,
   $Screenshot,
+  consoleLog,
   deepClone,
   dataURLtoFile,
   isJson,
