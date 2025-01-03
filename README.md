@@ -1,1 +1,1 @@
-npm publish --tag latest@v3
+npm publish --tag latest-v3
