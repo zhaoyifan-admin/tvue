@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-display">
+  <div class="tvue-data-display">
     <el-row :span="24">
       <el-col v-for="(item,index) in data"
               :key="index"
@@ -11,11 +11,11 @@
           <a :href="item.href"
              @click="item.click&&item.click(item)"
              :target="item.target">
-            <avue-count-up :animation="item.animation || animation"
+            <tvue-count-up :animation="item.animation || animation"
                            :decimals="item.decimals || decimals"
                            class="count"
                            :style="{color:item.color}"
-                           :end="item.count"></avue-count-up>
+                           :end="item.count"></tvue-count-up>
             <span class="splitLine" />
             <div class="title"
                  :style="{color:item.fontColor}">{{item.title}}</div>

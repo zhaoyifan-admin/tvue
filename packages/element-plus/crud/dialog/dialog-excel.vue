@@ -2,15 +2,15 @@
   <div v-if="box"> 
     <el-dialog :title="t('crud.excelBtn')"
                lock-scroll
-               :append-to-body="$AVUE.appendToBody"
-               class="avue-dialog"
+               :append-to-body="$TVUE.appendToBody"
+               class="tvue-dialog"
                v-model="box"
                :width="crud.isMobile?'100%':'30%'">
-      <avue-form ref="form"
+      <tvue-form ref="form"
                  v-model="form"
                  :option="option">
-      </avue-form>
-      <span class="avue-dialog__footer">
+      </tvue-form>
+      <span class="tvue-dialog__footer">
         <el-button type="primary"
                    :size="crud.size"
                    @click="handleSubmit">{{t('crud.filter.submitBtn')}}</el-button>

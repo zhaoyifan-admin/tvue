@@ -3,7 +3,7 @@
        :style="{width:setPx(width)}">
     <el-form :model="form"
              ref="form"
-             :size="$AVUE.size"
+             :size="$TVUE.size"
              label-suffix=":"
              :label-width="setPx(labelWidth)">
       <el-form-item :label="username.label || '用户名'"

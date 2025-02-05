@@ -1,5 +1,5 @@
 <template>
-  <el-row :class="[b(),{'avue--card':isCard}]"
+  <el-row :class="[b(),{'tvue-card':isCard}]"
           :span="24">
     <el-col :span="column.span || 24"
             v-for="(column,index) in columnOption"
@@ -11,7 +11,7 @@
               :dic="DIC[column.prop]"
               v-if="mainSlot.includes(column.prop)"></slot>
         <span v-else
-              :class="[b('tags'),{'avue-search__tags--active':getActive(item,column)}]"
+              :class="[b('tags'),{'tvue-search__tags--active':getActive(item,column)}]"
               @click="handleClick(column,item)"
               v-for="item in DIC[column.prop]"
               :key="getKey(item,column.props,valueKey)">{{getKey(item,column.props,labelKey)}}</span>

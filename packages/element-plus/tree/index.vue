@@ -86,16 +86,16 @@
     </div>
     <el-dialog :title="node[labelKey] || title"
                v-model="box"
-               class="avue-dialog avue-dialog--none"
-               :append-to-body="$AVUE.appendToBody"
+               class="tvue-dialog tvue-dialog--none"
+               :append-to-body="$TVUE.appendToBody"
                lock-scroll
                :before-close="hide"
                :width="validData(option.dialogWidth,'50%')">
-      <avue-form v-model="form"
+      <tvue-form v-model="form"
                  :option="formOption"
                  ref="form"
                  v-if="box"
-                 @submit="handleSubmit"></avue-form>
+                 @submit="handleSubmit"></tvue-form>
     </el-dialog>
 
   </div>

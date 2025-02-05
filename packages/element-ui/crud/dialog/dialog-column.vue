@@ -1,8 +1,8 @@
 <template>
   <el-drawer v-if="columnBox"
-             :append-to-body="$AVUE.appendToBody"
+             :append-to-body="$TVUE.appendToBody"
              lock-scroll
-             :class="['avue-dialog',b('column')].join(' ')"
+             :class="['tvue-dialog',b('column')].join(' ')"
              :title="t('crud.showTitle')"
              :size="crud.isMobile?'100%':'40%'"
              v-model="columnBox">

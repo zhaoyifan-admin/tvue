@@ -93,7 +93,7 @@ const install = function (Vue, opts = {}) {
       bucket: ''
     }, (opts.ali || {}))
   };
-  Vue.config.globalProperties.$AVUE = Object.assign(opts, defaultOption);
+  Vue.config.globalProperties.$TVUE = Object.assign(opts, defaultOption);
   Object.keys(components).forEach(ele => {
     const component = components[ele];
     Vue.component(component.name, component);

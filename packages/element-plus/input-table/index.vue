@@ -13,15 +13,15 @@
               :disabled="disabled">
     </el-input>
     <div v-if="box">
-      <el-dialog class="avue-dialog"
+      <el-dialog class="tvue-dialog"
                  :class="b()"
                  :width="dialogWidth"
                  :before-close="handelBeforeClose"
-                 :append-to-body="$AVUE.appendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  lock-scroll
                  :title="placeholder"
                  v-model="box">
-        <avue-crud :class="b('crud')"
+        <tvue-crud :class="b('crud')"
                    ref="crud"
                    v-if="box"
                    :option="option"
@@ -35,8 +35,8 @@
                    :rowClassName="handleRowClassName"
                    @current-row-change="handleCurrentChange"
                    v-model:search="search"
-                   v-model:page="page"></avue-crud>
-        <span class="avue-dialog__footer">
+                   v-model:page="page"></tvue-crud>
+        <span class="tvue-dialog__footer">
           <el-button type="primary"
                      :size="size"
                      icon="el-icon-check"

@@ -186,7 +186,7 @@ export default create({
   },
   computed: {
     menuType () {
-      return this.crud.tableOption.menuType || this.$AVUE.menuType;
+      return this.crud.tableOption.menuType || this.$TVUE.menuType;
     },
     isIconMenu () {
       return this.menuType === "icon"

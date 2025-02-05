@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-tabs">
+  <div class="tvue-data-tabs">
     <el-row :span="24">
       <el-col :md="span"
               :xs="24"
@@ -16,10 +16,10 @@
               <span>{{item.subtitle}}</span>
             </div>
             <div class="item-body">
-              <avue-count-up class="h2"
+              <tvue-count-up class="h2"
                              :decimals="item.decimals || decimals"
                              :animation="item.animation || animation"
-                             :end="item.count"></avue-count-up>
+                             :end="item.count"></tvue-count-up>
             </div>
             <div class="item-footer">
               <span>{{item.allcount}}</span>

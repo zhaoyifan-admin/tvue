@@ -1,6 +1,6 @@
 <template>
   <span v-if="['img','upload'].includes(column.type)">
-    <div class="avue-crud__img">
+    <div class="tvue-crud__img">
       <img v-for="(item,index) in getImgList(row,column)"
            :src="item"
            :key="index"
@@ -15,7 +15,7 @@
              :target="column.target || '_blank'">{{item}}</el-link>
   </span>
   <span v-else-if="['rate'].includes(column.type)">
-    <avue-rate disabled
+    <tvue-rate disabled
                v-model="row[column.prop]" />
   </span>
   <span v-else

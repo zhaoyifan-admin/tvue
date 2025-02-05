@@ -7,7 +7,7 @@
           :row="searchForm"
           :search="searchForm"
           :size="crud.size"></slot>
-    <avue-form :option="option"
+    <tvue-form :option="option"
                ref="form"
                @submit="searchChange"
                @reset-change="resetChange"
@@ -35,7 +35,7 @@
         <slot v-bind="scope"
               :name="item"></slot>
       </template>
-    </avue-form>
+    </tvue-form>
   </el-card>
 </template>
 
@@ -88,7 +88,7 @@ export default create({
       return !this.validatenull(this.crud.tableOption.group);
     },
     isSearchIcon () {
-      return this.validData(this.crud.tableOption.searchIcon, this.$AVUE.searchIcon) === true && this.columnLen > this.searchIndex
+      return this.validData(this.crud.tableOption.searchIcon, this.$TVUE.searchIcon) === true && this.columnLen > this.searchIndex
     },
     searchIndex () {
       return this.crud.tableOption.searchIndex || 2

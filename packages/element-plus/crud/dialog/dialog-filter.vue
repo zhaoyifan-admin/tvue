@@ -1,8 +1,8 @@
 <template>
   <el-drawer v-if="box"
              lock-scroll
-             :class="['avue-dialog',b('filter')].join(' ')"
-             :append-to-body="$AVUE.appendToBody"
+             :class="['tvue-dialog',b('filter')].join(' ')"
+             :append-to-body="$TVUE.appendToBody"
              :title="t('crud.filterTitle')"
              :size="crud.isMobile?'100%':'60%'"
              v-model="box">
@@ -27,21 +27,21 @@
               v-for="(column,index) in list"
               :key="index"
               :class="b('filter-item')">
-        <avue-select v-model="column.text"
+        <tvue-select v-model="column.text"
                      :dic="columnOption"
                      :clearable="false"
                      @change="handleChange(index)"
                      :size="crud.size"
-                     :class="b('filter-label')"></avue-select>
-        <avue-select :class="b('filter-symbol')"
+                     :class="b('filter-label')"></tvue-select>
+        <tvue-select :class="b('filter-symbol')"
                      v-model="column.symbol"
                      :dic="symbolDic"
                      :clearable="false"
-                     :size="crud.size"></avue-select>
-        <avue-input :size="crud.size"
+                     :size="crud.size"></tvue-select>
+        <tvue-input :size="crud.size"
                     :class="b('filter-value')"
                     v-model="column.value">
-        </avue-input>
+        </tvue-input>
         <el-button type="danger"
                    :class="b('filter-icon')"
                    :size="crud.size"
@@ -50,7 +50,7 @@
                    icon="el-icon-minus"></el-button>
       </el-col>
     </el-row>
-    <span class="avue-dialog__footer">
+    <span class="tvue-dialog__footer">
       <el-button type="primary"
                  :size="crud.size"
                  @click="handleSubmit">{{t('crud.filter.submitBtn')}}</el-button>

@@ -2,20 +2,20 @@
   <component :is="dialogType"
              v-model="visible"
              destroy-on-close
-             class="avue-dialog"
+             class="tvue-dialog"
              :beforeClose="beforeClose"
              v-bind="dialog">
-    <avue-form ref="form"
+    <tvue-form ref="form"
                :option="{...deepClone(option),...{menuBtn: false}}"
                v-model="data"
                v-model:status="disabled"
                @submit="handleSubmit"
-               @reset-change="close"></avue-form>
-    <span class="avue-dialog__footer"
+               @reset-change="close"></tvue-form>
+    <span class="tvue-dialog__footer"
           v-if="validData(option.menuBtn,true)"
-          :class="'avue-dialog__footer--'+menuPosition">
+          :class="'tvue-dialog__footer--'+menuPosition">
       <el-button @click="submit"
-                 :size="$AVUE.size"
+                 :size="$TVUE.size"
                  :icon="option.submitIcon"
                  :loading="disabled"
                  v-if="validData(option.submitBtn,true)"
@@ -23,7 +23,7 @@
       <el-button @click="reset"
                  v-if="validData(option.emptyBtn,true)"
                  :disabled="disabled"
-                 :size="$AVUE.size"
+                 :size="$TVUE.size"
                  :icon="option.emptyIcon ">{{option.emptyText}}</el-button>
     </span>
   </component>

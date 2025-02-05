@@ -1,6 +1,6 @@
 <template>
-  <span v-if="text" class="avue-icon"
-        :class="{'avue-icon--small':small}">
+  <span v-if="text" class="tvue-icon"
+        :class="{'tvue-icon--small':small}">
     <svg v-if="text.includes('#')"
          aria-hidden="true">
       <use :xlink:href="text"></use>

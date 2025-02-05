@@ -17,11 +17,11 @@
               </el-icon>
             </div>
             <div class="item-info">
-              <avue-count-up :animation="item.animation || animation"
+              <tvue-count-up :animation="item.animation || animation"
                              :decimals="item.decimals || decimals"
                              :style="{color:item.color}"
                              class="title"
-                             :end="item.count"></avue-count-up>
+                             :end="item.count"></tvue-count-up>
               <div class="info">{{item.title}}</div>
             </div>
           </a>

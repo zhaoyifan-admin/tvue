@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-rotate">
+  <div class="tvue-data-rotate">
     <el-row :span="24">
       <el-col :md="span"
               :xs="24"
@@ -9,10 +9,10 @@
         <div class="item"
              :style="{backgroundColor:item.color}">
           <div class="item-box">
-            <avue-count-up class="item-count"
+            <tvue-count-up class="item-count"
                            :decimals="item.decimals || decimals"
                            :animation="item.animation || animation"
-                           :end="item.count"></avue-count-up>
+                           :end="item.count"></tvue-count-up>
             <span class="item-title">{{item.title}}</span>
             <el-icon :color="item.color"
                      class="item-icon">

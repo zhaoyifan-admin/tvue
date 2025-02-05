@@ -25,7 +25,7 @@
                      :disabled="disabled"
                      icon="el-icon-delete"
                      circle></el-button>
-          <avue-form :key="index"
+          <tvue-form :key="index"
                      ref="main"
                      :table-data="{row:text[index],index}"
                      :option="option"
@@ -41,11 +41,11 @@
                 })"
                     :name="item"></slot>
             </template>
-          </avue-form>
+          </tvue-form>
         </div>
       </div>
     </template>
-    <avue-crud v-else-if="isCrud"
+    <tvue-crud v-else-if="isCrud"
                ref="main"
                :option="option"
                :disabled="disabled"
@@ -80,7 +80,7 @@
               :name="item"></slot>
       </template>
 
-    </avue-crud>
+    </tvue-crud>
   </div>
 </template>
 

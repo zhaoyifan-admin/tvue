@@ -15,10 +15,10 @@
               :placeholder="placeholder">
     </el-input>
     <div v-if="box">
-      <el-dialog class="avue-dialog"
+      <el-dialog class="tvue-dialog"
                  :width="dialogWidth"
                  :before-close="beforeClose"
-                 :append-to-body="$AVUE.appendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  lock-scroll
                  :title="placeholder"
                  @close="handleClose"
@@ -41,7 +41,7 @@
                  :class="b('content-result')"></div>
           </div>
         </div>
-        <span class="avue-dialog__footer">
+        <span class="tvue-dialog__footer">
           <el-button type="primary"
                      :size="size"
                      icon="el-icon-check"
@@ -218,7 +218,7 @@ export default create({
 
           // 点标记中的文本
           var markerSpan = document.createElement("span");
-          markerSpan.className = "avue-input-map__marker";
+          markerSpan.className = "tvue-input-map__marker";
           markerSpan.innerHTML = this.poi.formattedAddress;
           markerContent.appendChild(markerSpan);
           this.marker.setContent(markerContent); //更新点标记内容

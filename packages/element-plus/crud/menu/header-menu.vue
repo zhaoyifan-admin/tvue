@@ -29,14 +29,14 @@
     </div>
     <div :class="b('right')"
          v-if="validData(crud.tableOption.menuRight,true)">
-      <avue-date type="datetimerange"
+      <tvue-date type="datetimerange"
                  @change="dateChange"
                  value-format="YYYY-MM-DD HH:mm:ss"
                  format="YYYY-MM-DD HH:mm:ss"
                  :shortcuts="shortcuts"
                  style="display:inline-block;margin-right:20px;"
                  v-if="validData(crud.tableOption.dateBtn,config.dateBtn)"
-                 :size="crud.size"></avue-date>
+                 :size="crud.size"></tvue-date>
       <slot name="menu-right"
             :size="crud.size"></slot>
       <el-button :icon="crud.getBtnIcon('excelBtn')"

@@ -96,7 +96,7 @@
             v-else-if="crud.$slots[column.prop]"></slot>
       <template v-else>
         <span v-if="['img','upload'].includes(column.type)"
-              class="avue-crud__img ">
+              class="tvue-crud__img ">
           <template v-for="(item,index) in getImgList(row,column)"
                     :key="index">
             <component :src="item"
@@ -115,11 +115,11 @@
                  :key="index"
                  :href="item"
                  :target="column.target || '_blank'">{{item}}</el-link>
-        <avue-rate disabled
+        <tvue-rate disabled
                    v-else-if="'rate'===column.type"
-                   v-model="row[column.prop]"></avue-rate>
+                   v-model="row[column.prop]"></tvue-rate>
         <i v-else-if="'color'===column.type"
-           class="avue-crud__color"
+           class="tvue-crud__color"
            :style="{backgroundColor:row[column.prop]}"></i>
         <icon-temp v-else-if="'icon'===column.type"
                    :text="row[column.prop]"></icon-temp>

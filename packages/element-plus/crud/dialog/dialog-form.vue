@@ -2,7 +2,7 @@
   <component v-if="boxVisible"
              :is="dialogType"
              :draggable="validData(crud.tableOption.dialogDrag,config.dialogDrag)"
-             :class="['avue-dialog',b('dialog'),this.crud.tableOption.dialogCustomClass]"
+             :class="['tvue-dialog',b('dialog'),this.crud.tableOption.dialogCustomClass]"
              :append-to-body="validData(crud.tableOption.dialogAppendToBody,true)"
              :top="dialogTop"
              :title="dialogTitle"
@@ -24,7 +24,7 @@
         </div>
       </div>
     </template>
-    <avue-form v-model="crud.tableForm"
+    <tvue-form v-model="crud.tableForm"
                v-model:status="disabled"
                ref="tableForm"
                @change="handleChange"
@@ -45,9 +45,9 @@
         <slot :name="item"
               v-bind="Object.assign(scope,{type:boxType})"></slot>
       </template>
-    </avue-form>
-    <span class="avue-dialog__footer"
-          :class="'avue-dialog__footer--'+dialogMenuPosition">
+    </tvue-form>
+    <span class="tvue-dialog__footer"
+          :class="'tvue-dialog__footer--'+dialogMenuPosition">
       <slot name="menu-form-before"
             v-bind="menuParams()"></slot>
       <el-button type="primary"

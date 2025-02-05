@@ -18,11 +18,11 @@
             </div>
             <div class="item-info">
               <span>{{item.title}}</span>
-              <avue-count-up :animation="item.animation || animation"
+              <tvue-count-up :animation="item.animation || animation"
                              :decimals="item.decimals || decimals"
                              :style="{color:color}"
                              class="count"
-                             :end="item.count"></avue-count-up>
+                             :end="item.count"></tvue-count-up>
             </div>
           </a>
         </div>

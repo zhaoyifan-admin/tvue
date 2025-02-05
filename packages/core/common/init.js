@@ -97,7 +97,7 @@ export default function (name) {
     },
     methods: {
       init (type) {
-        let globOption = this.deepClone(this.$AVUE[`${name}Option`])
+        let globOption = this.deepClone(this.$TVUE[`${name}Option`])
         let option = {
           ...globOption,
           ...this.option

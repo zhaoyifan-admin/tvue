@@ -3,7 +3,7 @@
        :style="styleName">
     <div :id="id"
          :style="styleName">
-      <div class="avue-grid"></div>
+      <div class="tvue-grid"></div>
       <template v-for="(node,index) in option.nodeList">
         <flow-node :node="node"
                    :id="node.id"
@@ -74,13 +74,13 @@ export default create({
       },
 
       jsplumbSourceOptions: {
-        filter: '.avue-flow__node-drag', /* "span"表示标签，".className"表示类，"#id"表示元素id*/
+        filter: '.tvue-flow__node-drag', /* "span"表示标签，".className"表示类，"#id"表示元素id*/
         filterExclude: false,
         anchor: 'Continuous',
         allowLoopback: false
       },
       jsplumbTargetOptions: {
-        filter: '.avue-flow__node-drag', /*"span"表示标签，".className"表示类，"#id"表示元素id */
+        filter: '.tvue-flow__node-drag', /*"span"表示标签，".className"表示类，"#id"表示元素id */
         filterExclude: false,
         anchor: 'Continuous',
         allowLoopback: false

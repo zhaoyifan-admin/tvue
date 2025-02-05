@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-cardText">
+  <div class="tvue-data-cardText">
     <el-row :span="24">
       <el-col :md="span"
               :xs="24"

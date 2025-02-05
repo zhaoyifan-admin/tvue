@@ -135,7 +135,7 @@
     <div v-if="upload.box">
       <el-dialog :title="upload.title"
                  destroy-on-close
-                 :append-to-body="$AVUE.appendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  v-model="upload.box"
                  width="30%">
         <el-form ref="form"
@@ -170,7 +170,7 @@
       <el-dialog v-model="show"
                  width="40%"
                  destroy-on-close
-                 :append-to-body="$AVUE.appendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  :before-close="handleClose"
                  class="web__dialog">
         <img :src="imgSrc"

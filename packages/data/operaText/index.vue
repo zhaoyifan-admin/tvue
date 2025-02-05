@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-operatext">
+  <div class="tvue-data-operatext">
     <el-row :span="24">
       <el-col v-for="(item,index) in data"
               :key="index"

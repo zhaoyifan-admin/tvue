@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-panel">
+  <div class="tvue-data-panel">
     <el-row :span="24">
       <el-col v-for="(item,index) in data"
               :key="index"
@@ -16,10 +16,10 @@
             </div>
             <div class="item-info">
               <div class="item-title">{{item.title}}</div>
-              <avue-count-up :animation="item.animation || animation"
+              <tvue-count-up :animation="item.animation || animation"
                              :decimals="item.decimals || decimals"
                              class="item-count"
-                             :end="item.count"></avue-count-up>
+                             :end="item.count"></tvue-count-up>
             </div>
 
           </div>

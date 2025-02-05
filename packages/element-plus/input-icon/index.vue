@@ -21,10 +21,10 @@
       </template>
     </el-input>
     <div v-if="box">
-      <el-dialog class="avue-dialog"
+      <el-dialog class="tvue-dialog"
                  :title="placeholder"
                  :before-close="beforeClose"
-                 :append-to-body="$AVUE.appendToBody"
+                 :append-to-body="$TVUE.appendToBody"
                  lock-scroll
                  v-model="box"
                  :width="dialogWidth">
@@ -33,8 +33,8 @@
                     :size="size"
                     v-model="filterText"></el-input>
         </div>
-        <avue-tabs :option="option"
-                   @change="handleTabs"></avue-tabs>
+        <tvue-tabs :option="option"
+                   @change="handleTabs"></tvue-tabs>
         <div :class="b('list')">
           <div :class="b('item')"
                v-for="(item,index) in list"

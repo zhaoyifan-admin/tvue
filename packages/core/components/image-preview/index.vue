@@ -31,7 +31,7 @@
                           v-for="(item,indexs) in datas"
                           :key="indexs">
           <component @click="handleClick(item,indexs)"
-                     :id="'avue-image-preview__'+indexs"
+                     :id="'tvue-image-preview__'+indexs"
                      :src="item.url"
                      :style="[styleName,styleBoxName]"
                      ref="item"
@@ -42,7 +42,7 @@
                      ondragstart="return false"></component>
           <div v-else
                @click="handleClick(item,indexs,true)"
-               :id="'avue-image-preview__'+indexs"
+               :id="'tvue-image-preview__'+indexs"
                :class="b('file')">
             <span>
               <el-icon-document />
@@ -120,7 +120,7 @@ export default create({
       return url.substring(url.lastIndexOf('/') + 1)
     },
     handlePrint () {
-      $Print(`#avue-image-preview__${this.count}`)
+      $Print(`#tvue-image-preview__${this.count}`)
     },
     handlePrev () {
       this.stopItem()

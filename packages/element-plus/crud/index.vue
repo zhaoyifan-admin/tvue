@@ -34,14 +34,14 @@
                 v-bind="scope"></slot>
         </template>
       </header-menu>
-      <div class="avue-crud__tip"
+      <div class="tvue-crud__tip"
            v-if="validData(tableOption.tip,config.tip) && tableOption.selection">
-        <span class="avue-crud__tip-name">
+        <span class="tvue-crud__tip-name">
           {{t('crud.tipStartTitle')}}
-          <span class="avue-crud__tip-count">{{selectLen}}</span>
+          <span class="tvue-crud__tip-count">{{selectLen}}</span>
           {{t('crud.tipEndTitle')}}
         </span>
-        <span class="avue-crud__tip-button"
+        <span class="tvue-crud__tip-button"
               @click="clearSelection">{{t('crud.emptyBtn')}}</span>
         <slot name="tip"></slot>
       </div>
@@ -54,7 +54,7 @@
                    :key="reload"
                    :data="cellForm.list"
                    :row-key="rowKey"
-                   :class="{'avue-crud--indeterminate':validData(tableOption.indeterminate,false)}"
+                   :class="{'tvue-crud--indeterminate':validData(tableOption.indeterminate,false)}"
                    :size="size"
                    :lazy="validData(tableOption.lazy,false)"
                    :load="treeLoad"
@@ -316,7 +316,7 @@ export default create({
       return this.gridShow ? 'tableItemCard' : 'elTableColumn'
     },
     size () {
-      return this.tableOption.size || this.$AVUE.tableSize || this.$AVUE.size;
+      return this.tableOption.size || this.$TVUE.tableSize || this.$TVUE.size;
     },
     isSortable () {
       return this.tableOption.sortable;
@@ -357,7 +357,7 @@ export default create({
       return this.getSlotList(['-header', '-form'], this.$slots, this.propOption).concat(result)
     },
     calcHeight () {
-      return (this.tableOption.calcHeight || 0) + this.$AVUE.calcHeight
+      return (this.tableOption.calcHeight || 0) + this.$TVUE.calcHeight
     },
     propOption () {
       let result = [];

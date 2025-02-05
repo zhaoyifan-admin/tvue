@@ -1,5 +1,5 @@
 <template>
-  <div :class="[b(),{'avue--detail':isDetail}]"
+  <div :class="[b(),{'tvue-detail':isDetail}]"
        :style="{width:setPx(tableOption.formWidth,'100%')}">
     <el-form ref="form"
              :status-icon="tableOption.statusIcon"
@@ -15,8 +15,8 @@
              :label-width="setPx(tableOption.labelWidth,config.labelWidth)">
       <el-row :span="24"
               :gutter="tableOption.gutter"
-              :class="{'avue-form__tabs':isTabs}">
-        <avue-group v-for="(item,index) in columnOption"
+              :class="{'tvue-form__tabs':isTabs}">
+        <tvue-group v-for="(item,index) in columnOption"
                     @change="handleGroupClick"
                     :key="item.prop"
                     :tabs="isTabs"
@@ -71,7 +71,7 @@
                       :offset="getItemParams(column,item,'offset')"
                       :push="getItemParams(column,item,'push')"
                       :pull="getItemParams(column,item,'pull')"
-                      :class="[b('row'),{'avue--detail avue--detail__column':vaildDetail(column)},column.className]">
+                      :class="[b('row'),{'tvue-detail tvue-detail__column':vaildDetail(column)},column.className]">
                 <el-form-item :prop="column.prop"
                               :label="column.label"
                               :rules="column.rules"
@@ -178,7 +178,7 @@
               </template>
             </form-menu>
           </div>
-        </avue-group>
+        </tvue-group>
         <form-menu v-if="isMenu">
           <template #menu-form="scope">
             <slot name="menu-form"
@@ -277,7 +277,7 @@ export default create({
   },
   computed: {
     size () {
-      return this.tableOption.size || this.$AVUE.formSize || this.$AVUE.size;
+      return this.tableOption.size || this.$TVUE.formSize || this.$TVUE.size;
     },
     columnSlot () {
       return Object.keys(this.$slots).filter(item => !this.propOption.map(ele => ele.prop).includes(item))

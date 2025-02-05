@@ -1,5 +1,5 @@
 <template>
-  <div class="avue-data-imgtext">
+  <div class="tvue-data-imgtext">
     <el-row :span="24">
       <el-col v-for="(item,index) in data"
               :key="index"

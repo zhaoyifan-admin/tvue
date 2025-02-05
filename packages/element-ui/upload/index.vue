@@ -1,6 +1,6 @@
 <template>
   <el-upload :key="reload"
-             :class="[b({'list':listType=='picture-img','disabled':disabled}),'avue-upload--'+listType]"
+             :class="[b({'list':listType=='picture-img','disabled':disabled}),'tvue-upload--'+listType]"
              @click="handleClick"
              :action="action"
              :on-remove="handleRemove"
@@ -388,7 +388,7 @@ export default create({
         packages.logs('Sortable');
         return
       }
-      const el = this.$el.querySelectorAll('.avue-upload > ul')[0]
+      const el = this.$el.querySelectorAll('.tvue-upload > ul')[0]
       window.Sortable.create(el, {
         animation: 100,
         onEnd: evt => {
@@ -530,7 +530,7 @@ export default create({
             hide();
             return;
           }
-          oss_config = this.cos || this.$AVUE.cos;
+          oss_config = this.cos || this.$TVUE.cos;
           oss = new COS({
             SecretId: oss_config.SecretId,
             SecretKey: oss_config.SecretKey
@@ -561,7 +561,7 @@ export default create({
             hide();
             return;
           }
-          oss_config = this.qiniu || this.$AVUE.qiniu;
+          oss_config = this.qiniu || this.$TVUE.qiniu;
           const token = getToken(oss_config.AK, oss_config.SK, {
             scope: oss_config.scope,
             deadline: new Date().getTime() + oss_config.deadline * 3600
@@ -576,7 +576,7 @@ export default create({
             hide();
             return;
           }
-          oss_config = this.ali || this.$AVUE.ali;
+          oss_config = this.ali || this.$TVUE.ali;
           client = getClient(oss_config);
 
           client.put(uploadFile.name, uploadFile, {

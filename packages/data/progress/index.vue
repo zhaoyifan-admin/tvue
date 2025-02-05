@@ -11,10 +11,10 @@
              @click="item.click&&item.click(item)"
              :target="item.target">
             <div class="item-header">
-              <avue-count-up class="item-count"
+              <tvue-count-up class="item-count"
                              :animation="item.animation || animation"
                              :decimals="item.decimals || decimals"
-                             :end="item.count"></avue-count-up>
+                             :end="item.count"></tvue-count-up>
               <div class="item-title"
                    v-text="item.title"></div>
             </div>

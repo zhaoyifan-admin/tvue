@@ -22,10 +22,10 @@
               <p class="money"
                  :style="{color:item.color}">
                 <span>¥</span>
-                <avue-count-up class="b"
+                <tvue-count-up class="b"
                                :decimals="item.decimals || decimals"
                                :animation="item.animation || animation"
-                               :end="item.dismoney"></avue-count-up>
+                               :end="item.dismoney"></tvue-count-up>
                 <s>{{item.money}}</s>
                 <em>{{item.tip}}</em>
               </p>
