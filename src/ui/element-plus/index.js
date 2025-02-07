@@ -30,6 +30,7 @@ import Upload from 'packages/element-plus/upload';
 import Sign from 'packages/element-plus/sign';
 import Slider from 'packages/element-plus/slider';
 import Tree from 'packages/element-plus/tree';
+import treeTransfer from 'packages/element-plus/tree-transfer';
 import Title from 'packages/element-plus/title';
 import Search from 'packages/element-plus/search';
 import Tabs from 'packages/element-plus/tabs';
@@ -70,6 +71,7 @@ export default {
   Upload,
   Slider,
   Tree,
+  treeTransfer,
   Title,
   Search,
   Tabs,
