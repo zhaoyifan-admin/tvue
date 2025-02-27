@@ -115,8 +115,8 @@ $space-width: 15px;
 
   th {
     word-break: break-word;
-    color: rgba(0, 0, 0, 0.85);
-    background-color: #fafafa;
+    color: var(--trud-color-table-text);
+    background-color: var(--trud-bg-table-cell);
   }
 
   table td {
@@ -134,8 +134,8 @@ $space-width: 15px;
 
   .el-table th.el-table__cell {
     word-break: break-word;
-    color: rgba(0, 0, 0, 0.85);
-    background-color: #fafafa;
+    color: var(--trud-color-table-text);
+    background-color: var(--trud-bg-table-cell);
   }
 
   &__color {
