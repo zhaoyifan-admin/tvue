@@ -1,6 +1,6 @@
 <template>
   <div :class="[b(),{'tvue--detail':isDetail}]"
-       :style="{width:setPx(parentOption.formWidth,'100%')}">
+       :style="{width:setPx(parentOption.formWidth,'100%'),maxHeight:(tableOption.formMaxHeight,'650px'),overflowY:'scroll'}">
     <el-form ref="form"
              :status-icon="parentOption.statusIcon"
              @submit.native.prevent
