@@ -3,6 +3,8 @@ import {
   version
 } from './version';
 import axios from 'axios';
+import user from '../images/user.jpeg';
+import T from '../images/t.png';
 import {
   validatenull
 } from 'utils/validate.js';
