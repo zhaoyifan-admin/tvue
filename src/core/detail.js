@@ -33,7 +33,14 @@ export const detail = (row = {}, column = {}, option = {}, dic = []) => {
     } else if (DATE_LIST.includes(type) && column.format) {
       const format = column.format;
       let formatValue = dayjs().format('YYYY-MM-DD');
-      if (type.indexOf('range') !== -1) {
+      if (['dates', 'years', 'months'].includes(type)) {
+        if (typeof result === 'string') {
+          result = result.split(',');
+        }
+        if (Array.isArray(result)) {
+          result = result.map(date => dayjs(date).format(format)).join(column.separator || ',');
+        }
+      } else if (type.indexOf('range') !== -1) {
         let [date1 = '', date2 = ''] = result;
         if (type === 'timerange') {
           date1 = `${formatValue} ${date1}`;

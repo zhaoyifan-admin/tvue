@@ -13,6 +13,7 @@
              :filter-method="getColumnProp(column,'filterMethod')?handleFilterMethod:undefined"
              :filter-multiple="validData(column.filterMultiple,true)"
              :show-overflow-tooltip="column.showOverflowTooltip || column.overHidden"
+             :tooltip-formatter="column.tooltipFormatter"
              :min-width="column.minWidth"
              :sortable="getColumnProp(column,'sortable')"
              :sort-method="column.sortMethod"
@@ -58,6 +59,8 @@
                        :size="crud.size"
                        :index="$index"
                        :row="row"
+                       :prop="`list.${$index}.${column.prop}`"
+                       :clearValidate="crud.clearValidate"
                        :render="column.renderForm"
                        :table-data="{index:$index,row:row,label:handleDetail(row,column)}"
                        :dic="(crud.cascaderDIC[$index] || {})[column.prop] || crud.DIC[column.prop]"
@@ -126,6 +129,8 @@
         <span v-else-if="column.html"
               v-html="handleDetail(row,column)"></span>
         <span v-else
+              :class="{'tvue-crud__ellipsis': column.ellipsis}"
+              :title="column.ellipsis ? handleDetail(row,column) : ''"
               v-text="handleDetail(row,column)"></span>
       </template>
     </template>

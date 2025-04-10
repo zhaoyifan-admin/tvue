@@ -45,7 +45,7 @@
                             v-if="getSlotName(tabs,'H',$slots)"></slot>
                       <template v-else>
                         <i :class="tabs.icon">&nbsp;</i>
-                        {{tabs.label}}
+                        {{ tabs.label }}
                       </template>
                     </span>
                   </template>
@@ -97,10 +97,10 @@
                         <div v-html="column.labelTip"></div>
                       </template>
                       <el-icon>
-                        <el-icon-info-filled />
+                        <el-icon-info-filled/>
                       </el-icon>
                     </el-tooltip>
-                    <span> {{column.label}}{{labelSuffix}}</span>
+                    <span> {{ column.label }}{{ labelSuffix }}</span>
                   </template>
                   <template #error="scope"
                             v-if="getSlotName(column,'E')">
@@ -137,6 +137,7 @@
                                  :propsHttp="tableOption.propsHttp"
                                  :render="column.render"
                                  :row="form"
+                                 :clearValidate="clearValidate"
                                  :table-data="tableData"
                                  :readonly="column.readonly || readonly"
                                  v-bind="$uploadFun(column)"
@@ -163,7 +164,7 @@
                 </el-form-item>
               </el-col>
               <div :class="b('line')"
-                   v-if="vaildDisplay(column)&&column.row && column.span!==24 && column.count"
+                   v-if="shouldShowDivider(column)"
                    :key="`line${cindex}`"
                    :style="{width:(column.count/24*100)+'%'}"></div>
             </template>
@@ -192,17 +193,18 @@
 
 <script>
 let count = {}
-import { detail } from "core/detail";
+import {detail} from "core/detail";
 import create from "core/create";
 import init from "common/common/init";
 import formTemp from 'common/components/form/index'
 import formMenu from './menu'
-import { DIC_PROPS } from 'global/variable';
-import { getComponent, getPlaceholder, formInitVal, calcCount, calcCascader } from "core/dataformat";
-import { sendDic } from "core/dic";
-import { getColumn, filterParams, clearVal, getAsVal, blankVal, setAsVal } from 'utils/util'
+import {DIC_PROPS} from 'global/variable';
+import {getComponent, getPlaceholder, formInitVal, calcCount, calcCascader} from "core/dataformat";
+import {sendDic} from "core/dic";
+import {getColumn, filterParams, clearVal, getAsVal, blankVal, setAsVal} from 'utils/util'
 import mock from "utils/mock";
 import config from "./config.js";
+
 export default create({
   name: "form",
   mixins: [init('form')],
@@ -219,7 +221,7 @@ export default create({
     formTemp,
     formMenu
   },
-  data () {
+  data() {
     return {
       config,
       activeName: '',
@@ -231,14 +233,14 @@ export default create({
       formBind: {},
     };
   },
-  provide () {
+  provide() {
     return {
       formSafe: this
     };
   },
   watch: {
     modelValue: {
-      handler (val) {
+      handler(val) {
         if (this.formCreate) {
           this.setForm()
         }
@@ -246,7 +248,7 @@ export default create({
       deep: true
     },
     form: {
-      handler (val) {
+      handler(val) {
         if (this.formCreate) {
           this.setLabel()
           this.setVal()
@@ -255,20 +257,20 @@ export default create({
       deep: true
     },
     tabsActive: {
-      handler (val) {
+      handler(val) {
         this.activeName = this.tabsActive
       },
       immediate: true
     },
     DIC: {
-      handler () {
+      handler() {
         this.setLabel()
       },
       deep: true,
       immediate: true
     },
     allDisabled: {
-      handler (val) {
+      handler(val) {
         this.$emit('update:status', val)
       },
       deep: true,
@@ -276,49 +278,49 @@ export default create({
     }
   },
   computed: {
-    size () {
+    size() {
       return this.tableOption.size || this.$TVUE.formSize || this.$TVUE.size;
     },
-    columnSlot () {
+    columnSlot() {
       return Object.keys(this.$slots).filter(item => !this.propOption.map(ele => ele.prop).includes(item))
     },
-    labelSuffix () {
+    labelSuffix() {
       return this.tableOption.labelSuffix || ':'
     },
-    isMenu () {
+    isMenu() {
       return this.columnOption.length != 1
     },
-    isDetail () {
+    isDetail() {
       return this.detail === true
     },
-    isAdd () {
+    isAdd() {
       return ['parentAdd', 'add'].includes(this.boxType)
     },
-    isTabs () {
+    isTabs() {
       return this.tableOption.tabs === true;
     },
-    isEdit () {
+    isEdit() {
       return this.boxType === "edit"
     },
-    isView () {
+    isView() {
       return this.boxType === "view"
     },
-    detail () {
+    detail() {
       return this.tableOption.detail
     },
-    disabled () {
+    disabled() {
       return this.tableOption.disabled
     },
-    readonly () {
+    readonly() {
       return this.tableOption.readonly
     },
-    tabsType () {
+    tabsType() {
       return this.tableOption.tabsType;
     },
-    columnLen () {
+    columnLen() {
       return this.columnOption.length
     },
-    dynamicOption () {
+    dynamicOption() {
       let list = []
       this.propOption.forEach(ele => {
         if (ele.type == 'dynamic' && this.vaildDisplay(ele)) {
@@ -327,7 +329,7 @@ export default create({
       })
       return list
     },
-    propOption () {
+    propOption() {
       let list = [];
       this.columnOption.forEach(option => {
         if (option.display !== false) {
@@ -336,7 +338,7 @@ export default create({
       });
       return list;
     },
-    columnOption () {
+    columnOption() {
       const detail = (list) => {
         list.forEach((ele, index) => {
           ele.column = getColumn(ele.column) || []
@@ -383,19 +385,19 @@ export default create({
     boxType: function () {
       return this.tableOption.boxType;
     },
-    isPrint () {
+    isPrint() {
       return this.validData(this.tableOption.printBtn, false)
     },
-    tabsActive () {
+    tabsActive() {
       return this.validData(this.tableOption.tabsActive + '', '1')
     },
-    isMock () {
+    isMock() {
       return this.validData(this.tableOption.mockBtn, false);
     },
-    isVerifyAll () {
+    isVerifyAll() {
       return this.validData(this.tableOption.tabsVerifyAll, true);
     },
-    menuSpan () {
+    menuSpan() {
       return this.tableOption.menuSpan || 24;
     }
   },
@@ -419,7 +421,7 @@ export default create({
       }
     }
   },
-  mounted () {
+  mounted() {
     setTimeout(() => {
       this.dataFormat()
     })
@@ -427,10 +429,10 @@ export default create({
   methods: {
     getComponent,
     getPlaceholder,
-    getDisabled (column) {
+    getDisabled(column) {
       return this.vaildDetail(column) || this.isDetail || this.vaildDisabled(column) || this.allDisabled
     },
-    isGroupShow (item, index, verifyAll) {
+    isGroupShow(item, index, verifyAll) {
       if (verifyAll) return true
       else if (this.isTabs) {
         return index == this.activeName || index == 0
@@ -439,7 +441,7 @@ export default create({
       }
     },
 
-    dataFormat () {
+    dataFormat() {
       let formDefault = formInitVal(this.propOption);
       let formValue = this.modelValue
       let form = {}
@@ -460,7 +462,7 @@ export default create({
         this.clearValidate()
       })
     },
-    setControl () {
+    setControl() {
       this.propOption.forEach(column => {
         let prop = column.prop
         let bind = column.bind
@@ -507,16 +509,16 @@ export default create({
         }
       })
     },
-    setForm () {
+    setForm() {
       Object.keys(this.modelValue).forEach(ele => {
         this.form[ele] = this.modelValue[ele]
       });
     },
-    setVal () {
+    setVal() {
       this.$emit('update:modelValue', this.form)
       this.$emit('change', this.form)
     },
-    setLabel () {
+    setLabel() {
       if (this.tableOption.filterNull === true) {
         this.form = filterParams(this.form, [''], false)
       }
@@ -536,13 +538,13 @@ export default create({
         });
       }
     },
-    handleGroupClick (activeNames) {
+    handleGroupClick(activeNames) {
       this.$emit('tab-click', activeNames)
     },
-    handleTabClick (tab, event) {
+    handleTabClick(tab, event) {
       this.$emit('tab-click', tab, event)
     },
-    getItemParams (column, item, type, isPx) {
+    getItemParams(column, item, type, isPx) {
       let result;
       if (!this.validatenull(column[type])) {
         result = column[type]
@@ -555,19 +557,19 @@ export default create({
       return isPx ? this.setPx(result) : result
     },
     //对部分表单字段进行校验的方法
-    validateField (val, fn) {
+    validateField(val, fn) {
       return this.$refs.form.validateField(val, fn);
     },
-    scrollToField (val) {
+    scrollToField(val) {
       return this.$refs.form.scrollToField(val);
     },
-    validTip (column) {
+    validTip(column) {
       return !column.tip || column.type === 'upload'
     },
-    getPropRef (prop) {
+    getPropRef(prop) {
       return this.$refs[prop][0];
     },
-    handleChange (list, column) {
+    handleChange(list, column) {
       this.$nextTick(() => {
         const cascader = column.cascader;
         const str = cascader.join(",");
@@ -590,9 +592,9 @@ export default create({
            * 2.判断当前节点是否有值
            */
           if (
-            this.validatenull(cascader) ||
-            this.validatenull(value) ||
-            this.validatenull(columnNext)
+              this.validatenull(cascader) ||
+              this.validatenull(value) ||
+              this.validatenull(columnNext)
           ) {
             return;
           }
@@ -614,10 +616,10 @@ export default create({
         })
       })
     },
-    handlePrint () {
+    handlePrint() {
       this.$Print(this.$el);
     },
-    propChange (option, column) {
+    propChange(option, column) {
       let key = column.prop
       if (!count[key]) {
         if (column.cascader) this.handleChange(option, column)
@@ -625,7 +627,7 @@ export default create({
       count[key] = true
       this.$nextTick(() => count[key] = false)
     },
-    handleMock () {
+    handleMock() {
       if (!this.isMock) return
       this.columnOption.forEach(column => {
         const form = mock(column.column, this.DIC, this.form, this.isMock);
@@ -641,7 +643,7 @@ export default create({
         this.$emit('mock-change', this.form);
       })
     },
-    vaildDetail (column) {
+    vaildDetail(column) {
       let key;
       if (this.detail) return false;
       if (!this.validatenull(column.detail)) {
@@ -657,7 +659,7 @@ export default create({
 
     },
     // 验证表单是否禁止
-    vaildDisabled (column) {
+    vaildDisabled(column) {
       let key;
       if (this.disabled) return true;
       if (!this.validatenull(column.disabled)) {
@@ -672,7 +674,7 @@ export default create({
       return this.validData(column[key], false)
     },
     // 验证表单是否显隐
-    vaildDisplay (column) {
+    vaildDisplay(column) {
       let key;
       if (!this.validatenull(column.display)) {
         key = 'display'
@@ -687,17 +689,17 @@ export default create({
       }
       return this.validData(column[key], true)
     },
-    clearValidate (list) {
+    clearValidate(list) {
       if (this.$refs.form) this.$refs.form.clearValidate(list);
     },
-    validateCellForm () {
+    validateCellForm() {
       return new Promise(resolve => {
         this.$refs.form.validate((valid, msg) => {
           resolve(msg)
         });
       })
     },
-    validate (callback) {
+    validate(callback) {
       this.$refs.form.validate((valid, msg) => {
         let dynamicList = [];
         let dynamicName = [];
@@ -733,7 +735,7 @@ export default create({
         })
       });
     },
-    resetForm (reset = true) {
+    resetForm(reset = true) {
       if (reset) {
         let propList = this.propOption.map(ele => ele.prop)
         this.form = clearVal(this.form, propList, (this.tableOption.filterParams || []).concat([this.rowKey]))
@@ -743,16 +745,16 @@ export default create({
         this.$emit("reset-change");
       })
     },
-    resetFields () {
+    resetFields() {
       this.$refs.form.resetFields();
     },
-    show () {
+    show() {
       this.allDisabled = true;
     },
-    hide () {
+    hide() {
       this.allDisabled = false;
     },
-    submit () {
+    submit() {
       this.validate((valid, hide, msg) => {
         if (valid) {
           this.$emit("submit", filterParams(this.form, ['$']), this.hide);
@@ -762,7 +764,20 @@ export default create({
       });
     }
   },
-  unmounted () {
+  /**
+   * 判断是否需要显示分割线
+   * @param {Object} column - 列配置对象
+   * @returns {Boolean} - 是否显示分割线
+   */
+  shouldShowDivider(column) {
+    return (
+        this.vaildDisplay(column) && // 列是否显示
+        column.row && // 是否需要换行
+        column.span !== 24 && // 不是全宽
+        column.count // 有剩余空间需要填充
+    );
+  },
+  unmounted() {
     Object.keys(this.formBind).forEach(ele => {
       this.formBind[ele].forEach(unWatch => {
         unWatch()

@@ -10,6 +10,7 @@
              :filter-method="getColumnProp(columnOption,'filterMethod')?handleFilterMethod:undefined"
              :filter-multiple="validData(columnOption.filterMultiple,true)"
              :show-overflow-tooltip="columnOption.showOverflowTooltip || columnOption.overHidden"
+             :tooltip-formatter="columnOption.tooltipFormatter"
              :min-width="columnOption.minWidth"
              :sortable="getColumnProp(columnOption,'sortable')"
              :render-header="columnOption.renderHeader"
@@ -17,6 +18,12 @@
              :header-align="columnOption.headerAlign || crud.tableOption.headerAlign"
              :width="getColumnProp(columnOption,'width')"
              :fixed="getColumnProp(columnOption,'fixed')">
+    <template #header="{$index}">
+      <slot :name="crud.getSlotName(columnOption,'H')"
+            v-if="crud.getSlotName(columnOption,'H',crud.$slots)"
+            v-bind="{column:columnOption,$index}"></slot>
+      <span v-else>{{columnOption.label}}</span>
+    </template>
     <template v-for="column in columnOption.children">
       <column-dynamic v-if="column.children && column.children.length>0"
                       :key="column.label"

@@ -22,6 +22,7 @@
 import create from "core/create";
 import props from "common/common/props.js";
 import event from "common/common/event.js";
+
 export default create({
   name: "switch",
   mixins: [props(), event()],
@@ -34,24 +35,26 @@ export default create({
     len: Number,
     beforeChange: Function
   },
-  data () {
+  data() {
     return {
       loading: false,
     };
   },
   watch: {},
-  created () { },
-  mounted () { },
+  created() {
+  },
+  mounted() {
+  },
   computed: {
-    active () {
+    active() {
       return this.dic[1] || {};
     },
-    inactive () {
+    inactive() {
       return this.dic[0] || {};
     }
   },
   methods: {
-    handleBeforeChange () {
+    handleBeforeChange() {
       return new Promise((resolve) => {
         this.loading = true
         const callback = (result) => {

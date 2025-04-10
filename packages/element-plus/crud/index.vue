@@ -47,7 +47,6 @@
       </div>
       <slot name="body"></slot>
       <el-form :model="cellForm"
-               :show-message="false"
                @validate="handleValidate"
                ref="cellForm">
         <component :is="tableName"
@@ -56,6 +55,8 @@
                    :row-key="rowKey"
                    :class="{'tvue-crud--indeterminate':validData(tableOption.indeterminate,false)}"
                    :size="size"
+                   :append-filter-panel-to="tableOption.appendFilterPanelTo"
+                   :allow-drag-last-column="tableOption.allowDragLastColumn"
                    :lazy="validData(tableOption.lazy,false)"
                    :load="treeLoad"
                    :tree-props="treeProps"
@@ -68,6 +69,7 @@
                    :tooltip-effect="tableOption.tooltipEffect"
                    :tooltip-options="tableOption.tooltipOptions"
                    :show-overflow-tooltip="tableOption.showOverflowTooltip || tableOption.overHidden"
+                   :tooltip-formatter="tableOption.tooltipFormatter"
                    @current-change="currentRowChange"
                    @expand-change="expandChange"
                    @header-dragend="headerDragend"
@@ -343,7 +345,7 @@ export default create({
       return this.tableOption.height === "auto"
     },
     formSlot () {
-      return this.getSlotList(['-error', '-label', '-type', '-form', '-header'], this.$slots, this.propOption)
+      return this.getSlotList(['-error', '-label', '-type', '-form', '-header', '-desc'], this.$slots, this.propOption)
     },
     searchSlot () {
       return this.getSlotList(['-search'], this.$slots, this.propOption)
@@ -606,15 +608,12 @@ export default create({
     },
     //拖动表头事件
     headerDragend (newWidth, oldWidth, column, event) {
-      let obj = this.objectOption[column.property];
-      if (obj) this.objectOption[column.property].width = newWidth
       this.$emit("header-dragend", newWidth, oldWidth, column, event);
     },
     headerSort (oldIndex, newIndex) {
       let column = this.columnOption;
-      const notHideColumn = column.filter(ele => ele.hide != true);
-      const newColumn = notHideColumn[newIndex]
-      const oldColumn = notHideColumn[oldIndex];
+      const newColumn = column[newIndex]
+      const oldColumn = column[oldIndex];
       newIndex = column.findIndex(ele => ele.prop == newColumn.prop)
       oldIndex = column.findIndex(ele => ele.prop == oldColumn.prop)
       let targetRow = column.splice(oldIndex, 1)[0]
@@ -804,6 +803,9 @@ export default create({
         });
       })
     },
+    clearValidate (list) {
+      this.$refs.cellForm.clearValidate(list)
+    },
     rowAdd () {
       this.$refs.dialogForm.show("add");
     },
@@ -930,7 +932,8 @@ export default create({
         chosenClass: config.ghostClass,
         animation: 100,
         delay: 0,
-        onEnd: evt => callback(evt)
+        onEnd: evt => callback(evt),
+        filter: '.el-table-fixed-column--right'
       })
     },
     findData (id) {
