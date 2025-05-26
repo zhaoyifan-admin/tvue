@@ -20,7 +20,7 @@
              ref="temp"
              :disabled="column.disabled || disabled"
              :readonly="column.readonly || readonly"
-             :placeholder="boxType === 'view' ? '' : getPlaceholder(column)"
+             :placeholder="boxType == 'view' ? '' : getPlaceholder(column)"
              :props="column.props || props"
              :propsHttp="column.propsHttp || propsHttp"
              :size="column.size || size"
@@ -39,7 +39,7 @@
     <template v-for="item in columnSlot"
               #[item]="scope">
       <slot v-bind="scope"
-            v-if="!item.endsWith('-desc')"
+            v-if="!item.endsWith('-desc')"></slot>
     </template>
   </component>
   <template v-if="!render && boxType !== 'view'">
