@@ -20,7 +20,7 @@
              ref="temp"
              :disabled="column.disabled || disabled"
              :readonly="column.readonly || readonly"
-             :placeholder="getPlaceholder(column)"
+             :placeholder="boxType === 'view' ? '' : getPlaceholder(column)"
              :props="column.props || props"
              :propsHttp="column.propsHttp || propsHttp"
              :size="column.size || size"
@@ -38,20 +38,21 @@
     </template>
     <template v-for="item in columnSlot"
               #[item]="scope">
-      <slot v-bind="scope" v-if="!item.endsWith('-desc')"
-            :name="item"></slot>
+      <slot v-bind="scope"
+            v-if="!item.endsWith('-desc')"
     </template>
   </component>
   <template v-if="!render && boxType !== 'view'">
-      <slot v-if="columnSlot.includes(column.prop + '-desc')" :name="column.prop + '-desc'"
-        :column="column"
-        :description="column.description"
-        :descClass="column.descClass"
-        :size="column.size || size"
-        ></slot>
-      <span v-else :class="column.descClass ? column.descClass : 'field-desc'">
-        {{column.description}}
-      </span>
+    <slot v-if="columnSlot.includes(column.prop + '-desc')"
+          :name="column.prop + '-desc'"
+          :column="column"
+          :description="column.description"
+          :descClass="column.descClass"
+          :size="column.size || size"></slot>
+    <span v-else
+          :class="column.descClass ? column.descClass : 'field-desc'">
+      {{column.description}}
+    </span>
   </template>
 </template>
 
@@ -62,14 +63,14 @@ import slot from 'core/slot'
 export default {
   name: 'form-temp',
   mixins: [slot],
-  emits: ['update:modelValue', 'change'],
+  emits: ['update:modelValue', 'change', 'enter'],
   components: {
     custom
   },
   props: {
     modelValue: {},
     uploadSized: Function,
-    clearValidate:Function,
+    clearValidate: Function,
     uploadBefore: Function,
     uploadDelete: Function,
     uploadAfter: Function,
