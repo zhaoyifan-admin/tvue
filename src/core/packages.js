@@ -23,14 +23,14 @@ const list = {
     title: '需引入html2canvas依赖包',
     github: 'https://github.com/niklasvh/html2canvas/'
   },
-  'COS': {
-    url: 'https://avuejs.com/cdn/cos-js-sdk-v5.min.js',
-    title: '腾讯云云图片上传，需引入COS'
-  },
-  'CryptoJS': {
-    url: 'https://avuejs.com/cdn/CryptoJS.js',
-    title: '七牛云图片上传，需引入CryptoJS'
-  },
+  // 'COS': {
+  //   url: 'https://avuejs.com/cdn/cos-js-sdk-v5.min.js',
+  //   title: '腾讯云云图片上传，需引入COS'
+  // },
+  // 'CryptoJS': {
+  //   url: 'https://avuejs.com/cdn/CryptoJS.js',
+  //   title: '七牛云图片上传，需引入CryptoJS'
+  // },
   'file-saver': {
     url: 'https://cdn.staticfile.org/FileSaver.js/2014-11-29/FileSaver.min.js',
     title: '需引入文件操作包',
@@ -50,7 +50,7 @@ const list = {
 
 export default (() => {
   return {
-    logs: function (name) {
+    logs: function(name) {
       const obj = list[name];
       $Log.capsule(
         name,
