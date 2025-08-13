@@ -38,6 +38,18 @@ module.exports = merge(config, {
         }
       },
       {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i, // 匹配图片文件
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]', // 输出文件的命名规则
+              outputPath: '/', // 输出目录，相对于构建输出目录
+            },
+          },
+        ],
+      },
+      {
         // Vue单文件组件处理
         test: /\.vue$/,
         loader: 'vue-loader',
