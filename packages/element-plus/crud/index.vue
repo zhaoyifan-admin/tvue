@@ -34,14 +34,14 @@
                 v-bind="scope"></slot>
         </template>
       </header-menu>
-      <div class="avue-crud__tip"
+      <div class="tvue-crud__tip"
            v-if="validData(tableOption.tip,config.tip) && tableOption.selection">
-        <span class="avue-crud__tip-name">
+        <span class="tvue-crud__tip-name">
           {{t('crud.tipStartTitle')}}
-          <span class="avue-crud__tip-count">{{selectLen}}</span>
+          <span class="tvue-crud__tip-count">{{selectLen}}</span>
           {{t('crud.tipEndTitle')}}
         </span>
-        <span class="avue-crud__tip-button"
+        <span class="tvue-crud__tip-button"
               @click="clearSelection">{{t('crud.emptyBtn')}}</span>
         <slot name="tip"></slot>
       </div>
@@ -55,7 +55,7 @@
                    :fixed="tableOption.fixed"
                    :columns="columnVirtualizeOption"
                    :row-key="rowKey"
-                   :class="{'avue-crud--indeterminate':validData(tableOption.indeterminate,false)}"
+                   :class="{'tvue-crud--indeterminate':validData(tableOption.indeterminate,false)}"
                    :size="size"
                    :append-filter-panel-to="tableOption.appendFilterPanelTo"
                    :allow-drag-last-column="tableOption.allowDragLastColumn"
