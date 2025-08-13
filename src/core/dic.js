@@ -2,7 +2,7 @@ import { detailDataType, getAsVal } from 'utils/util';
 import { validatenull } from 'utils/validate';
 import { DIC_PROPS } from 'global/variable';
 const key = 'key';
-function getDataType (list = [], props = {}, type) {
+function getDataType(list = [], props = {}, type) {
   let valueKey = props.value || DIC_PROPS.value;
   let childrenKey = props.children || DIC_PROPS.children;
   list.forEach(ele => {
@@ -10,9 +10,9 @@ function getDataType (list = [], props = {}, type) {
     if (ele[childrenKey]) getDataType(ele[childrenKey], props, type);
   });
   return list;
-};
+}
 
-function getResData (data, props, dataType) {
+function getResData(data, props, dataType) {
   const bind = props.res;
   let res = data;
   let deep = data.data;
@@ -23,7 +23,7 @@ function getResData (data, props, dataType) {
   }
   if (dataType) res = getDataType(res, props, dataType);
   return res;
-};
+}
 export const loadCascaderDic = (columnOption, safe) => {
   return new Promise(resolve => {
     let list = [];
@@ -189,7 +189,7 @@ export const sendDic = (params, safe) => {
       url,
       method,
       headers: getKey(headers)
-    }, getData())).then(function (res) {
+    }, getData())).then(function(res) {
       callback(res);
     }).catch(err => {
       reject(err);

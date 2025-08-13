@@ -1,4 +1,4 @@
-.tvue-img {
+.avue-img {
   &--center {
     display: flex;
     align-items: center;
@@ -11,7 +11,7 @@
   }
 }
 
-.tvue-image-preview{
+.avue-image-preview{
   position: fixed;
   top:0;
   left:0;
@@ -78,11 +78,10 @@
     width: 400px;
   }
   .el-image-viewer__actions__inner {
+    gap:15px;
     .viewer-icon {
-      margin: 0 8px;
       cursor: pointer;
       transition: all 0.2s;
-
       &:hover {
         transform: scale(1.2);
         color: #409EFF;
