@@ -343,7 +343,7 @@ export default create({
       return this.tableOption.virtualize
     },
     size () {
-      return this.tableOption.size || this.$AVUE.tableSize || this.$AVUE.size;
+      return this.tableOption.size || this.$TVUE.tableSize || this.$TVUE.size;
     },
     isSortable () {
       return this.tableOption.sortable;
@@ -384,7 +384,7 @@ export default create({
       return this.getSlotList(['-header', '-form'], this.$slots, this.propOption).concat(result)
     },
     calcHeight () {
-      return (this.tableOption.calcHeight || 0) + this.$AVUE.calcHeight
+      return (this.tableOption.calcHeight || 0) + this.$TVUE.calcHeight
     },
     propOption () {
       let result = [];

@@ -282,7 +282,7 @@ export default create({
   },
   computed: {
     size () {
-      return this.tableOption.size || this.$AVUE.formSize || this.$AVUE.size;
+      return this.tableOption.size || this.$TVUE.formSize || this.$TVUE.size;
     },
     columnSlot () {
       return Object.keys(this.$slots).filter(item => !this.propOption.map(ele => ele.prop).includes(item))

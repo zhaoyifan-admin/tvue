@@ -1,4 +1,5 @@
 import CountUp from 'packages/element-plus/count-up';
+import Article from 'packages/element-plus/article';
 import Crud from 'packages/element-plus/crud';
 import Card from 'packages/element-plus/card';
 import Chat from 'packages/element-plus/chat';
@@ -41,6 +42,7 @@ import Arrays from 'packages/element-plus/array';
 import textEllipsis from 'packages/element-plus/text-ellipsis';
 export default {
   Arrays,
+  Article,
   Crud,
   Card,
   Chat,

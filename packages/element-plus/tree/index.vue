@@ -88,7 +88,7 @@
     <el-dialog :title="node[labelKey] || title"
                v-model="box"
                class="tvue-dialog tvue-dialog--none"
-               :append-to-body="$AVUE.appendToBody"
+               :append-to-body="$TVUE.appendToBody"
                lock-scroll
                :before-close="hide"
                :width="validData(option.dialogWidth,'50%')">

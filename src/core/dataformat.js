@@ -26,7 +26,6 @@ export const calcCount = (ele, spanDefault = 12, init = false) => {
   const spanAll = 24;
   if (init) count = 0;
   const currentSpan = (ele.span || spanDefault) + (ele.offset || 0);
-
   count += currentSpan;
   if (ele.row && count < spanAll) {
     ele.count = spanAll - count;
