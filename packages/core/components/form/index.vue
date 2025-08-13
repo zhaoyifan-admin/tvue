@@ -39,7 +39,8 @@
     <template v-for="item in columnSlot"
               #[item]="scope">
       <slot v-bind="scope"
-            v-if="!item.endsWith('-desc')"></slot>
+            v-if="!item.endsWith('-desc')"
+            :name="item"></slot>
     </template>
   </component>
   <template v-if="!render && boxType !== 'view'">
@@ -69,8 +70,8 @@ export default {
   },
   props: {
     modelValue: {},
-    uploadSized: Function,
     clearValidate: Function,
+    uploadSized: Function,
     uploadBefore: Function,
     uploadDelete: Function,
     uploadAfter: Function,

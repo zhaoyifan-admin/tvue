@@ -1,5 +1,5 @@
 <template>
-  <el-row :class="[b(),{'tvue-card':isCard}]"
+  <el-row :class="[b(),{'tvue--card':isCard}]"
           :span="24">
     <el-col :span="column.span || 24"
             v-for="(column,index) in columnOption"

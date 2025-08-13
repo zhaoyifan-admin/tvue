@@ -23,7 +23,7 @@
               :autocomplete="autocomplete"
               :formatter="formatters"
               :parser="parser"
-    >
+>
       <template #prepend
                 v-if="prepend"><span @click="prependClick(text)">{{prepend}}</span>
       </template>
