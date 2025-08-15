@@ -258,6 +258,9 @@ export default {
       if (!this.validatenull(DIC) && this.crud.tableOption.filterDic != true) {
         row["$" + column.prop] = result;
       }
+      if (['', null, undefined].includes(result)) {
+        result = '-';
+      }
       return result;
     },
     corArray (row, column) {
