@@ -11,7 +11,7 @@
     <template #="{row}">
       <slot :row="row"
             :index="row.$index"
-            name="expand">-</slot>
+            name="expand"></slot>
     </template>
   </component>
 
