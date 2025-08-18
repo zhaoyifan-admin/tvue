@@ -17,7 +17,9 @@ import {
   setPx,
   isJson,
   downFile,
-  loadScript
+  deleteField,
+  loadScript,
+  consoleLog
 } from 'utils/util';
 import dialogDrag from 'packages/core/directive/dialog-drag';
 import contextmenu from 'packages/core/directive/contextmenu';
@@ -32,6 +34,7 @@ import $NProgress from 'plugin/nprogress/';
 import $ImagePreview from 'packages/core/components/image-preview/';
 import $ImageCropper from 'packages/core/components/image-cropper/';
 import $DialogForm from 'packages/core/components/dialog-form/';
+import {bd09Togps84, gcj02ToBd09, gcj02ToGps84, gps84Tobd09} from './utils/gps';
 
 let prototypes = {
   $ImagePreview,
@@ -43,6 +46,7 @@ let prototypes = {
   $Log,
   $NProgress,
   $Screenshot,
+  consoleLog,
   deepClone,
   dataURLtoFile,
   isJson,
@@ -52,17 +56,21 @@ let prototypes = {
   findNode,
   validatenull,
   downFile,
+  deleteField,
   loadScript,
   watermark,
   findObject,
-  randomId
-
+  randomId,
+  bd09Togps84,
+  gcj02ToBd09,
+  gcj02ToGps84,
+  gps84Tobd09
 };
 let directive = {
   dialogDrag,
   contextmenu
 };
-const install = function (Vue, opts = {}) {
+const install = function(Vue, opts = {}) {
   if (opts.theme === 'dark') document.documentElement.className = 'tvue-theme--dark';
   const defaultOption = {
     size: opts.size || 'small',
@@ -73,7 +81,7 @@ const install = function (Vue, opts = {}) {
     modalAppendToBody: vaildData(opts.modalAppendToBody, true),
     appendToBody: vaildData(opts.appendToBody, true),
     canvas: Object.assign({
-      text: 'avuejs.com',
+      text: 'tvuejs.com',
       fontFamily: 'microsoft yahei',
       color: '#999',
       fontSize: 16,
@@ -115,7 +123,7 @@ const install = function (Vue, opts = {}) {
   Vue.prototype.$axios = opts.axios || window.axios || axios;
   window.axios = Vue.prototype.$axios;
   window.Vue = Vue;
-  Vue.prototype.$uploadFun = function (column = {}, safe) {
+  Vue.prototype.$uploadFun = function(column = {}, safe) {
     safe = safe || this;
     let list = ['uploadPreview', 'uploadBefore', 'uploadAfter', 'uploadDelete', 'uploadError', 'uploadExceed', 'uploadSized'];
     let result = {};

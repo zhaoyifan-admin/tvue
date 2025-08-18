@@ -1,7 +1,7 @@
 /**
  * 判断是否为空
  */
-export function validatenull (val) {
+export function validatenull(val) {
   if (val instanceof Date || typeof val === 'boolean' || typeof val === 'number') return false;
   if (val instanceof Array) {
     if (val.length === 0) return true;
