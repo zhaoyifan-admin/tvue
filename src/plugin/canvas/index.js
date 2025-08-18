@@ -36,7 +36,7 @@ let config = {
 
 /**
  * 参数 {Object} opt
- * @param {String} text    水印文本，默认'avue商用通用无敌大水印'
+ * @param {String} text    水印文本，默认'tvue商用通用无敌大水印'
  * @param {String} font    水印字体，默认'30px 黑体'
  * @param {Int} canvasWidth    单个水印容器宽度，默认500
  * @param {Int} canvasHeight    单个水印容器高度，默认200
