@@ -1,23 +1,16 @@
-import {
-  validatenull
-} from './validate';
-import {
-  DIC_PROPS,
-  CHILDREN_LIST
-} from 'global/variable';
-import {
-  typeList
-} from 'global/variable';
+import {validatenull} from './validate';
+import {CHILDREN_LIST, DIC_PROPS, typeList} from 'global/variable';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _cloneDeep from 'lodash/cloneDeep';
+
 export const isMediaType = (url, type) => {
   if (validatenull(url)) return null;
-  if (typeList.audio.test(url) || typeList.audio.test(type) || type == 'audio') {
+  if (typeList.audio.test(url) || typeList.audio.test(type) || type === 'audio') {
     return 'audio';
-  } else if (typeList.video.test(url) || typeList.video.test(type) || type == 'video') {
+  } else if (typeList.video.test(url) || typeList.video.test(type) || type === 'video') {
     return 'video';
-  } else if (typeList.img.test(url) || typeList.img.test(type) || type == 'img') {
+  } else if (typeList.img.test(url) || typeList.img.test(type) || type === 'img') {
     return 'img';
   }
   return null;
@@ -32,8 +25,7 @@ export const uuid = () => {
   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
   s[8] = s[13] = s[18] = s[23] = '-';
 
-  var uuid = s.join('');
-  return uuid;
+  return s.join('');
 };
 export function getFixed(val = 0, len = 2) {
   return Number(val.toFixed(len));
@@ -51,7 +43,7 @@ export function setAsVal(obj, bind = '', value) {
 export const loadScript = (type = 'js', url, dom = 'body') => {
   let flag = false;
   return new Promise((resolve) => {
-    const head = dom == 'head' ? document.getElementsByTagName('head')[0] : document.body;
+    const head = dom === 'head' ? document.getElementsByTagName('head')[0] : document.body;
     for (let i = 0; i < head.children.length; i++) {
       let ele = head.children[i];
       if ((ele.src || '').indexOf(url) !== -1) {
@@ -227,11 +219,7 @@ export const getObjType = obj => {
 
 export const isJson = str => {
   if (Array.isArray(str)) {
-    if (str[0] instanceof Object) {
-      return true;
-    } else {
-      return false;
-    }
+    return str[0] instanceof Object;
   } else if (str instanceof Object) {
     return true;
   }

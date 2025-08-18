@@ -1,8 +1,8 @@
 .tvue-empty{
-    margin: 0 8px;
-    font-size: 14px;
-    line-height: 22px;
-    text-align: center;
+  margin: 0 8px;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
   &__image{
     height: auto;
     margin-bottom: 8px;
@@ -13,7 +13,8 @@
       border-style: none;
     }
   }
-  &__desc{
+  &__description{
+    line-height: 40px;
     color: rgba(0,0,0,0.65);
   }
 }

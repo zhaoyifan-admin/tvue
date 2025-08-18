@@ -21,6 +21,7 @@ import {
   loadScript,
   consoleLog
 } from 'utils/util';
+import {bd09Togps84, gcj02ToBd09, gcj02ToGps84, gps84Tobd09} from 'utils/gps';
 import dialogDrag from 'packages/core/directive/dialog-drag';
 import contextmenu from 'packages/core/directive/contextmenu';
 import $Export from 'plugin/export/';
@@ -34,7 +35,6 @@ import $NProgress from 'plugin/nprogress/';
 import $ImagePreview from 'packages/core/components/image-preview/';
 import $ImageCropper from 'packages/core/components/image-cropper/';
 import $DialogForm from 'packages/core/components/dialog-form/';
-import {bd09Togps84, gcj02ToBd09, gcj02ToGps84, gps84Tobd09} from './utils/gps';
 
 let prototypes = {
   $ImagePreview,
