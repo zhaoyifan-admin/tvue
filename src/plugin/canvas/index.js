@@ -4,27 +4,19 @@ import {
 } from 'utils/util';
 // file转base64
 export function fileToBase64(file, callback) {
-  const reader = new FileReader();
+  var reader = new FileReader();
   reader.readAsDataURL(file);
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     callback(e.target.result);
   };
 }
 // 标准参数
-let canvas = {
-  width: 200,
-  height: 200
-};
-let ctx = {
-  width: 200,
-  height: 200
-};
-let configDefault = {
+var canvas, ctx, configDefault = {
   width: 200,
   height: 200
 };
 let config = {
-  text: 'tuveJS', // 文字
+  text: 'tvueJS', // 文字
   fontFamily: 'microsoft yahei', // 字体
   color: '#999', // 颜色
   fontSize: 16, // 大小
@@ -45,14 +37,14 @@ let config = {
  * @param {Int} degree    水印文本旋转角度，默认 -20
  * @param return
  **/
-export default function(opt = {}) {
+export default function (opt = {}) {
   return new _waterMark(opt);
 };
 
 // 将base64转换为文件
 
 export function detailImg(file, option = {}) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const {
       text,
       fontFamily,
@@ -80,7 +72,7 @@ export function detailImg(file, option = {}) {
     function initImg(data) {
       var img = new Image();
       img.src = data;
-      img.onload = function() {
+      img.onload = function () {
         var width = img.width;
         var height = img.height;
         cretedCanvas(width, height);

@@ -8,7 +8,6 @@ import {
   DIC_PROPS
 } from 'global/variable';
 import slot from 'core/slot'
-
 export default function (name) {
   return {
     mixins: [slot],
@@ -35,19 +34,19 @@ export default function (name) {
     },
     watch: {
       defaults: {
-        handler(val) {
+        handler (val) {
           this.objectOption = val;
         },
         deep: true
       },
       objectOption: {
-        handler(val) {
+        handler (val) {
           this.$emit('update:defaults', val)
         },
         deep: true
       },
       propOption: {
-        handler(list) {
+        handler (list) {
           let result = {}
           list.forEach(ele => {
             result[ele.prop] = ele
@@ -58,13 +57,13 @@ export default function (name) {
         deep: true,
       },
       option: {
-        handler() {
+        handler () {
           this.init(false);
         },
         deep: true,
       },
     },
-    data() {
+    data () {
       return {
         DIC: {},
         cascaderDIC: {},
@@ -73,11 +72,11 @@ export default function (name) {
         objectOption: {}
       };
     },
-    created() {
+    created () {
       this.init();
     },
     computed: {
-      resultOption() {
+      resultOption () {
         return {
           ...this.tableOption,
           ...{
@@ -85,10 +84,10 @@ export default function (name) {
           }
         }
       },
-      rowKey() {
+      rowKey () {
         return this.tableOption.rowKey || DIC_PROPS.rowKey;
       },
-      formRules() {
+      formRules () {
         let result = {};
         this.propOption.forEach(ele => {
           if (ele.rules && ele.display !== false)
@@ -96,35 +95,36 @@ export default function (name) {
         });
         return result;
       },
-      isMediumSize() {
+      isMediumSize () {
         return this.controlSize;
       },
-      controlSize() {
+      controlSize () {
         return this.tableOption.size || this.$TVUE.size;
       }
     },
     methods: {
-      init(type) {
+      init (type) {
         let globOption = this.deepClone(this.$TVUE[`${name}Option`])
-        this.tableOption = {
+        let option = {
           ...globOption,
           ...this.option
-        };
+        }
+        this.tableOption = option;
         this.getIsMobile();
         this.handleLocalDic();
         if (type !== false) this.handleLoadDic()
       },
-      dicInit(type) {
+      dicInit (type) {
         if (type === 'cascader') {
           this.handleLoadCascaderDic()
         } else {
           this.handleLoadDic();
         }
       },
-      getIsMobile() {
+      getIsMobile () {
         this.isMobile = document.body.clientWidth <= 768;
       },
-      updateDic(prop, list) {
+      updateDic (prop, list) {
         let column = this.findObject(this.propOption, prop);
         if (this.validatenull(list) && this.validatenull(prop)) {
           this.handleLoadDic();
@@ -139,15 +139,15 @@ export default function (name) {
         }
       },
       //本地字典
-      handleLocalDic() {
+      handleLocalDic () {
         loadLocalDic(this.resultOption, this)
       },
       // 网络字典加载
-      handleLoadDic() {
+      handleLoadDic () {
         loadDic(this.resultOption, this)
       },
       //级联字典加载
-      handleLoadCascaderDic() {
+      handleLoadCascaderDic () {
         loadCascaderDic(this.propOption, this)
       }
     }

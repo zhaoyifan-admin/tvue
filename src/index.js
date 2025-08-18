@@ -17,11 +17,8 @@ import {
   setPx,
   isJson,
   downFile,
-  deleteField,
-  loadScript,
-  consoleLog
+  loadScript
 } from 'utils/util';
-import {bd09Togps84, gcj02ToBd09, gcj02ToGps84, gps84Tobd09} from 'utils/gps';
 import dialogDrag from 'packages/core/directive/dialog-drag';
 import contextmenu from 'packages/core/directive/contextmenu';
 import $Export from 'plugin/export/';
@@ -46,7 +43,6 @@ let prototypes = {
   $Log,
   $NProgress,
   $Screenshot,
-  consoleLog,
   deepClone,
   dataURLtoFile,
   isJson,
@@ -56,21 +52,17 @@ let prototypes = {
   findNode,
   validatenull,
   downFile,
-  deleteField,
   loadScript,
   watermark,
   findObject,
-  randomId,
-  bd09Togps84,
-  gcj02ToBd09,
-  gcj02ToGps84,
-  gps84Tobd09
+  randomId
+
 };
 let directive = {
   dialogDrag,
   contextmenu
 };
-const install = function(Vue, opts = {}) {
+const install = function (Vue, opts = {}) {
   if (opts.theme === 'dark') document.documentElement.className = 'tvue-theme--dark';
   const defaultOption = {
     size: opts.size || 'small',
@@ -123,7 +115,7 @@ const install = function(Vue, opts = {}) {
   Vue.prototype.$axios = opts.axios || window.axios || axios;
   window.axios = Vue.prototype.$axios;
   window.Vue = Vue;
-  Vue.prototype.$uploadFun = function(column = {}, safe) {
+  Vue.prototype.$uploadFun = function (column = {}, safe) {
     safe = safe || this;
     let list = ['uploadPreview', 'uploadBefore', 'uploadAfter', 'uploadDelete', 'uploadError', 'uploadExceed', 'uploadSized'];
     let result = {};

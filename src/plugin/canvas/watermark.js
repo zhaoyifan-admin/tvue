@@ -13,11 +13,11 @@ class waterMark {
     this.parentObserver();
   }
 
-  init(opt) {
+  init (opt) {
     this.option = Object.assign({
       width: 400,
       height: 200,
-      text: 'tuveJS',
+      text: 'tvueJS',
       fontSize: '30px',
       fontStyle: '黑体',
       textAlign: 'center',
@@ -26,7 +26,7 @@ class waterMark {
     }, opt);
   }
 
-  drawCanvas() {
+  drawCanvas () {
     this.isOberserve = true;
     let divContainer = document.createElement('div');
     let canvas = document.createElement('canvas');
@@ -42,8 +42,7 @@ class waterMark {
     context.fillText(this.option.text, 0, 0);
 
     let backgroundUrl = canvas.toDataURL('image/png');
-    let flag = this.option.id;
-    let el;
+    let flag = this.option.id, el;
     if (flag) el = document.getElementById(flag);
     this.styleStr = `
     position:${flag ? 'absolute' : 'fixed'};
@@ -66,7 +65,7 @@ class waterMark {
     this.isOberserve = false;
   }
 
-  wmObserver(divContainer) {
+  wmObserver (divContainer) {
     let wmConf = { attributes: true, childList: true, characterData: true };
     let wmObserver = new MutationObserver((mo) => {
       if (!this.isOberserve) {
@@ -79,7 +78,7 @@ class waterMark {
     wmObserver.observe(divContainer, wmConf);
   }
 
-  parentObserver() {
+  parentObserver () {
     let bodyObserver = new MutationObserver(() => {
       if (!this.isOberserve) {
         let __wm = document.querySelector(`#${this.CONTAINERID}`);
@@ -93,13 +92,13 @@ class waterMark {
     bodyObserver.observe(document.querySelector(`#${this.CONTAINERID}`).parentNode, { childList: true });
   }
 
-  Repaint(opt = {}) {
+  Repaint (opt = {}) {
     this.remove();
     this.init(opt);
     this.drawCanvas();
   }
 
-  remove() {
+  remove () {
     this.isOberserve = true;
     let _wm = document.querySelector(`#${this.CONTAINERID}`);
     _wm.parentNode.removeChild(_wm);

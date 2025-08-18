@@ -625,7 +625,7 @@
   // multiple renders, cloning them avoids errors when DOM manipulations rely
   // on their elm reference.
   function cloneVNode(vnode) {
-      var cloned = new VNode(vnode.tag, vnode.data,
+      var cloned = new VNode(vnode.tag, vnode.data, 
       // #7975
       // clone children array to avoid mutating original in case of cloning
       // a child.
@@ -2036,7 +2036,7 @@
       return data;
   }
 
-  function resolveScopedSlots(fns, res,
+  function resolveScopedSlots(fns, res, 
   // the following are added in 2.6
   hasDynamicKeys, contentHashKey) {
       res = res || { $stable: !hasDynamicKeys };
@@ -4084,7 +4084,7 @@
    */
   var Watcher = /** @class */ (function () {
       function Watcher(vm, expOrFn, cb, options, isRenderWatcher) {
-          recordEffectScope(this,
+          recordEffectScope(this, 
           // if the active effect scope is manually created (not a component scope),
           // prioritize it
           activeEffectScope && !activeEffectScope._vm
@@ -4991,14 +4991,14 @@
       var name = getComponentName(Ctor.options) || tag;
       var vnode = new VNode(
       // @ts-expect-error
-      "vue-component-".concat(Ctor.cid).concat(name ? "-".concat(name) : ''), data, undefined, undefined, undefined, context,
+      "vue-component-".concat(Ctor.cid).concat(name ? "-".concat(name) : ''), data, undefined, undefined, undefined, context, 
       // @ts-expect-error
       { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children }, asyncFactory);
       return vnode;
   }
   function createComponentInstanceForVnode(
   // we know it's MountedComponentVNode but flow doesn't
-  vnode,
+  vnode, 
   // activeInstance in lifecycle state
   parent) {
       var options = {
@@ -6188,7 +6188,7 @@
       'content,element,shadow,template,blockquote,iframe,tfoot');
   // this map is intentionally selective, only covering SVG elements that may
   // contain child elements.
-  var isSVG = makeMap('svg,animate,circle,clippath,cursor,defs,desc,ellipse,filter,typeface-face,' +
+  var isSVG = makeMap('svg,animate,circle,clippath,cursor,defs,desc,ellipse,filter,font-face,' +
       'foreignobject,g,glyph,image,line,marker,mask,missing-glyph,path,pattern,' +
       'polygon,polyline,rect,switch,symbol,text,textpath,tspan,use,view', true);
   var isPreTag = function (tag) { return tag === 'pre'; };
@@ -7072,7 +7072,7 @@
                   var oldElm = oldVnode.elm;
                   var parentElm = nodeOps.parentNode(oldElm);
                   // create new node
-                  createElm(vnode, insertedVnodeQueue,
+                  createElm(vnode, insertedVnodeQueue, 
                   // extremely rare edge case: do not insert if old element is in a
                   // leaving transition. Only happens when combining transition +
                   // keep-alive + HOCs. (#4590)
@@ -7448,7 +7448,7 @@
               if (c === 0x2f) {
                   // /
                   var j = i - 1;
-                  var p
+                  var p 
                   // find first non-whitespace prev char
                   = void 0;
                   // find first non-whitespace prev char
@@ -7972,7 +7972,7 @@
       target.addEventListener(name, handler, supportsPassive ? { capture: capture, passive: passive } : capture);
   }
   function remove(name, handler, capture, _target) {
-      (_target || target).removeEventListener(name,
+      (_target || target).removeEventListener(name, 
       //@ts-expect-error
       handler._wrapper || handler, capture);
   }
@@ -10971,7 +10971,7 @@
               if (!el.plain || (el.pre && maybeComponent)) {
                   data = genData(el, state);
               }
-              var tag
+              var tag 
               // check if this is a component in <script setup>
               = void 0;
               // check if this is a component in <script setup>

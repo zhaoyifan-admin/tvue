@@ -11,7 +11,6 @@ import Form from 'packages/element-ui/form';
 import Checkbox from 'packages/element-ui/checkbox';
 import Date from 'packages/element-ui/date';
 import Draggable from 'packages/element-ui/draggable';
-import Empty from 'packages/element-ui/empty';
 import Flow from 'packages/element-ui/flow';
 import Group from 'packages/element-ui/group';
 import Notice from 'packages/element-ui/notice';
@@ -36,7 +35,6 @@ import Sign from 'packages/element-ui/sign';
 import Slider from 'packages/element-ui/slider';
 import Keyboard from 'packages/element-ui/keyboard';
 import Tree from 'packages/element-ui/tree';
-import treeTransfer from 'packages/element-ui/tree-transfer';
 import Title from 'packages/element-ui/title';
 import Search from 'packages/element-ui/search';
 import Skeleton from 'packages/element-ui/skeleton';
@@ -61,7 +59,6 @@ export default {
   Date,
   CountUp,
   Draggable,
-  Empty,
   Flow,
   Group,
   Notice,
@@ -91,7 +88,6 @@ export default {
   Video,
   Verifys,
   textEllipsis,
-  treeTransfer,
   Skeleton,
   Sign,
   Login

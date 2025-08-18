@@ -11,7 +11,7 @@
       <el-table :data="data"
                 ref="table"
                 height="100%"
-                size="mini"
+                size="small"
                 border>
         <el-table-column align="center"
                          width="100"
@@ -44,19 +44,18 @@ import create from "core/create";
 import config from "./config.js";
 import packages from "core/packages";
 import locale from "core/locale";
-
 export default create({
   name: 'crud',
   mixins: [locale],
   inject: ["crud"],
-  data() {
+  data () {
     return {
       data: [],
       columnBox: false
     };
   },
   computed: {
-    defaultColumn() {
+    defaultColumn () {
       return [{
         label: this.t('crud.column.hide'),
         prop: 'hide'
@@ -81,7 +80,7 @@ export default create({
     }
   },
   methods: {
-    handleShow() {
+    handleShow () {
       this.data = []
       this.crud.propOption.forEach(column => {
         if (column.showColumn != false) this.data.push(column)
@@ -89,12 +88,12 @@ export default create({
       this.columnBox = true
       this.$nextTick(() => this.rowDrop())
     },
-    handleChange(prop) {
+    handleChange (prop) {
       if (['hide', 'filters'].includes(prop)) {
         this.crud.refreshTable()
       }
     },
-    rowDrop() {
+    rowDrop () {
       const el = this.$refs.table.$el.querySelectorAll(config.dropRowClass)[0]
       this.crud.tableDrop('column', el, evt => {
         const oldIndex = evt.oldIndex;
