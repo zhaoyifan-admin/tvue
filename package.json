@@ -23,14 +23,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://gitee.com/zhaoyifannangit/tvue.git"
+    "url": "git@github.com:zhaoyifan-admin/tvue.git"
   },
   "author": "zhaoyifannan",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitee.com/zhaoyifannangit/tvue/issues"
+    "url": ""
   },
-  "homepage": "https://gitee.com/zhaoyifannangit/tvue/blob/master/README.md",
+  "homepage": "",
   "devDependencies": {
     "@babel/core": "^7.13.14",
     "@babel/preset-env": "^7.13.12",

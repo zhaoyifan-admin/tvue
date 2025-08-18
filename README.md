@@ -15,22 +15,4 @@
 
 ## 文档
 
-要查看[Live Examples](https://tvuejs.com/doc/installation)和文档，请访问[https://tvuejs.com](https://tvuejs.com).
-
-## 问答
-
-有关问题和支持，请使用[issues](https://gitee.com/zhaoyifannangit/tvue/issues)或加入QQ群606410437.
-
-## issues
-
-打开问题之前，请务必提供详细的问题过程和截图，不符合准则的问题将会被拒绝.
-
-## Changelog
-
-[发行说明](https://gitee.com/zhaoyifannangit/tvue/releases)中记录了每个版本的详细更改。
-
-## License
-
-[MIT](http://opensource.org/licenses/MIT)
-
-Copyright (c) 2017-present, Zhaoyifannan
+文档，请访问[https://zhaoyifan-admin.github.io/vuepress-3.0/](https://zhaoyifan-admin.github.io/vuepress-3.0/).
