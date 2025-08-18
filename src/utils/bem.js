@@ -30,7 +30,7 @@ const prefix = (name, mods) => {
 
 export default {
   methods: {
-    b(el, mods) {
+    b (el, mods) {
       const { name } = this.$options;
 
       if (el && typeof el !== 'string') {

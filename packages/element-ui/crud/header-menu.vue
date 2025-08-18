@@ -46,6 +46,7 @@
                  @click="rowExcel"
                  v-permission="crud.getPermission('excelBtn')"
                  v-if="vaildData(crud.tableOption.excelBtn,config.excelBtn)"></el-button>
+      </el-button>
       <el-button :icon="crud.getBtnIcon('printBtn')"
                  :class="b('printBtn')"
                  circle
@@ -53,6 +54,7 @@
                  @click="rowPrint"
                  v-permission="crud.getPermission('printBtn')"
                  v-if="vaildData(crud.tableOption.printBtn,config.printBtn)"></el-button>
+      </el-button>
       <el-button :icon="crud.getBtnIcon('refreshBtn')"
                  :class="b('refreshBtn')"
                  circle
@@ -87,6 +89,7 @@
                  @click="crud.handleGridShow()"
                  v-permission="crud.getPermission('gridBtn')"
                  v-if="vaildData(crud.tableOption.gridBtn,config.gridBtn)"></el-button>
+
     </div>
   </div>
 </template>

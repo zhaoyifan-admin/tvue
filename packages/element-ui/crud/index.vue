@@ -39,7 +39,7 @@
                 v-bind="scope"></slot>
         </template>
       </header-menu>
-      <el-tag class="tvue-crud__tip p-relative"
+      <el-tag class="tvue-crud__tip"
               v-if="vaildData(tableOption.tip,config.tip) && tableOption.selection">
         <span class="tvue-crud__tip-name">
           {{t('crud.tipStartTitle')}}
@@ -48,7 +48,6 @@
         </span>
         <el-button type="text"
                    size="small"
-                   class="p-absolute right-10"
                    @click="clearSelection"
                    v-permission="getPermission('selectClearBtn')"
                    v-if="vaildData(tableOption.selectClearBtn,config.selectClearBtn) && tableOption.selection">{{t('crud.emptyBtn')}}</el-button>
@@ -104,7 +103,7 @@
                    ref="table"
                    :width="setPx(tableOption.width,config.width)"
                    :border="tableOption.border"
-                   v-loading="tableLoading"
+                   v-loading.lock="tableLoading"
                    :element-loading-text="tableOption.loadingText"
                    :element-loading-spinner="tableOption.loadingSpinner"
                    :element-loading-svg="tableOption.loadingSvg"
@@ -118,9 +117,9 @@
             <div :class="b('empty')">
               <slot name="empty"
                     v-if="$slots.empty"></slot>
-              <empty v-else
+              <el-empty v-else
                         :image-size="100"
-                        :description="tableOption.emptyText || t('crud.emptyText')"></empty>
+                        :description="tableOption.emptyText || t('crud.emptyText')"></el-empty>
             </div>
           </template>
           <column :columnOption="columnOption">
@@ -221,7 +220,6 @@ import columnMenu from './column-menu'
 import columnDefault from './column-default'
 import config from "./config.js";
 import { calcCascader, formInitVal } from "core/dataformat";
-import empty from 'packages/element-ui/empty';
 import { DIC_PROPS } from 'global/variable';
 import { getColumn } from 'utils/util'
 export default create({
@@ -246,8 +244,7 @@ export default create({
     dialogColumn, //显隐列
     dialogFilter, //过滤器
     dialogExcel,//导出数据
-    dialogForm, //分页,
-    empty
+    dialogForm //分页,
   },
   data () {
     return {
@@ -530,8 +527,8 @@ export default create({
       return this.tableOption[name] || config[name]
     },
     //对部分表单字段进行校验的方法
-    validateField (val) {
-      return this.$refs.dialogForm.$refs.tableForm.validateField(val);
+    validateField (val, fn) {
+      return this.$refs.dialogForm.$refs.tableForm.validateField(val, fn);
     },
     clearSelection () {
       this.$emit('selection-clear', this.deepClone(this.tableSelect))
@@ -702,13 +699,13 @@ export default create({
       }
     },
     rowCellUpdate (row, index) {
-      row = this.deepClone(row);
       var result = this.validateCellField(index)
-      const done = () => {
+      const done = (newRow) => {
+        row = newRow || row
         this.btnDisabledList[index] = false;
         this.btnDisabled = false;
+        row.$cellEdit = false
         this.list[index] = row;
-        this.list[index].$cellEdit = false
         this.cascaderIndexList.splice(this.cascaderIndexList.indexOf(index), 1);
         delete this.cascaderFormList[index]
       }

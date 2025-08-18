@@ -1,11 +1,24 @@
-import {loadCascaderDic, loadDic, loadLocalDic, sendDic} from 'core/dic';
-import {DIC_PROPS} from 'global/variable';
+import {
+  sendDic,
+  loadDic,
+  loadCascaderDic,
+  loadLocalDic
+} from 'core/dic';
+import {
+  DIC_PROPS
+} from 'global/variable';
 import slot from 'core/slot'
 
 export default function (name) {
   return {
     mixins: [slot],
     props: {
+      tableData: {
+        type: Object,
+        default: () => {
+          return {}
+        }
+      },
       defaults: {
         type: Object,
         default () {

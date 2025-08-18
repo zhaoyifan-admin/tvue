@@ -1,6 +1,6 @@
 <template>
   <div :class="[b(),{'tvue--detail':isDetail}]"
-       :style="{width:setPx(parentOption.formWidth,'100%'),maxHeight:(tableOption.formMaxHeight,'650px'),overflowY:'scroll'}">
+       :style="{width:setPx(parentOption.formWidth,'100%')}">
     <el-form ref="form"
              :status-icon="parentOption.statusIcon"
              @submit.native.prevent
@@ -127,6 +127,7 @@
                                :propsHttp="parentOption.propsHttp"
                                :render="column.render"
                                :row="form"
+                               :table-data="tableData"
                                v-bind="$uploadFun(column)"
                                :disabled="getDisabled(column)"
                                :readonly="column.readonly || readonly"
@@ -299,7 +300,7 @@ export default create({
       return this.parentOption.tabs === true;
     },
     isAdd () {
-      return this.boxType === "add"
+      return ['parentAdd', 'add'].includes(this.boxType)
     },
     isEdit () {
       return this.boxType === "edit"
@@ -531,8 +532,8 @@ export default create({
       return isPx ? this.setPx(result) : result
     },
     //对部分表单字段进行校验的方法
-    validateField (val) {
-      return this.$refs.form.validateField(val);
+    validateField (val, fn) {
+      return this.$refs.form.validateField(val, fn);
     },
     validTip (column) {
       return !column.tip || column.type === 'upload'

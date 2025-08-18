@@ -1,6 +1,6 @@
 export default {
   methods: {
-    getSlotName(item = {}, type = 'D', slot) {
+    getSlotName (item = {}, type = 'D', slot) {
       let result = {
         F: 'Form',
         H: 'Header',
