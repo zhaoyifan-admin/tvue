@@ -88,7 +88,6 @@ $space-width: 15px;
     height: auto;
     overflow: hidden;
     margin-bottom: 5px;
-    background-color: #fff;
   }
 
   &__search {
@@ -134,8 +133,8 @@ $space-width: 15px;
 
   .el-table th.el-table__cell {
     word-break: break-word;
-    color: rgba(0, 0, 0, 0.85);
-    background-color: #fafafa;
+    color: var(--trud-color-table-text);
+    background-color: var(--trud-bg-table-cell);
   }
 
   &__color {

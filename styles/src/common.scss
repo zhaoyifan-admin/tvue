@@ -16,7 +16,7 @@ body {
   }
 
   .tvue-group__header {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--el-border-color);
     padding-left: 10px;
   }
 
@@ -242,12 +242,12 @@ body {
   }
   .el-dialog__header,
   .el-drawer__header {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--el-border-color);
   }
 
   .el-dialog__title,
   .el-drawer__header {
-    color: rgba(0, 0, 0, .85);
+    color: var(--el-text-color-primary);
     font-weight: 500;
     word-wrap: break-word;
   }
@@ -255,11 +255,10 @@ body {
   .el-dialog__body {
     padding:20px 20px 60px 20px;
     flex: 1;
-    overflow: scroll;
+    overflow: hidden auto;
   }
   .el-dialog__footer{
-    padding:20px;
-    padding-top: 10px;
+    padding: 10px 20px 20px;
   }
 
   .el-drawer {
@@ -281,16 +280,15 @@ body {
 
   &__footer {
     z-index: 2;
-    padding-top: 20px;
     display: block;
     padding: 10px 16px;
     box-sizing: border-box;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--el-border-color);
     width: 100%;
     position: absolute;
     left: 0;
     bottom: 0;
-    background-color: #fff;
+    background-color: var(--el-dialog-bg-color);
     text-align: right;
 
     &--left {
