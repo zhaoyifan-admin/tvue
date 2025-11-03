@@ -25,7 +25,7 @@ yarn add @zhaoyifannan/tvue
 // 完整引入
 import { createApp } from 'vue'
 import Tvue from '@zhaoyifannan/tvue'
-import '@zhaoyifannan/tvue/dist/tvue.css'
+import '@zhaoyifannan/tvue/lib/index.css'
 import App from './App.vue'
 
 const app = createApp(App)

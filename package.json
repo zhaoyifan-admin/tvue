@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "3.7.8",
+  "version": "3.7.9",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/tvue.min.js",
   "unpkg": "lib/tvue.min.js",
@@ -54,7 +54,7 @@
     "gulp-postcss": "^9.0.1",
     "gulp-sass": "^6.0.0",
     "progress-bar-webpack-plugin": "^1.11.0",
-    "sass": "^1.52.1",
+    "sass": "^1.77.8",
     "vue": "^3.3.4",
     "vue-loader": "^16.1.2",
     "webpack": "^4.27.0",

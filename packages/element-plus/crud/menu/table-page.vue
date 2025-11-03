@@ -1,9 +1,11 @@
 <template>
   <el-card :shadow="crud.isCard"
            :class="b('pagination')"
+           :body-style="{ padding: '10px 20px' }"
            v-if="pageFlag && validData(crud.tableOption.page,true)">
     <slot name="page"></slot>
-    <el-pagination :small="crud.size=='small'"
+    <el-pagination :small="crud.small || false"
+                   :size="crud.size || 'defult'"
                    :disabled="defaultPage.disabled"
                    :hide-on-single-page="defaultPage.single"
                    :pager-count="defaultPage.pagerCount"
