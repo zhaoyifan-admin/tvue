@@ -1,7 +1,7 @@
 <template>
   <el-card :shadow="crud.isCard"
            :class="b('pagination')"
-           :body-style="{ padding: '10px 20px' }"
+           :body-style="{ padding: '15px 20px' }"
            v-if="pageFlag && validData(crud.tableOption.page,true)">
     <slot name="page"></slot>
     <el-pagination :small="crud.small || false"
