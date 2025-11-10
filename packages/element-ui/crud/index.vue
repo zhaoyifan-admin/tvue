@@ -526,10 +526,15 @@ export default create({
           const clientHeight = document.documentElement.clientHeight;
           const calcHeight = this.calcHeight || 0;
           const tableRef = this.$refs.table;
+          const headerSearchRef = this.$refs.headerSearch;
           const tablePageRef = this.$refs.tablePage;
           let tableHeight = clientHeight - calcHeight;
           if (tableRef) {
             const height = tableRef.$el.offsetTop || 0;
+            tableHeight -= height;
+          }
+          if(headerSearchRef) {
+            const height = headerSearchRef.$el.offsetTop || 0;
             tableHeight -= height;
           }
           if (tablePageRef) {
