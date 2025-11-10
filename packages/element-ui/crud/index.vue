@@ -534,7 +534,7 @@ export default create({
             tableHeight -= height;
           }
           if(headerSearchRef) {
-            const height = headerSearchRef.$el.offsetTop || 0;
+            const height = headerSearchRef.$el.offsetHeight || 0;
             tableHeight -= height;
           }
           if (tablePageRef) {
