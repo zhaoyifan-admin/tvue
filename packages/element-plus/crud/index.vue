@@ -306,7 +306,9 @@ export default create({
   },
   mounted() {
     this.dataInit();
-    this.getTableHeight();
+    setTimeout(()=>{
+      this.getTableHeight();
+    },500)
     this.initFun();
     this.initVirtualizeFun();
   },
@@ -597,24 +599,43 @@ export default create({
     getTableHeight() {
       this.$nextTick(() => {
         if (this.isAutoHeight) {
-          const clientHeight = document.documentElement.clientHeight;
-          const calcHeight = this.calcHeight || 0;
-          const tableRef = this.$refs.table;
-          const tablePageRef = this.$refs.tablePage;
-          let tableHeight = clientHeight - calcHeight;
-          if (tableRef) {
-            const height = tableRef.$el.offsetTop || 0;
-            tableHeight -= height;
-          }
-          if (tablePageRef) {
-            const height = tablePageRef.$el.offsetHeight || 0;
-            tableHeight -= height;
-          }
-          this.tableHeight = tableHeight;
+          const element = this.$el;
+          if (!element) return;
+
+          const parentElement = element.parentElement;
+          if (!parentElement) return;
+
+          // 使用 requestAnimationFrame 确保布局已完成
+          requestAnimationFrame(() => {
+            let clientHeight = parentElement.clientHeight;
+            const computedStyle = window.getComputedStyle(parentElement);
+            const paddingBottom = parseFloat(computedStyle.paddingBottom);
+
+            if(this.option.card) {
+              clientHeight -=16;
+            } else {
+              clientHeight += 10;
+            }
+            const calcHeight = this.calcHeight || 0;
+            const tableRef = this.$refs.table;
+            const tablePageRef = this.$refs.tablePage;
+            let tableHeight = clientHeight - calcHeight - paddingBottom;
+
+            if (tableRef) {
+              const height = tableRef.$el.offsetTop || 0;
+              tableHeight -= height;
+            }
+            if (tablePageRef) {
+              const height = tablePageRef.$el.offsetHeight || 0;
+              tableHeight -= height;
+            }
+            this.tableHeight = tableHeight;
+            this.doLayout();
+          });
         } else {
           this.tableHeight = this.tableOption.height;
+          this.doLayout();
         }
-        this.doLayout();
       });
     },
     refreshTable(callback) {
