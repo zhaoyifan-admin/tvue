@@ -47,7 +47,7 @@
           :size="size"
           icon="el-icon-check"
           @click="handleSubmit()"
-        >{{ t("common.submitBtn") }}</el-button
+          >{{ t("common.submitBtn") }}</el-button
         >
       </span>
     </el-dialog>
@@ -180,8 +180,14 @@ export default create({
       if (typeof this.onLoad == "function") {
         this.onLoad({ value: this.text }, (data) => {
           let result = Array.isArray(data) ? data : [data];
-          this.object = this.deepClone(result);
-          this.active = this.deepClone(result);
+          const value = this.text;
+          const valueArray = result.filter((item) =>
+            value.some((val) => val == item[this.valueKey])
+          );
+
+          this.object = this.deepClone(valueArray);
+          this.active = this.deepClone(valueArray);
+
           this.created = true;
         });
       }

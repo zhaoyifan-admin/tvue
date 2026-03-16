@@ -45,8 +45,8 @@
         <template v-else>
           <span>{{ getLabelText(scope.item) }}</span>
           <span v-if="scope.item[descKey]" :class="b('desc')">{{
-              scope.item[descKey]
-            }}</span>
+            scope.item[descKey]
+          }}</span>
         </template>
       </template>
       <template v-else>
@@ -75,8 +75,8 @@
                 <template v-else>
                   <span>{{ getLabelText(citem) }}</span>
                   <span v-if="citem[descKey]" :class="b('desc')">{{
-                      citem[descKey]
-                    }}</span>
+                    citem[descKey]
+                  }}</span>
                 </template>
               </template>
             </el-option>
@@ -90,7 +90,7 @@
               :disabled="disabled"
               :indeterminate="indeterminate"
               @change="checkChange"
-            >全选</el-checkbox
+              >全选</el-checkbox
             >
           </div>
 
@@ -113,8 +113,8 @@
               <template v-else>
                 <span>{{ getLabelText(item) }}</span>
                 <span v-if="item[descKey]" :class="b('desc')">{{
-                    item[descKey]
-                  }}</span>
+                  item[descKey]
+                }}</span>
               </template>
             </template>
           </el-option>

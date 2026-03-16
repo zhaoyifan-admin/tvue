@@ -10,7 +10,7 @@ function getDataType(list = [], props = {}, type) {
     if (ele[childrenKey]) getDataType(ele[childrenKey], props, type);
   });
   return list;
-}
+};
 
 function getResData(data, props, dataType) {
   const bind = props.res;
@@ -23,7 +23,7 @@ function getResData(data, props, dataType) {
   }
   if (dataType) res = getDataType(res, props, dataType);
   return res;
-}
+};
 export const loadCascaderDic = (columnOption, safe) => {
   return new Promise(resolve => {
     let list = [];

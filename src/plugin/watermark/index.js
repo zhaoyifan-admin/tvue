@@ -3,12 +3,12 @@ import {
   dataURLtoFile
 } from 'utils/util';
 // 标准参数
-let canvas, ctx, configDefault = {
+var canvas, ctx, configDefault = {
   width: 200,
   height: 200
 };
 let config = {
-  text: 'tvueJS', // 文字
+  text: 'avueJS', // 文字
   fontFamily: 'microsoft yahei', // 字体
   color: '#999', // 颜色
   fontSize: 16, // 大小
@@ -20,7 +20,7 @@ let config = {
 
 /**
  * 参数 {Object} opt
- * @param {String} text    水印文本，默认'tvue商用通用无敌大水印'
+ * @param {String} text    水印文本，默认'avue商用通用无敌大水印'
  * @param {String} font    水印字体，默认'30px 黑体'
  * @param {Int} canvasWidth    单个水印容器宽度，默认500
  * @param {Int} canvasHeight    单个水印容器高度，默认200
@@ -29,14 +29,14 @@ let config = {
  * @param {Int} degree    水印文本旋转角度，默认 -20
  * @param return
  **/
-export default function(opt = {}) {
+export default function (opt = {}) {
   return new _waterMark(opt);
 };
 
 // 将base64转换为文件
 
 export function detailImg(file, option = {}) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     const {
       text,
       fontFamily,
@@ -64,7 +64,7 @@ export function detailImg(file, option = {}) {
     function initImg(data) {
       var img = new Image();
       img.src = data;
-      img.onload = function() {
+      img.onload = function () {
         var width = img.width;
         var height = img.height;
         cretedCanvas(width, height);

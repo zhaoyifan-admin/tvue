@@ -82,7 +82,7 @@
         :size="crud.size"
         :icon="option.submitIcon"
         type="primary"
-      >{{ option.submitText }}</el-button
+        >{{ option.submitText }}</el-button
       >
       <el-button
         v-if="validData(option.emptyBtn, true) && !isView"
@@ -90,7 +90,7 @@
         :disabled="disabled || loading"
         :size="crud.size"
         :icon="option.emptyIcon"
-      >{{ option.emptyText }}</el-button
+        >{{ option.emptyText }}</el-button
       >
       <slot name="menu-form" v-bind="menuParams()"></slot>
     </span>
@@ -155,13 +155,13 @@ export default create({
     params() {
       let result = this.isDrawer
         ? {
-          size: this.fullscreen ? "100%" : this.width,
-          direction: this.crud.tableOption.dialogDirection,
-        }
+            size: this.fullscreen ? "100%" : this.width,
+            direction: this.crud.tableOption.dialogDirection,
+          }
         : {
-          width: this.width,
-          fullscreen: this.fullscreen,
-        };
+            width: this.width,
+            fullscreen: this.fullscreen,
+          };
       return Object.assign(result, this.$uploadFun({}, this.crud));
     },
     option() {

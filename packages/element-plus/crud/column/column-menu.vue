@@ -52,28 +52,28 @@
                 :class="b('viewBtn')"
                 v-if="validData(crud.tableOption.viewBtn, config.viewBtn) && crud.getPermission('viewBtn', row, $index)"
                 @click="crud.rowView(row, $index)"
-              >{{ crud.menuIcon("viewBtn") }}</el-dropdown-item
+                >{{ crud.menuIcon("viewBtn") }}</el-dropdown-item
               >
               <el-dropdown-item
                 :icon="crud.getBtnIcon('copyBtn')"
                 :class="b('copyBtn')"
                 v-if="validData(crud.tableOption.copyBtn, config.copyBtn) && crud.getPermission('copyBtn', row, $index)"
                 @click="crud.rowCopy(row)"
-              >{{ crud.menuIcon("copyBtn") }}</el-dropdown-item
+                >{{ crud.menuIcon("copyBtn") }}</el-dropdown-item
               >
               <el-dropdown-item
                 :icon="crud.getBtnIcon('editBtn')"
                 :class="b('editBtn')"
                 v-if="validData(crud.tableOption.editBtn, config.editBtn) && crud.getPermission('editBtn', row, $index)"
                 @click="crud.rowEdit(row, $index)"
-              >{{ crud.menuIcon("editBtn") }}</el-dropdown-item
+                >{{ crud.menuIcon("editBtn") }}</el-dropdown-item
               >
               <el-dropdown-item
                 :icon="crud.getBtnIcon('delBtn')"
                 :class="b('delBtn')"
                 v-if="validData(crud.tableOption.delBtn, config.delBtn) && crud.getPermission('delBtn', row, $index)"
                 @click="crud.rowDel(row, $index)"
-              >{{ crud.menuIcon("delBtn") }}</el-dropdown-item
+                >{{ crud.menuIcon("delBtn") }}</el-dropdown-item
               >
               <slot
                 name="menu-btn"

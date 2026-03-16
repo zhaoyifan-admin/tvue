@@ -1,7 +1,7 @@
 /**
  * 判断是否为空
  */
-export function validatenull(val) {
+export function validatenull (val) {
   if (val instanceof Date || typeof val === 'boolean' || typeof val === 'number') return false;
   if (val instanceof Array) {
     if (val.length === 0) return true;
@@ -11,11 +11,16 @@ export function validatenull(val) {
     }
     return true;
   } else {
-    return val === 'null' ||
+    if (
+      val === 'null' ||
       val == null ||
       val === 'undefined' ||
       val === undefined ||
-      val === '';
+      val === ''
+    ) {
+      return true;
+    }
+    return false;
   }
   return false;
 }

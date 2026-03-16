@@ -3,8 +3,6 @@ import {
   version
 } from './version';
 import axios from 'axios';
-import user from '../images/user.jpeg';
-import T from '../images/t.png';
 import {
   validatenull
 } from 'utils/validate.js';
@@ -19,8 +17,7 @@ import {
   setPx,
   isJson,
   downFile,
-  loadScript,
-  consoleLog
+  loadScript
 } from 'utils/util';
 import contextmenu from 'packages/core/directive/contextmenu';
 import $Export from 'plugin/export/';
@@ -42,7 +39,6 @@ let plugins = {
   $Watermark,
   $Log,
   $Screenshot,
-  consoleLog,
   deepClone,
   dataURLtoFile,
   isJson,

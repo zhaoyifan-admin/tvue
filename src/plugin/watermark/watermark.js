@@ -1,4 +1,4 @@
-// const CONTAINERID = '_tvue-_markcontainer';
+// const CONTAINERID = '_tvue_markcontainer';
 
 import { randomId } from 'utils/util';
 class waterMark {

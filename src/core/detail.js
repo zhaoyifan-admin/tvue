@@ -42,14 +42,18 @@ export const detail = (row = {}, column = {}, option = {}, dic = []) => {
         if (Array.isArray(result)) {
           result = result.map(date => dayjs(date).format(format)).join(column.separator || ',');
         }
-      } else if (type.indexOf('range') !== -1) { // 处理日期范围
+      }
+      // 处理日期范围
+      else if (type.indexOf('range') !== -1) {
         let [date1 = '', date2 = ''] = result;
         if (type === 'timerange') {
           date1 = `${formatValue} ${date1}`;
           date2 = `${formatValue} ${date2}`;
         }
         result = [dayjs(date1).format(format), dayjs(date2).format(format)].join(column.separator || '~');
-      } else { // 处理单个日期
+      }
+      // 处理单个日期
+      else {
         if (type === 'time') {
           result = `${formatValue} ${result}`;
         }
