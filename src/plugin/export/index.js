@@ -2,7 +2,7 @@
 
 import { isJson, downFile, validData } from 'utils/util';
 import packages from "core/packages";
-import dayjs from 'dayjs'
+import moment from 'moment'
 export default {
   buildHeader (revealList) {
     let excelHeader = [];
@@ -16,7 +16,7 @@ export default {
   },
 
   /**
-   * 生成头部 
+   * 生成头部
    * @param headers 展示的头部
    * @param excelHeader excel头部
    * @param deep 深度
@@ -196,7 +196,7 @@ export default {
 
       // 从参数中派生数据
       _params.header = this.buildHeader(params.columns);
-      _params.title = params.title || dayjs().format('YYYY-MM-DD HH:mm:ss');
+      _params.title = params.title || moment().format('YYYY-MM-DD HH:mm:ss');
       const callback = (list) => {
         list.forEach(ele => {
           if (ele.children && ele.children instanceof Array) {

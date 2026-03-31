@@ -609,17 +609,16 @@ export default create({
           requestAnimationFrame(() => {
             let clientHeight = parentElement.clientHeight;
             const computedStyle = window.getComputedStyle(parentElement);
+            const paddingTop = parseFloat(computedStyle.paddingTop);
             const paddingBottom = parseFloat(computedStyle.paddingBottom);
 
             if(this.option.card) {
               clientHeight -=16;
-            } else {
-              clientHeight += 10;
             }
             const calcHeight = this.calcHeight || 0;
             const tableRef = this.$refs.table;
             const tablePageRef = this.$refs.tablePage;
-            let tableHeight = clientHeight - calcHeight - paddingBottom;
+            let tableHeight = clientHeight - calcHeight - paddingTop - paddingBottom;
 
             if (tableRef) {
               const height = tableRef.$el.offsetTop || 0;

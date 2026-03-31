@@ -21,9 +21,7 @@ import InputNumber from 'packages/element-plus/input-number';
 import InputTree from 'packages/element-plus/input-tree';
 import InputMap from 'packages/element-plus/input-map';
 import InputIcon from 'packages/element-plus/input-icon';
-import InputTag from 'packages/element-plus/input-tag';
 import InputTable from 'packages/element-plus/input-table';
-import Mention from 'packages/element-plus/mention';
 import Verifys from 'packages/element-plus/verify';
 import Switchs from 'packages/element-plus/switch';
 import Rate from 'packages/element-plus/rate';
@@ -64,9 +62,7 @@ export default {
   InputTree,
   InputIcon,
   InputMap,
-  InputTag,
   InputTable,
-  Mention,
   Switchs,
   Rate,
   Upload,

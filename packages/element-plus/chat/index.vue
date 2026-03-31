@@ -195,7 +195,7 @@
 <script>
 import create from "core/create";
 import locale from "core/locale";
-import dayjs from 'dayjs'
+import moment from 'moment'
 export default create({
   name: "chat",
   mixins: [locale],
@@ -387,7 +387,7 @@ export default create({
       const text = params.text || {};
       const date = params.date
       const textObj = {
-        date: date || dayjs().format('YYYY-MM-DD HH:mm:ss'),
+        date: date || moment().format('YYYY-MM-DD HH:mm:ss'),
         text: (() => {
           if (typeof (text) != 'object') {
             return {

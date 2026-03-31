@@ -1,7 +1,7 @@
 import { validatenull } from 'utils/validate';
 import { getPasswordChar, getDicValue, getAsVal, detailDataType } from 'utils/util';
 import { DIC_SPLIT, DIC_SHOW_SPLIT, DATE_LIST, MULTIPLE_LIST, ARRAY_VALUE_LIST } from 'global/variable';
-import dayjs from 'dayjs';
+import moment from 'moment';
 export const detail = (row = {}, column = {}, option = {}, dic = []) => {
   let result = row[column.prop];
   let type = column.type;
@@ -32,7 +32,7 @@ export const detail = (row = {}, column = {}, option = {}, dic = []) => {
       result = getPasswordChar(result, '*');
     } else if (DATE_LIST.includes(type) && column.format) {
       const format = column.format;
-      let formatValue = dayjs().format('YYYY-MM-DD');
+      let formatValue = moment().format('YYYY-MM-DD');
 
       // 处理多个日期的情况 (dates、years、months)
       if (['dates', 'years', 'months'].includes(type)) {
@@ -40,7 +40,7 @@ export const detail = (row = {}, column = {}, option = {}, dic = []) => {
           result = result.split(',');
         }
         if (Array.isArray(result)) {
-          result = result.map(date => dayjs(date).format(format)).join(column.separator || ',');
+          result = result.map(date => moment(date).format(format)).join(column.separator || ',');
         }
       }
       // 处理日期范围
@@ -50,14 +50,14 @@ export const detail = (row = {}, column = {}, option = {}, dic = []) => {
           date1 = `${formatValue} ${date1}`;
           date2 = `${formatValue} ${date2}`;
         }
-        result = [dayjs(date1).format(format), dayjs(date2).format(format)].join(column.separator || '~');
+        result = [moment(date1).format(format), moment(date2).format(format)].join(column.separator || '~');
       }
       // 处理单个日期
       else {
         if (type === 'time') {
           result = `${formatValue} ${result}`;
         }
-        result = dayjs(result).format(format);
+        result = moment(result).format(format);
       }
     }
   }
