@@ -1,6 +1,6 @@
 import type { App, Plugin } from "vue";
 
-export interface AvueInstallOptions {
+export interface TvueInstallOptions {
   size?: string;
   calcHeight?: number;
   menuType?: string;
@@ -16,23 +16,23 @@ export interface AvueInstallOptions {
   [key: string]: any;
 }
 
-export interface AvuePlugin extends Plugin {
+export interface TvuePlugin extends Plugin {
   version: string;
   locale: any;
-  install(app: App, options?: AvueInstallOptions): void;
+  install(app: App, options?: TvueInstallOptions): void;
   [key: string]: any;
 }
 
-declare const Avue: AvuePlugin;
+declare const Tvue: TvuePlugin;
 
 export const version: string;
 export const locale: any;
-export function install(app: App, options?: AvueInstallOptions): void;
-export default Avue;
+export function install(app: App, options?: TvueInstallOptions): void;
+export default Tvue;
 
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
-    $AVUE: Record<string, any>;
+    $TVUE: Record<string, any>;
     $DialogForm: any;
     $ImagePreview: any;
     $Export: any;

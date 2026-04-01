@@ -613,7 +613,7 @@ export default create({
             const paddingBottom = parseFloat(computedStyle.paddingBottom);
 
             if(this.option.card) {
-              clientHeight -=16;
+              clientHeight -=30;
             }
             const calcHeight = this.calcHeight || 0;
             const tableRef = this.$refs.table;

@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="[b(), { 'avue--detail': isDetail }]"
+    :class="[b(), { 'tvue--detail': isDetail }]"
     :style="{ width: setPx(tableOption.formWidth, '100%') }"
   >
     <el-form
@@ -88,7 +88,7 @@
                 :pull="getItemParams(column, item, 'pull')"
                 :class="[
                   b('row'),
-                  { 'avue--detail avue--detail__column': vaildDetail(column) },
+                  { 'tvue--detail tvue--detail__column': vaildDetail(column) },
                   column.className,
                 ]"
               >
