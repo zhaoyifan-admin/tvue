@@ -93,6 +93,18 @@ const externals = {
     commonjs: "@element-plus/icons-vue",
     amd: "@element-plus/icons-vue",
   },
+  "ant-design-vue": {
+    root: "AntDesignVue",
+    commonjs2: "ant-design-vue",
+    commonjs: "ant-design-vue",
+    amd: "ant-design-vue",
+  },
+  "@ant-design/icons-vue": {
+    root: "AntDesignIconsVue",
+    commonjs2: "@ant-design/icons-vue",
+    commonjs: "@ant-design/icons-vue",
+    amd: "@ant-design/icons-vue",
+  },
   // Axios HTTP 库
   axios: "axios",
 };
