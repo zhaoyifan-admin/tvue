@@ -1,4 +1,4 @@
-import { validatenull } from "utils/validate";
+import {validatenull} from 'utils/validate';
 import {
   KEY_COMPONENT_NAME,
   DIC_SPLIT,
@@ -8,10 +8,11 @@ import {
   ARRAY_VALUE_LIST,
   MULTIPLE_LIST,
   SELECT_LIST,
-  RANGE_LIST,
-} from "global/variable";
-import { detailDataType, findObject, createObj } from "utils/util";
-import { t } from "locale";
+  RANGE_LIST
+} from 'global/variable';
+import {detailDataType, findObject, createObj} from 'utils/util';
+import {t} from 'locale';
+
 /**
  * 计算级联属性
  */
@@ -57,7 +58,7 @@ export const initVal = (value, safe) => {
     separator = DIC_SPLIT,
     alone,
     emitPath,
-    range,
+    range
   } = safe;
   let list = value;
   if (
@@ -69,10 +70,10 @@ export const initVal = (value, safe) => {
       if (validatenull(list)) {
         list = [];
       } else {
-        if (dataType == "json") {
+        if (dataType == 'json') {
           list = JSON.parse(list);
         } else {
-          list = (list + "").split(separator) || [];
+          list = (list + '').split(separator) || [];
         }
       }
     }
@@ -80,7 +81,7 @@ export const initVal = (value, safe) => {
     list.forEach((ele, index) => {
       list[index] = detailDataType(ele, dataType);
     });
-    if (ARRAY_LIST.includes(type) && validatenull(list) && alone) list = [""];
+    if (ARRAY_LIST.includes(type) && validatenull(list) && alone) list = [''];
   } else {
     list = detailDataType(list, dataType);
   }
@@ -95,19 +96,19 @@ export const getSearchType = (column) => {
   const range = column.searchRange;
   let result = type;
   if (column.searchType) return column.searchType;
-  if (["radio", "checkbox", "switch"].includes(type)) {
-    result = "select";
+  if (['radio', 'checkbox', 'switch'].includes(type)) {
+    result = 'select';
   } else if (DATE_LIST.includes(type)) {
-    let rangeKey = "range";
+    let rangeKey = 'range';
     if (range) {
       if (!type.includes(rangeKey)) {
         result = type + rangeKey;
       } else {
         result = type;
       }
-    } else result = type.replace(rangeKey, "");
-  } else if (["textarea"].includes(type)) {
-    result = "input";
+    } else result = type.replace(rangeKey, '');
+  } else if (['textarea'].includes(type)) {
+    result = 'input';
   }
   return result;
 };
@@ -116,21 +117,23 @@ export const getSearchType = (column) => {
  * 动态获取组件
  */
 export const getComponent = (type, component) => {
-  let result = type || "input";
+  let result = type || 'input';
   if (!validatenull(component)) {
     return component;
   } else if (ARRAY_LIST.includes(type)) {
-    result = "array";
-  } else if (["time", "timerange"].includes(type)) {
-    result = "time";
+    result = 'array';
+  } else if (['time', 'timerange'].includes(type)) {
+    result = 'time';
   } else if (DATE_LIST.includes(type)) {
-    result = "date";
-  } else if (["password", "textarea", "search", "phone", "currency", "bankCard", "bank-card", "idCard", "id-card", "email", "code", "plate", "ip", "mac", "uscc"].includes(type)) {
-    result = "input";
-  } else if (type === "cron") {
-    result = "input-cron";
+    result = 'date';
+  } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(type)) {
+    result = 'input';
+  } else if (['ant-search', 'ant-phone', 'ant-currency', 'ant-bankCard', 'ant-password', 'ant-bank-card', 'ant-idCard', 'ant-id-card', 'ant-email', 'ant-code', 'ant-plate', 'ant-ip', 'ant-mac', 'ant-uscc', 'ant-textarea'].includes(type)) {
+    result = 'ant-input';
+  } else if (type === 'cron') {
+    result = 'input-cron';
   } else if (INPUT_LIST.includes(type)) {
-    result = "input-" + type;
+    result = 'input-' + type;
   }
   return KEY_COMPONENT_NAME + result;
 };
@@ -143,23 +146,23 @@ export const formInitVal = (list = []) => {
   let tableForm = {};
   list.forEach((ele) => {
     if (
-      ["rate", "slider", "number"].includes(ele.type) ||
-      ele.dataType === "number" ||
-      (ele.type == "select" && ele.virtualize == true)
+      ['rate', 'slider', 'number'].includes(ele.type) ||
+      ele.dataType === 'number' ||
+      (ele.type == 'select' && ele.virtualize == true)
     ) {
       tableForm[ele.prop] = undefined;
     } else if (
       (ARRAY_VALUE_LIST.includes(ele.type) &&
         ele.emitPath !== false &&
-        ele.dataType != "json") ||
+        ele.dataType != 'json') ||
       (MULTIPLE_LIST.includes(ele.type) && ele.multiple) ||
-      ele.dataType === "array"
+      ele.dataType === 'array'
     ) {
       tableForm[ele.prop] = [];
     } else if (RANGE_LIST.includes(ele.type) && ele.range == true) {
       tableForm[ele.prop] = [0, 0];
     } else {
-      tableForm[ele.prop] = "";
+      tableForm[ele.prop] = '';
     }
     if (ele.bind) {
       tableForm = createObj(tableForm, ele.bind);
@@ -175,7 +178,7 @@ export const formInitVal = (list = []) => {
 export const getPlaceholder = function (column, type) {
   const placeholder = column.placeholder;
   const label = column.label;
-  if (type === "search") {
+  if (type === 'search') {
     const searchPlaceholder = column.searchPlaceholder;
     if (!validatenull(searchPlaceholder)) {
       return searchPlaceholder;
@@ -184,9 +187,9 @@ export const getPlaceholder = function (column, type) {
     }
   } else if (validatenull(placeholder)) {
     if (SELECT_LIST.includes(column.type)) {
-      return `${t("tip.select")} ${label}`;
+      return `${t('tip.select')} ${label}`;
     } else {
-      return `${t("tip.input")} ${label}`;
+      return `${t('tip.input')} ${label}`;
     }
   }
 
