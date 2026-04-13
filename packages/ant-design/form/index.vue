@@ -6,7 +6,7 @@
     <a-form
       ref="form"
       :model="form"
-      :scrollToFirstError="tableOption.scrollToFirstError"
+      :scrollToFirstError="tableOption.scrollToError"
       :labelCol="labelCol"
       :wrapperCol="wrapperCol"
       :layout="tableOption.layout || 'horizontal'"
@@ -15,6 +15,8 @@
       :wrapperWrap="tableOption.wrapperWrap"
       :colon="tableOption.colon !== false"
       :requiredMark="tableOption.requiredMark"
+      :labelAlign="tableOption.labelAlign"
+      autocomplete="off"
     >
       <a-row
         :span="24"
@@ -139,8 +141,10 @@
                       :dic="DIC[column.prop]"
                     ></slot>
                   </template>
-                  <a-tooltip
-                    :title="validTip(column) ? undefined : validData(column.tip, getPlaceholder(column))"
+                  <component
+                    :is="validTip(column) ? 'div' : 'aTooltip'"
+                    :disabled="validTip(column)"
+                    :content="validData(column.tip, getPlaceholder(column))"
                     :placement="column.tipPlacement"
                   >
                     <div>
@@ -191,7 +195,7 @@
                         </template>
                       </form-temp>
                     </div>
-                  </a-tooltip>
+                  </component>
                 </a-form-item>
               </a-col>
               <div
@@ -926,7 +930,6 @@ export default create({
   },
 
   unmounted() {
-    // 保留原有的 unmounted 钩子以确保兼容性
   },
 });
 </script>

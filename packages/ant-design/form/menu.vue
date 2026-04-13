@@ -37,9 +37,14 @@
       :loading="formSafe.allDisabled"
       v-if="validData(formSafe.tableOption.submitBtn, true)"
     >
-      <template #icon v-if="formSafe.tableOption.submitIcon">
-        <component :is="formSafe.tableOption.submitIcon" />
-      </template>
+      <component
+        :is="getIconComponent(formSafe.tableOption.submitIcon, 'CheckOutlined')"
+        v-if="isAntdIcon(getIconName(formSafe.tableOption.submitIcon, 'CheckOutlined'))"
+      />
+      <i
+        v-else-if="isIconfont(getIconName(formSafe.tableOption.submitIcon, 'CheckOutlined'))"
+        :class="getIconfontClass(getIconName(formSafe.tableOption.submitIcon, 'CheckOutlined'))"
+      ></i>
       {{ validData(formSafe.tableOption.submitText, t("form.submitBtn")) }}
     </a-button>
     <a-button
@@ -48,6 +53,14 @@
       v-if="validData(formSafe.tableOption.emptyBtn, true)"
       @click="formSafe.resetForm"
     >
+      <component
+        :is="getIconComponent(formSafe.tableOption.emptyIcon, 'DeleteOutlined')"
+        v-if="isAntdIcon(getIconName(formSafe.tableOption.emptyIcon, 'DeleteOutlined'))"
+      />
+      <i
+        v-else-if="isIconfont(getIconName(formSafe.tableOption.emptyIcon, 'DeleteOutlined'))"
+        :class="getIconfontClass(getIconName(formSafe.tableOption.emptyIcon, 'DeleteOutlined'))"
+      ></i>
       {{ validData(formSafe.tableOption.emptyText, t("form.emptyBtn")) }}
     </a-button>
     <slot
@@ -81,6 +94,33 @@ export default create({
         }
       }
       return {}
+    }
+  },
+  methods: {
+    isAntdIcon(icon) {
+      if (!icon) return false;
+      return typeof icon === 'string' && icon.endsWith('Outlined');
+    },
+    isIconfont(icon) {
+      if (!icon) return false;
+      return typeof icon === 'string' && (icon.startsWith('icon-') || icon.startsWith('iconfont'));
+    },
+    getIconName(icon, defaultIcon) {
+      if (icon === false) return null;
+      if (!icon) return defaultIcon;
+      return icon;
+    },
+    getIconComponent(icon, defaultIcon) {
+      const iconName = this.getIconName(icon, defaultIcon);
+      if (!iconName) return null;
+      return iconName;
+    },
+    getIconfontClass(icon) {
+      if (!icon) return '';
+      if (icon.startsWith('iconfont ')) {
+        return icon;
+      }
+      return `iconfont ${icon}`;
     }
   }
 })

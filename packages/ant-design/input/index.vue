@@ -213,36 +213,40 @@
 
         <!-- 前缀图标 -->
         <template #prefix v-if="inputPrefixIcon">
-          <component :is="inputPrefixIcon"/>
-        </template>
-
-        <!-- 后缀图标(仅在没有其他后缀内容时显示) -->
-        <template #suffix v-if="inputSuffixIcon">
-          <component :is="inputSuffixIcon"/>
+          <component :is="getIconComponent(inputPrefixIcon)" v-if="isAntdIcon(inputPrefixIcon)"/>
+          <i v-else-if="isIconfont(inputPrefixIcon)" :class="getIconfontClass(inputPrefixIcon)"></i>
         </template>
 
         <!-- 后缀图标 - 银行卡类型 -->
-        <template #suffix v-else-if="!inputSuffixIcon && isBankCard && showBankCardType && bankCardType">
+        <template #suffix v-if="isBankCard && showBankCardType && bankCardType">
           <span class="tvue-input__bank-card-type">{{ bankCardType }}</span>
         </template>
 
         <!-- 后缀图标 - 身份证信息 -->
-        <template #suffix v-else-if="!inputSuffixIcon && isIdCard && showIdCardInfo && idCardInfo">
+        <template #suffix v-else-if="isIdCard && showIdCardInfo && idCardInfo">
           <a-tooltip :title="idCardInfoText" placement="top">
             <span class="tvue-input__id-card-info">
               {{ idCardValid ? '✓' : '✗' }}
             </span>
           </a-tooltip>
+          <component :is="getIconComponent(inputSuffixIcon)" v-if="isAntdIcon(inputSuffixIcon)"/>
+          <i v-else-if="isIconfont(inputSuffixIcon)" :class="getIconfontClass(inputSuffixIcon)"></i>
         </template>
 
         <!-- 后缀图标 - 邮箱验证 -->
-        <template #suffix v-else-if="!inputSuffixIcon && isEmail && emailValid !== null">
+        <template #suffix v-else-if="isEmail && emailValid !== null">
           <span class="tvue-input__email-valid">{{ emailValid ? '✓' : '✗' }}</span>
         </template>
 
         <!-- 后缀图标 - 社会信用代码验证 -->
-        <template #suffix v-else-if="!inputSuffixIcon && isUscc && usccValid !== null">
+        <template #suffix v-else-if="isUscc && usccValid !== null">
           <span class="tvue-input__uscc-valid">{{ usccValid ? '✓' : '✗' }}</span>
+        </template>
+
+        <!-- 自定义后缀图标(仅在没有特殊类型后缀时显示) -->
+        <template #suffix v-else-if="inputSuffixIcon">
+          <component :is="getIconComponent(inputSuffixIcon)" v-if="isAntdIcon(inputSuffixIcon)"/>
+          <i v-else-if="isIconfont(inputSuffixIcon)" :class="getIconfontClass(inputSuffixIcon)"></i>
         </template>
       </a-input>
     </template>
@@ -611,7 +615,6 @@ export default create({
     },
     inputValue: {
       get() {
-        console.log('get', this.text, this.idCardDisplay)
         if (this.isCurrency) return this.currencyDisplay;
         if (this.isBankCard) return this.bankCardDisplay;
         if (this.isIdCard) return this.idCardDisplay;
@@ -620,7 +623,6 @@ export default create({
         return this.text;
       },
       set(val) {
-        console.log('set', val)
         if (this.isCurrency) this.currencyDisplay = val;
         else if (this.isBankCard) this.bankCardDisplay = val;
         else if (this.isIdCard) this.idCardDisplay = val;
@@ -714,6 +716,7 @@ export default create({
       return `${this.idCardInfo.region} | ${this.idCardInfo.birthday} | ${this.idCardInfo.gender}`;
     },
     inputStatus() {
+      // idCardValid
       if (this.isIdCard && this.idCardValid !== null) {
         return this.idCardValid ? 'success' : 'error';
       }
@@ -750,6 +753,28 @@ export default create({
     }
   },
   methods: {
+    isAntdIcon(icon) {
+      if (!icon) return false;
+      return typeof icon === 'string' && icon.endsWith('Outlined');
+    },
+    isIconfont(icon) {
+      if (!icon) return false;
+      return typeof icon === 'string' && (icon.startsWith('icon-') || icon.startsWith('iconfont'));
+    },
+    getIconComponent(icon) {
+      if (!icon) return null;
+      if (typeof icon === 'string') {
+        return icon;
+      }
+      return icon;
+    },
+    getIconfontClass(icon) {
+      if (!icon) return '';
+      if (icon.startsWith('iconfont ')) {
+        return icon;
+      }
+      return `iconfont ${icon}`;
+    },
     onFocus(event) {
       if (this.isCurrency) {
         this.handleCurrencyFocus(event);
