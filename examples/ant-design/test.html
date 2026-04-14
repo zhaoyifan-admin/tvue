@@ -41,65 +41,110 @@
   let app = Vue.createApp({
     data() {
       return {
+        value: '',
         form: {
           province: "120000",
-          multipleSelect: []
+          multipleSelect: [],
+          cascader: ["620000", "620200" ]
         },
+        options: [{
+          value: 'zhejiang',
+          label: 'Zhejiang',
+          isLeaf: false,
+        },
+          {
+            value: 'jiangsu',
+            label: 'Jiangsu',
+            isLeaf: false,
+          },],
         option: {
-          column: [{
-            label: '省份',
-            prop: 'province',
-            type: 'select',
-            props: {
-              label: 'name',
-              value: 'code'
-            },
-            cascader: ['city'],
-            dicUrl: `${baseUrl}/getProvince`,
-            rules: [
-              {
-                required: true,
-                message: '请选择省份',
-                trigger: 'blur'
+          column: [
+            {
+              label: '级联',
+              prop: 'cascader',
+              type: 'ant-cascader',
+              props: {
+                label: 'name',
+                value: 'code'
+              },
+              checkStrictly: true,
+              lazy: true,
+              lazyLoad(node, resolve) {
+                let stop_level = 2;
+                let level = node.level;
+                let data = node.data || {}
+                let code = data.code;
+                let list = [];
+                let callback = () => {
+                  resolve((list || []).map(ele => {
+                    return Object.assign(ele, {
+                      leaf: level >= stop_level
+                    })
+                  }));
+                }
+                if (level == 0) {
+                  axios.get(`${baseUrl}/getProvince`).then(res => {
+                    list = res.data;
+                    callback()
+                  })
+                }
+                if (level == 1) {
+                  axios.get(`${baseUrl}/getCity/${code}`).then(res => {
+                    list = res.data;
+                    callback()
+                  })
+                } else if (level == 2) {
+                  axios.get(`${baseUrl}/getArea/${code}`).then(res => {
+                    list = res.data;
+                    callback()
+                  })
+                }
               }
-            ]
-          },
-            {
-              label: '城市',
-              prop: 'city',
-              type: 'select',
-              cascader: ['area'],
-              props: {
-                label: 'name',
-                value: 'code'
-              },
-              row: true,
-              dicUrl: `${baseUrl}/getCity/{{key}}?province={{province}}`,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择城市',
-                  trigger: 'blur'
-                }
-              ]
             },
             {
-              label: '地区',
-              prop: 'area',
-              type: 'select',
+              label: '级联',
+              prop: 'cascader',
+              type: 'cascader',
               props: {
                 label: 'name',
                 value: 'code'
               },
-              dicUrl: `${baseUrl}/getArea/{{key}}?city={{city}}`,
-              rules: [
-                {
-                  required: true,
-                  message: '请选择地区',
-                  trigger: 'blur'
+              lazy: true,
+              checkStrictly: true,
+              lazyLoad(node, resolve) {
+                console.log(node)
+                let stop_level = 2;
+                let level = node.level;
+                let data = node.data || {}
+                let code = data.code;
+                let list = [];
+                let callback = () => {
+                  resolve((list || []).map(ele => {
+                    return Object.assign(ele, {
+                      leaf: level >= stop_level
+                    })
+                  }));
                 }
-              ]
-            }]
+                if (level == 0) {
+                  axios.get(`${baseUrl}/getProvince`).then(res => {
+                    list = res.data;
+                    callback()
+                  })
+                }
+                if (level == 1) {
+                  axios.get(`${baseUrl}/getCity/${code}`).then(res => {
+                    list = res.data;
+                    callback()
+                  })
+                } else if (level == 2) {
+                  axios.get(`${baseUrl}/getArea/${code}`).then(res => {
+                    list = res.data;
+                    callback()
+                  })
+                }
+              }
+            }
+          ]
         }
       }
     },
