@@ -16,6 +16,7 @@
     :field-names="fieldNames"
     :change-on-select="checkStrictly"
     :load-data="lazyLoadData"
+    :show-checked-strategy="showCheckedStrategyValue"
     @change="handleValueChange"
     @focus="handleFocus"
     @blur="handleBlur"
@@ -90,8 +91,23 @@ export default create({
         disabled: this.disabledKey,
       };
     },
+    showCheckedStrategyValue() {
+      return this.multiple ? 'SHOW_ALL' : undefined;
+    },
   },
   watch: {
+    dic: {
+      handler(val) {
+        if (!this.lazy && val && Array.isArray(val)) {
+          this.dicOptions = val.map(item => ({
+            ...item,
+            isLeaf: item.leaf === true || (!item.children && !this.lazy),
+          }));
+        }
+      },
+      immediate: true,
+      deep: true,
+    },
     modelValue: {
       handler(val) {
         if (this.lazy && this.lazyLoad && val && !this.isInitializing) {
@@ -108,6 +124,8 @@ export default create({
   },
   methods: {
     loadFirstLevel() {
+      if (!this.lazyLoad) return;
+
       const node = {
         level: 0,
         data: {},
@@ -139,7 +157,7 @@ export default create({
       const currentValue = values[level];
 
       if (level === 0) {
-        if (this.dicOptions.length === 0) {
+        if (this.dicOptions.length === 0 && this.lazyLoad) {
           await new Promise((resolve) => {
             const node = { level: 0, data: {} };
             this.lazyLoad(node, (list) => {
@@ -154,7 +172,7 @@ export default create({
         await this.loadNextLevel(values, level, currentValue, this.dicOptions);
       } else {
         const parentNode = this.findNodeByValue(this.dicOptions, values[level - 1]);
-        if (parentNode && !parentNode.children) {
+        if (parentNode && !parentNode.children && this.lazyLoad) {
           await new Promise((resolve) => {
             const node = { level: level, data: parentNode };
             this.lazyLoad(node, (list) => {
@@ -177,7 +195,7 @@ export default create({
     async loadNextLevel(values, level, currentValue, options) {
       const node = options.find(item => item[this.valueKey] == currentValue);
 
-      if (node && level < values.length - 1 && !node.isLeaf) {
+      if (node && level < values.length - 1 && !node.isLeaf && this.lazyLoad) {
         if (!node.children) {
           await new Promise((resolve) => {
             const nextLevel = level + 1;
@@ -220,7 +238,11 @@ export default create({
       });
 
       let result = value;
-      if (!this.emitPath && Array.isArray(value)) {
+
+      // 多选模式下，如果使用了 SHOW_ALL 策略，需要确保返回所有叶子节点的完整路径
+      if (this.multiple && this.showCheckedStrategyValue === 'SHOW_ALL' && Array.isArray(value)) {
+        result = this.getAllLeafPaths(value);
+      } else if (!this.emitPath && Array.isArray(value)) {
         result = value[value.length - 1];
       }
 
@@ -229,18 +251,74 @@ export default create({
       } else {
         let flag = this.isString || this.isNumber || this.stringMode;
         if (flag && Array.isArray(result)) {
-          result = result.join(this.separator || ',');
+          if (!this.multiple) {
+            result = result.join(this.separator || ',');
+          }
         }
       }
 
       this.$emit('update:modelValue', result);
       this.bindEvent('change', { value: result, selectedOptions });
     },
+    getAllLeafPaths(selectedPaths) {
+      // 遍历所有选中的路径，找出所有叶子节点
+      const allLeafPaths = [];
+
+      selectedPaths.forEach(path => {
+        const leafNodes = this.findLeafNodesByPath(path);
+        allLeafPaths.push(...leafNodes);
+      });
+
+      return allLeafPaths.length > 0 ? allLeafPaths : selectedPaths;
+    },
+    findLeafNodesByPath(path) {
+      // 根据路径找到对应的节点
+      let currentNode = null;
+      let options = this.dicOptions;
+
+      for (let i = 0; i < path.length; i++) {
+        const value = path[i];
+        currentNode = options.find(opt => opt[this.valueKey] === value);
+
+        if (!currentNode) {
+          return [path]; // 找不到节点，返回原路径
+        }
+
+        if (currentNode.children && currentNode.children.length > 0) {
+          options = currentNode.children;
+        } else {
+          // 这是叶子节点
+          return [path];
+        }
+      }
+
+      // 如果当前节点还有子节点，递归查找所有叶子节点
+      if (currentNode && currentNode.children) {
+        const allLeaves = [];
+        this.collectAllLeafPaths(currentNode.children, path, allLeaves);
+        return allLeaves;
+      }
+
+      return [path];
+    },
+    collectAllLeafPaths(children, parentPath, result) {
+      children.forEach(child => {
+        const currentPath = [...parentPath, child[this.valueKey]];
+
+        if (child.children && child.children.length > 0) {
+          // 还有子节点，继续递归
+          this.collectAllLeafPaths(child.children, currentPath, result);
+        } else {
+          // 叶子节点，添加路径
+          result.push(currentPath);
+        }
+      });
+    },
     filter(inputValue, path) {
       return path.some(option => option[this.labelKey].toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
     },
     lazyLoadData(selectedOptions) {
-      if (this.isInitializing) return;
+      if (this.isInitializing || !this.lazyLoad) return;
 
       const targetOption = selectedOptions[selectedOptions.length - 1];
       targetOption.loading = true;
