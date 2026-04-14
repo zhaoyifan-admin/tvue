@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html class="no-js">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title></title>
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="../../cdn/vue/vue.global.min.js"></script>
+  <link rel="stylesheet" href="../../../lib/index.css" />
+  <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css" />
+  <link rel="stylesheet" href="../../cdn/element-plus/index.css" />
+
+  <script src="../../../lib/tvue.js"></script>
+  <script src="../../cdn/element-plus/index.full.min.js"></script>
+  <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+  <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/customParseFormat.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekday.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/localeData.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekOfYear.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekYear.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/advancedFormat.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/quarterOfYear.js"></script>
+  <script src="https://unpkg.com/ant-design-vue@4.2.6/dist/antd.min.js"></script>
+
+</head>
+
+<body>
+<div id="app">
+  {{form}}
+  <tvue-ant-form v-model="form" :option="option"></tvue-ant-form>
+</div>
+</body>
+<script>
+  const dic = [{
+    value: 'zhinan',
+    label: '指南',
+    children: [{
+      value: 'shejiyuanze',
+      label: '设计原则',
+      children: [{
+        value: 'yizhi',
+        label: '一致'
+      }, {
+        value: 'fankui',
+        label: '反馈'
+      }]
+    }]
+  },{
+    value: 'zhinan2',
+    label: '指南2',
+    children: [{
+      value: 'shejiyuanze2',
+      label: '设计原则2',
+      children: [{
+        value: 'yizhi2',
+        label: '一致2'
+      }, {
+        value: 'fankui2',
+        label: '反馈2'
+      }]
+    }]
+  }]
+  let id = 0;
+  let baseUrl = 'https://api.avuejs.com/area'
+  let app = Vue.createApp({
+    data() {
+      return {
+        value: '',
+        form: {
+        },
+        options: [{
+          value: 'zhejiang',
+          label: 'Zhejiang',
+          isLeaf: false,
+        },
+          {
+            value: 'jiangsu',
+            label: 'Jiangsu',
+            isLeaf: false,
+          },],
+        option: {
+          column: [{
+            label: '多选',
+            prop: 'cascader',
+            type: "ant-cascader",
+            dicData: dic,
+            multiple: true
+          }, {
+            label: '多选2',
+            prop: 'cascader',
+            type: "cascader",
+            dicData: dic,
+            multiple: true
+          }, {
+            label: '任意一级',
+            prop: 'cascader1',
+            type: "ant-cascader",
+            dicData: dic,
+            checkStrictly: true
+          }, {
+            label: '任意一级',
+            prop: 'cascader1',
+            type: "cascader",
+            dicData: dic,
+            checkStrictly: true
+          }, {
+            label: '搜索',
+            prop: 'cascader2',
+            type: "ant-cascader",
+            dicData: dic,
+            filterable: true
+          }, {
+            label: '搜索',
+            prop: 'cascader2',
+            type: "cascader",
+            dicData: dic,
+            filterable: true
+          }, {
+            label: '自定义',
+            prop: 'cascader3',
+            type: "ant-cascader",
+            dicData: dic
+          }, {
+            label: '自定义',
+            prop: 'cascader3',
+            type: "cascader",
+            dicData: dic
+          }, {
+            label: '懒加载',
+            prop: 'cascader4',
+            type: "ant-cascader",
+            props: {
+              label: 'name',
+              value: 'code'
+            },
+            rules: [
+              {
+                type: 'array',
+                required: true,
+                message: '请输入数字',
+                trigger: 'change'
+              }
+            ],
+            lazy: true,
+            lazyLoad(node, resolve) {
+              let stop_level = 2;
+              let level = node.level;
+              let data = node.data || {}
+              let code = data.code;
+              let list = [];
+              let callback = () => {
+                resolve((list || []).map(ele => {
+                  return Object.assign(ele, {
+                    leaf: level >= stop_level
+                  })
+                }));
+              }
+              if (level == 0) {
+                axios.get(`${baseUrl}/getProvince`).then(res => {
+                  list = res.data;
+                  callback()
+                })
+              }
+              if (level == 1) {
+                axios.get(`${baseUrl}/getCity/${code}`).then(res => {
+                  list = res.data;
+                  callback()
+                })
+              } else if (level == 2) {
+                axios.get(`${baseUrl}/getArea/${code}`).then(res => {
+                  list = res.data;
+                  callback()
+                })
+              }
+            }
+          }, {
+            label: '懒加载',
+            prop: 'cascader4',
+            type: "cascader",
+            props: {
+              label: 'name',
+              value: 'code'
+            },
+            rules: [
+              {
+                type: 'array',
+                required: true,
+                message: '请输入数字',
+                trigger: 'change'
+              }
+            ],
+            lazy: true,
+            lazyLoad(node, resolve) {
+              let stop_level = 2;
+              let level = node.level;
+              let data = node.data || {}
+              let code = data.code;
+              let list = [];
+              let callback = () => {
+                resolve((list || []).map(ele => {
+                  return Object.assign(ele, {
+                    leaf: level >= stop_level
+                  })
+                }));
+              }
+              if (level == 0) {
+                axios.get(`${baseUrl}/getProvince`).then(res => {
+                  list = res.data;
+                  callback()
+                })
+              }
+              if (level == 1) {
+                axios.get(`${baseUrl}/getCity/${code}`).then(res => {
+                  list = res.data;
+                  callback()
+                })
+              } else if (level == 2) {
+                axios.get(`${baseUrl}/getArea/${code}`).then(res => {
+                  list = res.data;
+                  callback()
+                })
+              }
+            }
+          }]
+        }
+      }
+    },
+    mounted() {
+      this.obj = {
+        switch: 1,
+        selects: '0,1',
+        name: 'small',
+        cascader: [3, 1],
+        default: 10,
+        tree: [2],
+        province: '220000',
+        city: '220700',
+        area: '220702',
+        icon: 'DownOutlined',
+      }
+    },
+    methods: {
+      submit(form, done) {
+        this.$message.success('3s后关闭');
+        setTimeout(() => {
+          done()
+        }, 3000)
+      },
+    }
+  })
+  app.use(antd)
+  app.use(TVUE)
+  app.use(ElementPlus)
+  app.mount('#app')
+</script>
+
+<style lang="css">
+  .field-desc2 {
+    font-size: 12px;
+    color: rgb(12, 180, 79);
+    font-style: italic;
+  }
+</style>
+</html>
