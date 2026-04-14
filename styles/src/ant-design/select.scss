@@ -1,23 +1,17 @@
 .tvue-ant-select {
   .sortable-ghost {
     opacity: .8;
-    color: #fff!important;
-    background: #409EFF!important;
+    color: #fff !important;
+    background: #409EFF !important;
   }
+
   .ant-tag {
     cursor: pointer;
   }
-  &__desc{
+
+  &__desc {
     float: right;
     color: #8492a6;
     font-size: 13px;
-  }
-}
-.ant-select-dropdown{
-  .tvue-select__check{
-    box-sizing: border-box;
-    text-align: right;
-    width: 100%;
-    padding-right: 20px;
   }
 }

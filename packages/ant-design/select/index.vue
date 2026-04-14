@@ -5,8 +5,7 @@
     v-model:value="text"
     :size="size"
     :loading="loading"
-    :multiple="multiple"
-    :mode="tags ? 'tags' : undefined"
+    :mode="tags ? 'tags' : (multiple ? 'multiple' : undefined)"
     :show-search="remote ? true : filterable"
     :allow-clear="clearableVal"
     :placeholder="placeholder"
@@ -81,15 +80,24 @@
 
     <!-- 普通模式（带全选） -->
     <template v-else>
-      <div :class="b('check')" v-if="all && multiple" style="padding: 8px 12px;">
-        <a-checkbox
-          v-model:checked="checked"
-          :disabled="disabled"
-          :indeterminate="indeterminate"
-          @change="checkChange"
-          style="width: 100%;"
-        >全选</a-checkbox>
-      </div>
+      <a-select-option
+        v-if="all && multiple"
+        key="__all__"
+        :value="null"
+        style="padding: 0;"
+        disabled
+      >
+        <div :class="b('check')" style="padding: 8px 12px;">
+          <a-checkbox
+            v-model:checked="checked"
+            :disabled="disabled"
+            :indeterminate="indeterminate"
+            @change="checkChange"
+            @click.stop
+            style="width: 100%;"
+          >全选</a-checkbox>
+        </div>
+      </a-select-option>
 
       <a-select-option
         v-for="(item, index) in netDic"
