@@ -39,17 +39,13 @@
         >
           <template #tabs>
             <a-tabs
+              v-if="isTabs && index == 1"
               v-model:activeKey="activeName"
-              @tabClick="handleTabClick"
               :class="b('tabs')"
               :type="tabsType"
-              v-if="isTabs && index == 1"
-            >
+              @tabClick="handleTabClick">
               <template v-for="(tabs, index) in columnOption">
-                <a-tab-pane
-                  v-if="vaildDisplay(tabs) && index != 0"
-                  :key="index + ''"
-                >
+                <a-tab-pane v-if="vaildDisplay(tabs) && index != 0" :key="index + ''">
                   <template #tab>
                     <span>
                       <slot
@@ -86,29 +82,15 @@
                 :offset="getItemParams(column, item, 'offset')"
                 :push="getItemParams(column, item, 'push')"
                 :pull="getItemParams(column, item, 'pull')"
-                :class="[
-                  b('row'),
-                  { 'tvue--detail tvue--detail__column': vaildDetail(column) },
-                  column.className,
-                ]"
-              >
+                :class="[ b('row'), { 'tvue--detail tvue--detail__column': vaildDetail(column) }, column.className]">
                 <a-form-item
                   :name="column.prop"
                   :label="column.label"
                   :rules="column.rules"
-                  :class="
-                    b(
-                      'item--' +
-                        (column.labelPosition ||
-                          item.labelPosition ||
-                          tableOption.labelPosition ||
-                          '')
-                    )
-                  "
+                  :class="b('item--' +(column.labelPosition ||item.labelPosition ||tableOption.labelPosition ||''))"
                   :labelCol="getColumnLabelCol(column, item)"
                   :wrapperCol="getColumnWrapperCol(column, item)"
-                  :labelAlign="column.labelAlign || item.labelAlign || tableOption.labelAlign"
-                >
+                  :labelAlign="column.labelAlign || item.labelAlign || tableOption.labelAlign">
                   <template #label v-if="getSlotName(column, 'L', $slots)">
                     <slot
                       :name="getSlotName(column, 'L')"
@@ -121,9 +103,7 @@
                     ></slot>
                   </template>
                   <template #label v-else-if="column.labelTip">
-                    <a-tooltip
-                      :placement="column.labelTipPlacement || 'topLeft'"
-                    >
+                    <a-tooltip :placement="column.labelTipPlacement || 'topLeft'">
                       <template #title>
                         <div v-html="column.labelTip"></div>
                       </template>
@@ -181,14 +161,8 @@
                         :column-slot="columnSlot"
                         @change="propChange(item.column, column)"
                       >
-                        <template
-                          #="scope"
-                          v-if="getSlotName(column, 'T', $slots)"
-                        >
-                          <slot
-                            :name="getSlotName(column, 'T')"
-                            v-bind="scope"
-                          ></slot>
+                        <template #="scope" v-if="getSlotName(column, 'T', $slots)">
+                          <slot :name="getSlotName(column, 'T')" v-bind="scope"></slot>
                         </template>
                         <template v-for="item in columnSlot" #[item]="scope">
                           <slot v-bind="scope" :name="item"></slot>
@@ -226,12 +200,12 @@
 </template>
 
 <script>
-import { detail } from "core/detail";
+import {detail} from "core/detail";
 import create from "core/create";
 import init from "common/common/init";
 import formTemp from "common/components/form/index";
 import antFormMenu from "./menu";
-import { DIC_PROPS } from "global/variable";
+import {DIC_PROPS} from "global/variable";
 import {
   getComponent,
   getPlaceholder,
@@ -239,7 +213,7 @@ import {
   calcCount,
   calcCascader,
 } from "core/dataformat";
-import { sendDic } from "core/dic";
+import {sendDic} from "core/dic";
 import {
   getColumn,
   filterParams,
@@ -411,7 +385,7 @@ export default create({
         });
       };
 
-      const { tableOption } = this;
+      const {tableOption} = this;
 
       const mainColumn = getColumn(tableOption.column);
 
@@ -474,16 +448,16 @@ export default create({
     labelCol() {
       const width = this.tableOption.labelWidth || this.config.labelWidth;
       if (typeof width === 'number') {
-        return { style: { width: width + 'px' } };
+        return {style: {width: width + 'px'}};
       }
       return width;
     },
     wrapperCol() {
-      const width = this.tableOption.labelWidth || this.config.labelWidth;
-      if (typeof width === 'number') {
-        return { flex: 1 };
+      const wrapperCol = this.tableOption.wrapperCol || this.config.wrapperCol;
+      if (wrapperCol) {
+        return wrapperCol
       }
-      return { flex: 1 };
+      return {};
     },
   },
   props: {
@@ -555,16 +529,19 @@ export default create({
     getColumnLabelCol(column, item) {
       const width = this.getItemParams(column, item, 'labelWidth', true);
       if (width) {
-        return { style: { width } };
+        return {style: {width}};
       }
       return this.labelCol;
     },
     getColumnWrapperCol(column, item) {
-      const width = this.getItemParams(column, item, 'labelWidth', true);
-      if (width) {
-        return { flex: 1 };
+      // 优先使用 column 或 item 中配置的 wrapperCol
+      const columnWrapperCol = column.wrapperCol || item.wrapperCol;
+      if (columnWrapperCol) {
+        return columnWrapperCol;
       }
-      return this.wrapperCol;
+
+      // 如果没有配置 wrapperCol，返回空对象，不应用任何默认样式
+      return {};
     },
     dataFormat() {
       let formDefault = formInitVal(this.propOption);
@@ -757,7 +734,8 @@ export default create({
       let key = column.prop;
       if (column.type === "cascader" || column.type === "upload") {
         this.$nextTick(() => {
-          this.validateField(key).catch((error) => {});
+          this.validateField(key).catch((error) => {
+          });
         });
       }
       if (!this.count[key]) {
