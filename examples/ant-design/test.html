@@ -9,7 +9,6 @@
   <title></title>
   <meta name="description" content="" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://cdn.staticfile.org/axios/0.19.0-beta.1/axios.js"></script>
   <script src="../cdn/vue/vue.global.min.js"></script>
   <link rel="stylesheet" href="../../lib/index.css" />
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
@@ -19,6 +18,7 @@
   <script src="../../lib/tvue.js"></script>
   <script src="../cdn/element-plus/index.full.min.js"></script>
   <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+  <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
   <script src="https://unpkg.com/dayjs/plugin/customParseFormat.js"></script>
   <script src="https://unpkg.com/dayjs/plugin/weekday.js"></script>
   <script src="https://unpkg.com/dayjs/plugin/localeData.js"></script>
@@ -37,15 +37,42 @@
   </div>
 </body>
 <script>
+  const dic = [{
+    value: 'zhinan',
+    label: '指南',
+    children: [{
+      value: 'shejiyuanze',
+      label: '设计原则',
+      children: [{
+        value: 'yizhi',
+        label: '一致'
+      }, {
+        value: 'fankui',
+        label: '反馈'
+      }]
+    }]
+  },{
+    value: 'zhinan2',
+    label: '指南2',
+    children: [{
+      value: 'shejiyuanze2',
+      label: '设计原则2',
+      children: [{
+        value: 'yizhi2',
+        label: '一致2'
+      }, {
+        value: 'fankui2',
+        label: '反馈2'
+      }]
+    }]
+  }]
+  let id = 0;
   let baseUrl = 'https://api.avuejs.com/area'
   let app = Vue.createApp({
     data() {
       return {
         value: '',
         form: {
-          province: "120000",
-          multipleSelect: [],
-          cascader: ["620000", "620200" ]
         },
         options: [{
           value: 'zhejiang',
@@ -58,109 +85,22 @@
             isLeaf: false,
           },],
         option: {
-          column: [
-            {
-              label: '级联',
-              prop: 'cascader',
-              type: 'ant-cascader',
-              props: {
-                label: 'name',
-                value: 'code'
-              },
-              checkStrictly: true,
-              lazy: true,
-              lazyLoad(node, resolve) {
-                let stop_level = 2;
-                let level = node.level;
-                let data = node.data || {}
-                let code = data.code;
-                let list = [];
-                let callback = () => {
-                  resolve((list || []).map(ele => {
-                    return Object.assign(ele, {
-                      leaf: level >= stop_level
-                    })
-                  }));
-                }
-                if (level == 0) {
-                  axios.get(`${baseUrl}/getProvince`).then(res => {
-                    list = res.data;
-                    callback()
-                  })
-                }
-                if (level == 1) {
-                  axios.get(`${baseUrl}/getCity/${code}`).then(res => {
-                    list = res.data;
-                    callback()
-                  })
-                } else if (level == 2) {
-                  axios.get(`${baseUrl}/getArea/${code}`).then(res => {
-                    list = res.data;
-                    callback()
-                  })
-                }
-              }
+          labelWidth: 100,
+          column: [{
+            label: '多选框',
+            prop: 'checkbox',
+            type: 'checkbox',
+            props: {
+              label: 'name',
+              value: 'code'
             },
-            {
-              label: '级联',
-              prop: 'cascader',
-              type: 'cascader',
-              props: {
-                label: 'name',
-                value: 'code'
-              },
-              lazy: true,
-              checkStrictly: true,
-              lazyLoad(node, resolve) {
-                console.log(node)
-                let stop_level = 2;
-                let level = node.level;
-                let data = node.data || {}
-                let code = data.code;
-                let list = [];
-                let callback = () => {
-                  resolve((list || []).map(ele => {
-                    return Object.assign(ele, {
-                      leaf: level >= stop_level
-                    })
-                  }));
-                }
-                if (level == 0) {
-                  axios.get(`${baseUrl}/getProvince`).then(res => {
-                    list = res.data;
-                    callback()
-                  })
-                }
-                if (level == 1) {
-                  axios.get(`${baseUrl}/getCity/${code}`).then(res => {
-                    list = res.data;
-                    callback()
-                  })
-                } else if (level == 2) {
-                  axios.get(`${baseUrl}/getArea/${code}`).then(res => {
-                    list = res.data;
-                    callback()
-                  })
-                }
-              }
-            }
-          ]
+            dicUrl: 'https://api.avuejs.com/area/getProvince'
+          }]
         }
       }
     },
     mounted() {
-      this.obj = {
-        switch: 1,
-        selects: '0,1',
-        name: 'small',
-        cascader: [3, 1],
-        default: 10,
-        tree: [2],
-        province: '220000',
-        city: '220700',
-        area: '220702',
-        icon: 'DownOutlined',
-      }
+
     },
     methods: {
       submit(form, done) {
@@ -170,9 +110,10 @@
         }, 3000)
       },
     }
-  })
+  })// 配置 axios
+  app.config.globalProperties.$axios = axios;
   app.use(antd)
-  app.use(TVUE)
+  app.use(TVUE, { axios })
   app.use(ElementPlus)
   app.mount('#app')
 </script>
