@@ -5,6 +5,7 @@ import AntGroup from 'packages/ant-design/group';
 import AntSelect from 'packages/ant-design/select';
 import AntCascader from 'packages/ant-design/cascader';
 import AntCheckBox from 'packages/ant-design/checkbox';
+import AntRadio from 'packages/ant-design/radio';
 
 export default {
   AntForm,
@@ -13,5 +14,6 @@ export default {
   AntInputNumber,
   AntSelect,
   AntCascader,
-  AntCheckBox
+  AntCheckBox,
+  AntRadio
 };
