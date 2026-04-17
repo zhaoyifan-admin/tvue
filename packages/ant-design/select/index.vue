@@ -25,16 +25,39 @@
     :default-active-first-option="defaultFirstOption"
   >
     <template #dropdownRender="{ menuNode: menu }">
-      <component
-        v-if="dropdownRenderConfig"
-        :is="dropdownRenderComponent"
-        :menu="menu"
-        :option="netDic"
-        :value="text"
-        :multiple="multiple"
-        :custom-render="dropdownRender"
-      />
-      <component v-else :is="menu" />
+      <div v-if="dropdownRenderConfig">
+        <component
+          :is="dropdownRenderComponent"
+          :menu="menu"
+          :option="netDic"
+          :value="text"
+          :multiple="multiple"
+          :custom-render="dropdownRender"
+          :show-tip="showTip"
+          :tip-text="tipText"
+          :show-progress="showProgress"
+          :progress-color="progressColor"
+          :bottom-text="bottomText"
+          :show-bottom-text="showBottomText"
+          :allow-add="allowAdd"
+          :add-placeholder="addPlaceholder"
+          :add-button-text="addButtonText"
+          :on-add-option="onAddOption"
+        />
+      </div>
+      <div v-else-if="hasStandardContent">
+        <component
+          :is="standardDropdownRenderComponent"
+          :menu="menu"
+          :allow-add="allowAdd"
+          :add-placeholder="addPlaceholder"
+          :add-button-text="addButtonText"
+          :on-add-option="onAddOption"
+        />
+      </div>
+      <div v-else>
+        <component :is="{ render: () => menu }" />
+      </div>
     </template>
 
     <!-- 虚拟滚动模式 -->
@@ -149,7 +172,7 @@ import props from "common/common/props.js";
 import event from "common/common/event.js";
 import { sendDic } from "core/dic";
 import { DIC_SPLIT } from "global/variable";
-import { h } from 'vue';
+import { h, resolveComponent } from 'vue';
 
 export default create({
   name: "ant-select",
@@ -162,6 +185,7 @@ export default create({
       created: false,
       netDic: [],
       loading: false,
+      addInputValue: '',
     };
   },
   props: {
@@ -224,6 +248,43 @@ export default create({
       default: true,
     },
     dropdownRender: Function,
+    showTip: {
+      type: Boolean,
+      default: false,
+    },
+    tipText: {
+      type: String,
+      default: '💡 提示：可以输入关键词搜索选项',
+    },
+    showProgress: {
+      type: Boolean,
+      default: false,
+    },
+    progressColor: {
+      type: String,
+      default: 'rgba(0, 132, 253, 0.4)',
+    },
+    bottomText: {
+      type: String,
+      default: '提示：可使用搜索功能快速查找',
+    },
+    showBottomText: {
+      type: Boolean,
+      default: false,
+    },
+    allowAdd: {
+      type: Boolean,
+      default: false,
+    },
+    addPlaceholder: {
+      type: String,
+      default: '输入新选项名称',
+    },
+    addButtonText: {
+      type: String,
+      default: '添加',
+    },
+    onAddOption: Function,
   },
   watch: {
     dic: {
@@ -249,30 +310,294 @@ export default create({
     dropdownRenderConfig() {
       return this.dropdownRender && typeof this.dropdownRender === 'function';
     },
+    hasStandardContent() {
+      return this.showTip || this.showProgress || this.showBottomText || this.allowAdd;
+    },
+    selectedCount() {
+      return Array.isArray(this.text) ? this.text.length : 0;
+    },
+    totalCount() {
+      return this.netDic.length;
+    },
+    percent() {
+      return this.totalCount > 0 ? Math.round((this.selectedCount / this.totalCount) * 100) : 0;
+    },
     dropdownRenderComponent() {
       const customRender = this.dropdownRender;
       const self = this;
 
       return {
         name: 'DropdownRenderWrapper',
-        props: ['menu', 'option', 'value', 'multiple'],
+        props: ['menu', 'option', 'value', 'multiple', 'showTip', 'tipText', 'showProgress', 'progressColor', 'bottomText', 'showBottomText', 'allowAdd', 'addPlaceholder', 'addButtonText', 'onAddOption'],
         render() {
           try {
-            if (typeof customRender !== 'function') {
-              return this.menu;
+            const AProgress = resolveComponent('a-progress');
+            const AInput = resolveComponent('a-input');
+            const AButton = resolveComponent('a-button');
+            const ADivider = resolveComponent('a-divider');
+
+            const standardElements = [];
+
+            if (self.showTip) {
+              standardElements.push(
+                h('div', {
+                  style: {
+                    padding: '3px 12px',
+                    background: '#e6f7ff',
+                    border: '1px solid #91d5ff',
+                    borderRadius: '4px 4px 0 0',
+                    fontSize: '12px',
+                    color: '#1890ff'
+                  }
+                }, [
+                  h('div', {
+                    style: {
+                      fontSize: '12px',
+                      opacity: 0.9
+                    }
+                  }, self.tipText),
+                ].filter(Boolean))
+              );
             }
 
-            const result = customRender.call(self, this.menu, {
+            if (self.showProgress) {
+              standardElements.push(
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    background: '#fafafa',
+                    borderBottom: '1px solid #e8e8e8'
+                  }
+                }, [
+                  h('div', {
+                    style: {
+                      fontSize: '12px',
+                      marginBottom: '6px',
+                      color: '#666'
+                    }
+                  }, `已选 ${self.selectedCount}/${self.totalCount} 项 (${self.percent}%)`),
+                  h(AProgress, {
+                    percent: self.percent,
+                    strokeColor: self.progressColor,
+                    showInfo: false,
+                    size: 'small'
+                  })
+                ])
+              );
+            }
+
+            // 标准化新增选项功能
+            if (self.allowAdd) {
+              standardElements.push(
+                h(ADivider, { style: { margin: '4px 0' } }),
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    display: 'flex',
+                    gap: '8px',
+                    alignItems: 'center'
+                  }
+                }, [
+                  h(AInput, {
+                    placeholder: self.addPlaceholder,
+                    size: 'small',
+                    style: { flex: 1 },
+                    value: self.addInputValue,
+                    onChange: (e) => {
+                      self.addInputValue = e.target.value;
+                    },
+                    onPressEnter: () => {
+                      self.handleAddOption(self.addInputValue);
+                      self.addInputValue = '';
+                    }
+                  }),
+                  h(AButton, {
+                    type: 'primary',
+                    size: 'small',
+                    onClick: () => {
+                      if (self.addInputValue) {
+                        self.handleAddOption(self.addInputValue);
+                        self.addInputValue = '';
+                      }
+                    }
+                  }, {
+                    default: () => self.addButtonText
+                  })
+                ])
+              );
+            }
+
+            if (self.showBottomText) {
+              standardElements.push(
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    textAlign: 'center',
+                    color: '#999',
+                    fontSize: '12px',
+                    borderTop: '1px solid #e8e8e8'
+                  }
+                }, self.bottomText)
+              );
+            }
+
+            if (typeof customRender !== 'function') {
+              if (standardElements.length === 0) {
+                return this.menu;
+              }
+              return h('div', [...standardElements, this.menu]);
+            }
+
+            const customResult = customRender.call(self, this.menu, {
               option: this.option,
               value: this.value,
               multiple: this.multiple,
             });
 
-            return result || this.menu;
+            if (!customResult) {
+              if (standardElements.length === 0) {
+                return this.menu;
+              }
+              return h('div', [...standardElements, this.menu]);
+            }
+
+            // 将标准化内容（进度条、新增功能）放在自定义内容之前
+            if (standardElements.length > 0) {
+              return h('div', [...standardElements, customResult]);
+            }
+
+            return customResult;
           } catch (error) {
             console.error('dropdownRender error:', error);
             return this.menu;
           }
+        }
+      };
+    },
+    standardDropdownRenderComponent() {
+      const self = this;
+
+      return {
+        name: 'StandardDropdownRender',
+        props: ['menu'],
+        render() {
+          const AProgress = resolveComponent('a-progress');
+          const ADivider = resolveComponent('a-divider');
+          const AInput = resolveComponent('a-input');
+          const AButton = resolveComponent('a-button');
+
+          const elements = [];
+
+          // 完整标准化渲染：提示 + 进度条 + 菜单 + 底部文本
+          if (self.showTip) {
+            elements.push(
+              h('div', {
+                style: {
+                  padding: '3px 12px',
+                  background: '#e6f7ff',
+                  border: '1px solid #91d5ff',
+                  borderRadius: '4px 4px 0 0',
+                  fontSize: '12px',
+                  color: '#1890ff'
+                }
+              }, [
+                h('div', {
+                  style: {
+                    fontSize: '12px',
+                    opacity: 0.9
+                  }
+                }, self.tipText)
+              ].filter(Boolean))
+            );
+          }
+
+          if (self.showProgress) {
+            elements.push(
+              h('div', {
+                style: {
+                  padding: '8px 12px',
+                  background: '#fafafa',
+                  borderBottom: '1px solid #e8e8e8'
+                }
+              }, [
+                h('div', {
+                  style: {
+                    fontSize: '12px',
+                    marginBottom: '6px',
+                    color: '#666'
+                  }
+                }, `已选 ${self.selectedCount}/${self.totalCount} 项 (${self.percent}%)`),
+                h(AProgress, {
+                  percent: self.percent,
+                  strokeColor: self.progressColor,
+                  showInfo: false,
+                  size: 'small'
+                })
+              ])
+            );
+          }
+
+          // 安全地添加 menu 内容（直接作为子元素，不使用 slot）
+          if (this.menu) {
+            elements.push(this.menu);
+          }
+
+          // 标准化新增选项功能
+          if (self.allowAdd) {
+            elements.push(
+              h(ADivider, { style: { margin: '4px 0' } }),
+              h('div', {
+                style: {
+                  padding: '8px 12px',
+                  display: 'flex',
+                  gap: '8px',
+                  alignItems: 'center'
+                }
+              }, [
+                h(AInput, {
+                  placeholder: self.addPlaceholder,
+                  size: 'small',
+                  style: { flex: 1 },
+                  value: self.addInputValue,
+                  onChange: (e) => {
+                    self.addInputValue = e.target.value;
+                  },
+                  onPressEnter: () => {
+                    self.handleAddOption(self.addInputValue);
+                    self.addInputValue = '';
+                  }
+                }),
+                h(AButton, {
+                  type: 'primary',
+                  size: 'small',
+                  onClick: () => {
+                    if (self.addInputValue) {
+                      self.handleAddOption(self.addInputValue);
+                      self.addInputValue = '';
+                    }
+                  }
+                }, {
+                  default: () => self.addButtonText
+                })
+              ])
+            );
+          }
+
+          if (self.showBottomText) {
+            elements.push(
+              h(ADivider, { style: { margin: '4px 0' } }),
+              h('div', {
+                style: {
+                  padding: '8px 12px',
+                  textAlign: 'center',
+                  color: '#999',
+                  fontSize: '12px'
+                }
+              }, self.bottomText)
+            );
+          }
+
+          return h('div', elements);
         }
       };
     },
@@ -284,6 +609,66 @@ export default create({
     }
   },
   methods: {
+    handleAddOption(value, event, inputEl) {
+      const val = value ? value.trim() : '';
+
+      if (!val) {
+        this.showMessage('warning', '请输入选项名称');
+        return;
+      }
+
+      // 检查是否已存在
+      const exists = this.netDic.some(item => item[this.labelKey] === val);
+      if (exists) {
+        this.showMessage('warning', '该选项已存在');
+        return;
+      }
+
+      // 如果有自定义添加回调，优先使用
+      if (this.onAddOption && typeof this.onAddOption === 'function') {
+        const result = this.onAddOption(val, this.netDic);
+        if (result !== false) {
+          // 清空输入框由调用方处理
+        }
+        return;
+      }
+
+      // 默认行为：生成新值并添加到字典
+      const maxValue = this.netDic.length > 0
+        ? Math.max(...this.netDic.map(item => item[this.valueKey]))
+        : -1;
+      const newValue = maxValue + 1;
+
+      const newOption = {
+        [this.labelKey]: val,
+        [this.valueKey]: newValue
+      };
+
+      // 添加到字典数据
+      this.netDic.push(newOption);
+
+      // 自动选中新添加的选项
+      const currentValue = Array.isArray(this.text) ? [...this.text] : [];
+      currentValue.push(newValue);
+      this.text = currentValue;
+
+      // 触发更新
+      this.handleChange(currentValue);
+
+      this.showMessage('success', `已添加: ${val}`);
+    },
+    showMessage(type, message) {
+      // 尝试多种消息提示方式
+      if (window.message && window.message[type]) {
+        window.message[type](message);
+      } else if (this.$message && this.$message[type]) {
+        this.$message[type](message);
+      } else if (window.AntdMessage && window.AntdMessage[type]) {
+        window.AntdMessage[type](message);
+      } else {
+        console.log(`[${type}] ${message}`);
+      }
+    },
     initText() {
       // 处理空值，将空字符串转换为 undefined
       let val = this.modelValue;
