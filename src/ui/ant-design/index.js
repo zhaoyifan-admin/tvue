@@ -6,6 +6,7 @@ import AntSelect from 'packages/ant-design/select';
 import AntCascader from 'packages/ant-design/cascader';
 import AntCheckBox from 'packages/ant-design/checkbox';
 import AntRadio from 'packages/ant-design/radio';
+import AntDate from 'packages/ant-design/date';
 
 export default {
   AntForm,
@@ -15,5 +16,6 @@ export default {
   AntSelect,
   AntCascader,
   AntCheckBox,
-  AntRadio
+  AntRadio,
+  AntDate
 };

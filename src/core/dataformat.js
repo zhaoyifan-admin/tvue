@@ -126,6 +126,8 @@ export const getComponent = (type, component) => {
     result = 'time';
   } else if (DATE_LIST.includes(type)) {
     result = 'date';
+  } else if (['ant-date', 'ant-datetime', 'ant-daterange', 'ant-datetimerange', 'ant-time', 'ant-month', 'ant-week'].includes(type)) {
+    result = 'ant-date';
   } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(type)) {
     result = 'input';
   } else if (['ant-search', 'ant-phone', 'ant-currency', 'ant-bankCard', 'ant-password', 'ant-bank-card', 'ant-idCard', 'ant-id-card', 'ant-email', 'ant-code', 'ant-plate', 'ant-ip', 'ant-mac', 'ant-uscc', 'ant-textarea'].includes(type)) {
