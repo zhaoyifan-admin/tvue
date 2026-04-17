@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+
+<html class="no-js">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title></title>
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="../../cdn/vue/vue.global.min.js"></script>
+  <link rel="stylesheet" href="../../../lib/index.css" />
+  <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css" />
+  <link rel="stylesheet" href="../../cdn/element-plus/index.css" />
+
+  <script src="../../../lib/tvue.js"></script>
+  <script src="../../cdn/element-plus/index.full.min.js"></script>
+  <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+  <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/customParseFormat.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekday.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/localeData.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekOfYear.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekYear.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/advancedFormat.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/quarterOfYear.js"></script>
+  <script src="https://unpkg.com/ant-design-vue@4.2.6/dist/antd.min.js"></script>
+
+</head>
+
+<body>
+<div id="app">
+  {{form}}
+  <tvue-ant-form v-model="form" :option="option"></tvue-ant-form>
+</div>
+</body>
+<script>
+  let app = Vue.createApp({
+    data() {
+      return {
+        value: '',
+        form: {
+        },
+        option: {
+          column: [
+            {
+              label: "日期",
+              prop: "datetime",
+              type: "ant-datetime",
+            },
+            {
+              label: "快捷方式",
+              prop: "date",
+              type: "ant-date",
+              shortcuts: [
+                {
+                  text: '今天',
+                  value: new Date(),
+                },
+                {
+                  text: '昨天',
+                  value: () => {
+                    const date = new Date();
+                    date.setTime(date.getTime() - 3600 * 1000 * 24);
+                    return date;
+                  },
+                },
+                {
+                  text: '一周前',
+                  value: () => {
+                    const date = new Date();
+                    date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                    return date;
+                  },
+                },
+              ],
+            },
+            {
+              label: "禁止日期",
+              prop: "date",
+              type: "ant-date",
+              disabledDate (time) {
+                return time.getTime() < Date.now();
+              },
+            },
+          ],
+        }
+      }
+    },
+    mounted() {
+      this.obj = {
+        switch: 1,
+        selects: '0,1',
+        name: 'small',
+        cascader: [3, 1],
+        default: 10,
+        tree: [2],
+        province: '220000',
+        city: '220700',
+        area: '220702',
+        icon: 'DownOutlined',
+      }
+    },
+    methods: {
+      submit(form, done) {
+        this.$message.success('3s后关闭');
+        setTimeout(() => {
+          done()
+        }, 3000)
+      },
+    }
+  })
+  app.use(antd)
+  app.use(TVUE, { axios })
+  app.use(ElementPlus)
+  app.mount('#app')
+</script>
+
+<style lang="css">
+  .field-desc2 {
+    font-size: 12px;
+    color: rgb(12, 180, 79);
+    font-style: italic;
+  }
+</style>
+</html>
