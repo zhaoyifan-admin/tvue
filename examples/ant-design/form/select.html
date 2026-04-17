@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html class="no-js">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <title></title>
+  <meta name="description" content=""/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <script src="../../cdn/vue/vue.global.min.js"></script>
+  <link rel="stylesheet" href="../../../lib/index.css"/>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css"/>
+  <link rel="stylesheet" href="../../cdn/element-plus/index.css"/>
+
+  <script src="../../../lib/tvue.js"></script>
+  <script src="../../cdn/element-plus/index.full.min.js"></script>
+  <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
+  <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/customParseFormat.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekday.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/localeData.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekOfYear.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/weekYear.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/advancedFormat.js"></script>
+  <script src="https://unpkg.com/dayjs/plugin/quarterOfYear.js"></script>
+  <script src="https://unpkg.com/ant-design-vue@4.2.6/dist/antd.min.js"></script>
+
+</head>
+
+<body>
+<div id="app">
+  {{ form }}
+  <tvue-ant-form v-model="form" :option="option"></tvue-ant-form>
+</div>
+</body>
+<script>
+  const dicData = [
+    {label: '字典1', value: 0},
+    {label: '字典2', value: 1},
+    {label: '字典3', value: 2},
+    {label: '字典4', value: 3}
+  ];
+  let baseUrl = 'https://api.avuejs.com/area'
+  let app = Vue.createApp({
+    data() {
+      return {
+        value: '',
+        form: {},
+        option: {
+          column: [{
+            label: '基础用法',
+            prop: 'select',
+            type: 'ant-select',
+            dicData: [{
+              label: '字典1',
+              value: 0
+            }, {
+              label: '字典2',
+              value: 1
+            }]
+          }, {
+            label: '虚拟',
+            prop: 'select2',
+            type: 'ant-select',
+            virtualize: true,
+            dicData: Array.from({length: 100}, (_, index) => ({
+              label: '选项' + (index + 1),
+              value: index + 1
+            }))
+          }, {
+            label: '默认值',
+            prop: 'select3',
+            type: 'ant-select',
+            dicData: [
+              {label: '字典1', value: 0},
+              {label: '字典2', value: 1}
+            ],
+            value: 0
+          }, {
+            label: '禁用状态',
+            prop: 'select',
+            type: 'ant-select',
+            dicData: [{
+              label: '字典1',
+              value: 0
+            }, {
+              label: '字典2',
+              value: 1
+            }],
+            disabled: true
+          }, {
+            label: '禁用状态',
+            prop: 'select4',
+            type: 'ant-select',
+            dicData: [{
+              label: '字典1',
+              value: 0,
+              disabled: true
+            }, {
+              label: '字典2',
+              value: 1
+            }]
+          }, {
+            label: '可清空',
+            prop: 'input',
+            type: 'ant-select',
+            allowClear: true,
+            dicData: [
+              {label: '字典1', value: 0},
+              {label: '字典2', value: 1}
+            ]
+          }, {
+            label: '辅助语',
+            prop: 'select5',
+            type: 'ant-select',
+            dicData: [{
+              label: '字典1',
+              desc: '字典描述',
+              value: 0
+            }, {
+              label: '字典2',
+              value: 1
+            }]
+          }, {
+            label: '字典属性',
+            prop: 'select6',
+            type: 'ant-select',
+            props: {
+              label: 'name',
+              value: 'code'
+            },
+            dicData: [{
+              name: '字典1',
+              code: 0
+            }, {
+              name: '字典2',
+              code: 1
+            }]
+          }, {
+            label: '网络字典',
+            prop: 'select7',
+            type: 'ant-select',
+            props: {
+              label: 'name',
+              value: 'code'
+            },
+            dicUrl: 'https://api.avuejs.com/area/getProvince'
+          }, {
+            label: '基础多选',
+            prop: 'select8',
+            type: 'ant-select',
+            multiple: true,
+            // limit: 3,
+            collapseTags: true,
+            maxCollapseTags: 2,
+            dicData
+          }, {
+            label: "创建",
+            prop: "select9",
+            type: 'ant-select',
+            allowCreate: true,
+            multiple: true,
+            filterable: true,
+            removeTag: value => {
+              console.log(value)
+              message.success(`已删除: ${value}`);
+              return true;
+            },
+            dropdownRender: (menu, {option, value}) => {
+              const h = Vue.h;
+              return h('div', [
+                menu,
+                h('a-divider', {style: {margin: '4px 0'}}),
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    cursor: 'pointer',
+                    color: '#1890ff',
+                    textAlign: 'center'
+                  },
+                  onClick: () => {
+                    console.log('点击了添加新选项');
+                    console.log('当前选项:', option);
+                    console.log('当前值:', value);
+                  }
+                }, '+ 添加新选项')
+              ]);
+            },
+            dicData: [
+              {label: "字典1", value: 0},
+              {label: "字典2", value: 1},
+            ],
+          }, {
+            label: "全选功能",
+            prop: "select10",
+            type: 'ant-select',
+            multiple: true,
+            all: true,
+            dicData: [
+              {label: "选项1", value: 1},
+              {label: "选项2", value: 2},
+              {label: "选项3", value: 3},
+              {label: "选项4", value: 4},
+              {label: "选项5", value: 5},
+            ],
+          }, {
+            label: "带搜索和统计",
+            prop: "select11",
+            type: 'ant-select',
+            multiple: true,
+            filterable: true,
+            dropdownRender: (menu, {option, value}) => {
+              const h = Vue.h;
+              const selectedCount = Array.isArray(value) ? value.length : 0;
+
+              return h('div', [
+                h('div', {
+                  style: {
+                    padding: '3px 12px',
+                    background: '#e6f7ff',
+                    border: '1px solid #91d5ff',
+                    borderRadius: '4px 4px 0 0',
+                    fontSize: '12px',
+                    color: '#1890ff'
+                  }
+                }, '💡 提示：可以输入关键词搜索选项'),
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    background: '#fafafa',
+                    fontSize: '12px',
+                    color: '#666'
+                  }
+                }, `共 ${option.length} 项，已选 ${selectedCount} 项`),
+                menu,
+                h('a-divider', {style: {margin: '4px 0'}}),
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    textAlign: 'center',
+                    color: '#999',
+                    fontSize: '12px'
+                  }
+                }, '提示：可使用搜索功能快速查找')
+              ]);
+            },
+            dicData: Array.from({length: 20}, (_, i) => ({
+              label: `选项${i + 1}`,
+              value: i + 1
+            })),
+          }, {
+            label: "带提示信息",
+            prop: "select12",
+            type: 'ant-select',
+            multiple: true,
+            filterable: true,
+            dropdownRender: function (menu, {option, value}) {
+              const h = Vue.h;
+              return h('div', [
+                // 顶部提示
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    background: '#e6f7ff',
+                    border: '1px solid #91d5ff',
+                    borderRadius: '4px 4px 0 0',
+                    fontSize: '12px',
+                    color: '#1890ff'
+                  }
+                }, '💡 提示：可以输入关键词搜索选项'),
+
+                // 默认菜单
+                menu,
+
+                // 底部操作区
+                h('a-divider', {style: {margin: '4px 0'}}),
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    textAlign: 'center'
+                  }
+                }, [
+                  h('span', {
+                    style: {
+                      color: '#999',
+                      fontSize: '12px',
+                      cursor: 'pointer'
+                    },
+                    onClick: () => {
+                      console.log('===== 下拉菜单信息 =====');
+                      console.log('所有选项:', option);
+                      console.log('已选中的值:', value);
+                      console.log('已选中数量:', Array.isArray(value) ? value.length : 0);
+                      alert(`查看控制台日志！\n\n选项总数: ${option.length}\n已选数量: ${Array.isArray(value) ? value.length : 0}`);
+                    }
+                  }, '📊 点击查看统计信息')
+                ])
+              ]);
+            },
+            dicData: [
+              {label: "北京", value: "beijing"},
+              {label: "上海", value: "shanghai"},
+              {label: "广州", value: "guangzhou"},
+              {label: "深圳", value: "shenzhen"},
+              {label: "杭州", value: "hangzhou"},
+              {label: "成都", value: "chengdu"},
+            ],
+          }, {
+            label: "显示统计",
+            prop: "select13",
+            type: 'ant-select',
+            multiple: true,
+            collapseTags: true,
+            maxCollapseTags: 2,
+            filterable: true,
+            all: true,
+            dropdownRender: function (menu, {option, value}) {
+              const h = Vue.h;
+              const selectedCount = Array.isArray(value) ? value.length : 0;
+              const totalCount = option.length;
+              const percent = totalCount > 0 ? Math.round((selectedCount / totalCount) * 100) : 0;
+
+              return h('div', [
+                // 统计卡片
+                h('div', {
+                  style: {
+                    padding: '12px',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    borderRadius: '4px 4px 0 0',
+                    marginBottom: '8px'
+                  }
+                }, [
+                  h('div', {
+                    style: {
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      marginBottom: '4px'
+                    }
+                  }, '📈 选择进度'),
+                  h('div', {
+                    style: {
+                      fontSize: '12px',
+                      opacity: 0.9
+                    }
+                  }, `已选 ${selectedCount}/${totalCount} 项 (${percent}%)`),
+                  h('div', {
+                    style: {
+                      marginTop: '8px',
+                      height: '4px',
+                      background: 'rgba(255,255,255,0.3)',
+                      borderRadius: '2px',
+                      overflow: 'hidden'
+                    }
+                  }, [
+                    h('div', {
+                      style: {
+                        width: `${percent}%`,
+                        height: '100%',
+                        background: 'white',
+                        transition: 'width 0.3s ease'
+                      }
+                    })
+                  ])
+                ]),
+
+                // 默认菜单
+                menu,
+
+                // 底部说明
+                h('div', {
+                  style: {
+                    padding: '8px 12px',
+                    textAlign: 'center',
+                    fontSize: '12px',
+                    color: '#999',
+                    borderTop: '1px solid #f0f0f0',
+                    marginTop: '4px'
+                  }
+                }, '✨ 支持多选和搜索功能')
+              ]);
+            },
+            dicData: Array.from({length: 10}, (_, i) => ({
+              label: `城市${i + 1}`,
+              value: `city${i + 1}`
+            })),
+          }, {
+            label: "内置全选",
+            prop: "select14",
+            type: 'ant-select',
+            multiple: true,
+            all: true,
+            collapseTags: true,
+            maxCollapseTags: 3,
+            dicData: [
+              {label: "技术部", value: "tech"},
+              {label: "产品部", value: "product"},
+              {label: "设计部", value: "design"},
+              {label: "运营部", value: "operation"},
+              {label: "市场部", value: "marketing"},
+              {label: "人事部", value: "hr"},
+              {label: "财务部", value: "finance"},
+            ],
+          },]
+        }
+      }
+    },
+    mounted() {
+      this.obj = {
+        switch: 1,
+        selects: '0,1',
+        name: 'small',
+        cascader: [3, 1],
+        default: 10,
+        tree: [2],
+        province: '220000',
+        city: '220700',
+        area: '220702',
+        icon: 'DownOutlined',
+      }
+    },
+    methods: {
+      submit(form, done) {
+        this.$message.success('3s后关闭');
+        setTimeout(() => {
+          done()
+        }, 3000)
+      },
+    }
+  })
+  app.use(antd)
+  app.use(TVUE, {axios})
+  app.use(ElementPlus)
+  app.mount('#app')
+</script>
+
+<style lang="css">
+  .field-desc2 {
+    font-size: 12px;
+    color: rgb(12, 180, 79);
+    font-style: italic;
+  }
+</style>
+</html>
