@@ -7,23 +7,36 @@
     :loading="loading"
     :mode="tags ? 'tags' : (multiple ? 'multiple' : undefined)"
     :show-search="remote ? true : filterable"
-    :allow-clear="clearableVal"
+    :allow-clear="allowClearVal"
     :placeholder="placeholder"
     :disabled="disabled"
+    :max-count="limit"
     :max-tag-count="tags || collapseTags ? maxCollapseTags || 'responsive' : undefined"
     :max-tag-placeholder="collapseTagsTooltip ? getCollapsedTooltip : undefined"
-    :option-filter-prop="filterable ? labelKey : undefined"
+    :filter-option="filterable && !remote ? handleFilterOption : undefined"
     :not-found-content="noDataText"
     :dropdown-match-select-width="false"
     :dropdown-class-name="popperClass"
     :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
     @focus="handleFocus"
     @blur="handleBlur"
-    @change="handleChange"
     @remove="handleremoveTag"
     @search="remote ? handleRemoteMethod : undefined"
     :default-active-first-option="defaultFirstOption"
   >
+    <template #dropdownRender="{ menuNode: menu }">
+      <component
+        v-if="dropdownRenderConfig"
+        :is="dropdownRenderComponent"
+        :menu="menu"
+        :option="netDic"
+        :value="text"
+        :multiple="multiple"
+        :custom-render="dropdownRender"
+      />
+      <component v-else :is="menu" />
+    </template>
+
     <!-- 虚拟滚动模式 -->
     <template v-if="virtualize">
       <a-select-option
@@ -136,6 +149,7 @@ import props from "common/common/props.js";
 import event from "common/common/event.js";
 import { sendDic } from "core/dic";
 import { DIC_SPLIT } from "global/variable";
+import { h } from 'vue';
 
 export default create({
   name: "ant-select",
@@ -185,6 +199,10 @@ export default create({
       type: Number,
       default: 0,
     },
+    maxTagCount: {
+      type: [Number, String],
+      default: undefined,
+    },
     filterable: {
       type: Boolean,
       default: false,
@@ -205,6 +223,7 @@ export default create({
       type: Boolean,
       default: true,
     },
+    dropdownRender: Function,
   },
   watch: {
     dic: {
@@ -227,7 +246,38 @@ export default create({
     isGroup() {
       return this.netDic.length > 0 && this.netDic[0][this.groupsKey];
     },
+    dropdownRenderConfig() {
+      return this.dropdownRender && typeof this.dropdownRender === 'function';
+    },
+    dropdownRenderComponent() {
+      const customRender = this.dropdownRender;
+      const self = this;
+
+      return {
+        name: 'DropdownRenderWrapper',
+        props: ['menu', 'option', 'value', 'multiple'],
+        render() {
+          try {
+            if (typeof customRender !== 'function') {
+              return this.menu;
+            }
+
+            const result = customRender.call(self, this.menu, {
+              option: this.option,
+              value: this.value,
+              multiple: this.multiple,
+            });
+
+            return result || this.menu;
+          } catch (error) {
+            console.error('dropdownRender error:', error);
+            return this.menu;
+          }
+        }
+      };
+    },
   },
+
   mounted() {
     if (this.drag) {
       this.setSort();
@@ -251,6 +301,24 @@ export default create({
       }
 
       this.text = val;
+    },
+    handleFilterOption(input, option) {
+      if (!input || !option) return true;
+
+      // 获取选项数据
+      const optionData = option.componentOptions?.propsData || option.props || {};
+
+      // 从 netDic 中找到对应的项
+      const value = optionData.value;
+      const item = this.netDic.find(d => d[this.valueKey] === value);
+
+      if (!item) return false;
+
+      // 使用 labelKey 对应的字段进行过滤
+      const label = item[this.labelKey];
+      if (!label) return false;
+
+      return String(label).toLowerCase().includes(String(input).toLowerCase());
     },
     getLabelText(item) {
       if (!item) return '';
