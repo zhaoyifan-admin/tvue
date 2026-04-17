@@ -42,6 +42,31 @@
     {label: '字典3', value: 2},
     {label: '字典4', value: 3}
   ];
+  // 设置全局 message
+  const message = {
+    success: (msg) => {
+      if (window.AntdMessage) {
+        window.AntdMessage.success(msg);
+      } else {
+        console.log('[Success]', msg);
+      }
+    },
+    warning: (msg) => {
+      if (window.AntdMessage) {
+        window.AntdMessage.warning(msg);
+      } else {
+        console.log('[Warning]', msg);
+      }
+    },
+    error: (msg) => {
+      if (window.AntdMessage) {
+        window.AntdMessage.error(msg);
+      } else {
+        console.log('[Error]', msg);
+      }
+    }
+  };
+  window.message = message;
   let baseUrl = 'https://api.avuejs.com/area'
   let app = Vue.createApp({
     data() {
@@ -184,6 +209,7 @@
                     console.log('点击了添加新选项');
                     console.log('当前选项:', option);
                     console.log('当前值:', value);
+                    console.log(menu)
                   }
                 }, '+ 添加新选项')
               ]);
@@ -191,6 +217,33 @@
             dicData: [
               {label: "字典1", value: 0},
               {label: "字典2", value: 1},
+            ],
+          }, {
+            label: "动态添加选项",
+            prop: "select19",
+            type: 'ant-select',
+            multiple: true,
+            filterable: true,
+            allowAdd: true,
+            addPlaceholder: '输入新选项名称',
+            addButtonText: '添加',
+            dicData: [
+              {label: "选项A", value: 0},
+              {label: "选项B", value: 1},
+              {label: "选项C", value: 2},
+            ],
+          }, {
+            label: "自定义添加逻辑",
+            prop: "select20",
+            type: 'ant-select',
+            multiple: true,
+            filterable: true,
+            allowAdd: true,
+            addPlaceholder: '输入标签名称',
+            addButtonText: '创建标签',
+            dicData: [
+              {label: "标签1", value: 100},
+              {label: "标签2", value: 101},
             ],
           }, {
             label: "全选功能",
@@ -211,42 +264,10 @@
             type: 'ant-select',
             multiple: true,
             filterable: true,
-            dropdownRender: (menu, {option, value}) => {
-              const h = Vue.h;
-              const selectedCount = Array.isArray(value) ? value.length : 0;
-
-              return h('div', [
-                h('div', {
-                  style: {
-                    padding: '3px 12px',
-                    background: '#e6f7ff',
-                    border: '1px solid #91d5ff',
-                    borderRadius: '4px 4px 0 0',
-                    fontSize: '12px',
-                    color: '#1890ff'
-                  }
-                }, '💡 提示：可以输入关键词搜索选项'),
-                h('div', {
-                  style: {
-                    padding: '8px 12px',
-                    background: '#fafafa',
-                    fontSize: '12px',
-                    color: '#666'
-                  }
-                }, `共 ${option.length} 项，已选 ${selectedCount} 项`),
-                menu,
-                h('a-divider', {style: {margin: '4px 0'}}),
-                h('div', {
-                  style: {
-                    padding: '8px 12px',
-                    textAlign: 'center',
-                    color: '#999',
-                    fontSize: '12px'
-                  }
-                }, '提示：可使用搜索功能快速查找')
-              ]);
-            },
-            dicData: Array.from({length: 20}, (_, i) => ({
+            showTip: true,
+            showProgress: true,
+            showBottomText: true,
+            dicData: Array.from({length: 5}, (_, i) => ({
               label: `选项${i + 1}`,
               value: i + 1
             })),
@@ -256,6 +277,7 @@
             type: 'ant-select',
             multiple: true,
             filterable: true,
+            showProgress: true,
             dropdownRender: function (menu, {option, value}) {
               const h = Vue.h;
               return h('div', [
