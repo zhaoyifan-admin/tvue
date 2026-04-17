@@ -1,0 +1,497 @@
+# Ant Design Input 组件文档
+
+## 概述
+
+这是一个基于 Ant Design Vue 的增强型输入框组件，支持多种特殊输入类型，包括手机号、货币、银行卡、身份证、邮箱、验证码、车牌号、IP地址、MAC地址和统一社会信用代码等。
+
+## 基础属性
+
+### 通用属性
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| modelValue / v-model | 绑定值 | string \| number | - |
+| type | 输入框类型 | string | 'text' |
+| size | 输入框尺寸 | string | - |
+| disabled | 是否禁用 | boolean | false |
+| readonly | 是否只读 | boolean | false |
+| placeholder | 占位符文本 | string | - |
+| maxlength | 最大输入长度 | string \| number | - |
+| minlength | 最小输入长度 | string \| number | - |
+| rows | textarea 行数 | number | - |
+| prefixIcon | 前缀图标 | string | - |
+| suffixIcon | 后缀图标 | string | - |
+| clearable | 是否可清空 | boolean | false |
+| allowClear | 是否显示清除按钮 | boolean | false |
+| autocomplete | 自动完成 | string | - |
+| showWordLimit | 是否显示字数统计 | boolean | false |
+
+### Textarea 专属属性
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| minRows | textarea 最小行数 | number | 5 |
+| maxRows | textarea 最大行数 | number | 10 |
+| autoSize | 自适应内容高度 | boolean \| object | false |
+
+### 搜索框属性
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| prepend | 前置标签文本 | string | - |
+| append | 后置标签文本 | string | - |
+| prependClick | 前置标签点击回调 | Function | - |
+| appendClick | 后置标签点击回调 | Function | - |
+
+---
+
+## 特殊输入类型
+
+### 1. 手机号输入 (ant-phone)
+
+**type**: `ant-phone`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| defaultPhoneCode | 默认国际区号 | string | '+86' |
+| phoneCodeOptions | 自定义国际区号列表 | array | [] |
+| phoneMaxLength | 手机号最大长度 | number | 11 |
+| phoneCodePlaceholder | 区号占位符 | string | '区号' |
+| phonePlaceholder | 手机号占位符 | string | '请输入手机号' |
+
+**返回值格式**: `{区号}-{手机号}` 例如: `+86-13800138000`
+
+**默认支持的区号**: 中国(+86)、香港(+852)、澳门(+853)、台湾(+886)、美国/加拿大(+1)、英国(+44)、日本(+81)、韩国(+82)、新加坡(+65)、澳大利亚(+61)等25个国家/地区。
+
+---
+
+### 2. 货币输入 (ant-currency)
+
+**type**: `ant-currency`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| currency | 货币类型 | string | 'CNY' |
+| currencySymbolCustom | 自定义货币符号 | string | '' |
+| currencyUnit | 货币单位文本 | string | '' |
+| currencyPrecision | 小数位数 | number | 2 |
+| currencyPlaceholder | 占位符 | string | '请输入金额' |
+| currencyMin | 最小值 | number | undefined |
+| currencyMax | 最大值 | number | undefined |
+
+**支持的货币类型**:
+- CNY (¥), USD ($), EUR (€), GBP (£), JPY (¥)
+- HKD (HK$), KRW (₩), SGD (S$), AUD (A$), CAD (C$)
+
+**特性**:
+- 自动千分位格式化
+- 失焦时自动格式化
+- 聚焦时显示原始数值
+- 支持最小/最大值限制
+
+---
+
+### 3. 银行卡输入 (ant-bankCard / ant-bank-card)
+
+**type**: `ant-bankCard` 或 `ant-bank-card`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| bankCardSeparator | 分隔符 | string | ' ' |
+| bankCardSegment | 每段位数 | number | 4 |
+| bankCardMaxDigits | 最大数字位数 | number | 19 |
+| bankCardPlaceholder | 占位符 | string | '请输入银行卡号' |
+| showBankCardType | 是否显示银行卡类型 | boolean | true |
+
+**事件**:
+- `bank-card-change`: 银行卡信息变化时触发
+  - 参数: `{ value: 纯数字, display: 格式化显示, type: 银行卡类型 }`
+
+**自动识别的银行卡类型**:
+- 银联卡 (62开头)
+- VISA (4开头)
+- MasterCard (51-55或22-27开头)
+- American Express (34或37开头)
+- JCB (35开头)
+- Discover (6011或65开头)
+
+---
+
+### 4. 身份证输入 (ant-idCard / ant-id-card)
+
+**type**: `ant-idCard` 或 `ant-id-card`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| idCardPlaceholder | 占位符 | string | '请输入身份证号' |
+| showIdCardInfo | 是否显示身份证信息 | boolean | true |
+| idCardRealtimeValidate | 是否实时验证 | boolean | true |
+
+**事件**:
+- `id-card-valid`: 身份证验证完成时触发
+  - 参数: `{ valid: 是否有效, info: 身份证信息 }`
+- `id-card-change`: 身份证输入变化时触发
+  - 参数: `{ value: 身份证号, valid: 是否有效, info: 身份证信息 }`
+
+**验证信息包含**:
+- region: 发证地区
+- birthday: 出生日期 (YYYY-MM-DD)
+- gender: 性别 (男/女)
+- age: 年龄
+
+**验证规则**:
+- 18位身份证号码
+- 校验码验证
+- 自动提取地区、生日、性别信息
+
+---
+
+### 5. 邮箱输入 (ant-email)
+
+**type**: `ant-email`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| emailPlaceholder | 占位符 | string | '请输入邮箱' |
+| emailSuffixes | 邮箱后缀列表 | array | ['@qq.com', '@163.com', '@126.com', '@gmail.com', '@outlook.com', '@hotmail.com', '@sina.com', '@sohu.com', '@foxmail.com', '@icloud.com'] |
+| showEmailSuffix | 是否显示邮箱后缀 | boolean | true |
+
+**验证规则**:
+- 标准邮箱格式验证
+- 实时显示验证状态 (✓/✗)
+
+---
+
+### 6. 验证码输入 (ant-code)
+
+**type**: `ant-code`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| codePlaceholder | 占位符 | string | '' |
+| codeLength | 验证码长度 | number | 6 |
+| codeSeparator | 分隔符 | string | '' |
+
+**事件**:
+- `code-complete`: 验证码输入完成时触发
+  - 参数: `{ value: 完整验证码 }`
+
+**特性**:
+- 分段输入框
+- 自动跳转到下一个输入框
+- 支持粘贴功能
+- Backspace 自动返回上一个输入框
+
+---
+
+### 7. 车牌号输入 (ant-plate)
+
+**type**: `ant-plate`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| platePlaceholder | 占位符 | string | '请输入车牌号' |
+| defaultPlateProvince | 默认省份 | string | '京' |
+| plateProvinceList | 省份列表 | array | 全国34个省级行政区简称 |
+
+**返回值格式**: `{省份}{车牌号}` 例如: `京A12345`
+
+**特性**:
+- 省份下拉选择
+- 车牌号自动转大写
+- 自动过滤非法字符
+
+---
+
+### 8. IP 地址输入 (ant-ip)
+
+**type**: `ant-ip`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| ipPlaceholder | 占位符 | string | '请输入 IP 地址' |
+| ipVersion | IP 版本 | number | 4 |
+
+**特性**:
+- 4段式输入框
+- 自动验证范围 (0-255)
+- 输入3位数字或≥26时自动跳转下一段
+- 支持 `.` 键快速跳转
+- Backspace 空值时自动返回上一段
+
+---
+
+### 9. MAC 地址输入 (ant-mac)
+
+**type**: `ant-mac`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| macPlaceholder | 占位符 | string | '请输入 MAC 地址' |
+| macSeparator | 分隔符 | string | ':' |
+
+**特性**:
+- 6段式输入框
+- 每段2位十六进制字符
+- 自动转大写
+- 输入2位字符自动跳转下一段
+- 支持 `:` 或 `-` 键快速跳转
+
+---
+
+### 10. 统一社会信用代码 (ant-uscc)
+
+**type**: `ant-uscc`
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| usccPlaceholder | 占位符 | string | '请输入统一社会信用代码' |
+| usccRealtimeValidate | 是否实时验证 | boolean | true |
+
+**事件**:
+- `uscc-valid`: 信用代码验证完成时触发
+  - 参数: `{ valid: 是否有效 }`
+
+**验证规则**:
+- 18位字符
+- 校验码验证
+- 实时显示验证状态 (✓/✗)
+
+---
+
+### 11. 多行文本 (ant-textarea)
+
+**type**: `ant-textarea`
+
+继承所有 textarea 属性，额外支持：
+- `showWordLimit`: 显示字数统计
+
+---
+
+### 12. 密码输入 (ant-password)
+
+**type**: `ant-password`
+
+自动转换为密码输入框类型。
+
+---
+
+### 13. 搜索框 (ant-search)
+
+**type**: `ant-search`
+
+特性：
+- 自动添加搜索按钮
+- 回车键触发搜索
+- 支持 prepend/append 自定义
+
+---
+
+## 事件
+
+| 事件名 | 说明 | 回调参数 |
+|--------|------|----------|
+| update:modelValue | 绑定值变化时触发 | (value: string \| number) |
+| click | 点击输入框时触发 | (event: MouseEvent) |
+| focus | 获得焦点时触发 | (event: FocusEvent) |
+| blur | 失去焦点时触发 | (event: FocusEvent) |
+| change | 输入值变化时触发 | (value: string \| number) |
+| id-card-valid | 身份证验证完成 | ({ valid, info }) |
+| id-card-change | 身份证输入变化 | ({ value, valid, info }) |
+| code-complete | 验证码输入完成 | ({ value }) |
+| uscc-valid | 信用代码验证完成 | ({ valid }) |
+| bank-card-change | 银行卡信息变化 | ({ value, display, type }) |
+
+---
+
+## 使用示例
+
+### 基础输入框
+
+```vue
+  <template>
+    <t-input v-model="value" placeholder="请输入内容" />
+  </template>
+```
+
+### 手机号输入
+
+```vue
+
+<template>
+  <t-input v-model="phone" type="ant-phone" :phone-code-options="customCodes" @change="handlePhoneChange"/>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        phone: '',
+        customCodes: [{code: '+86', name: '中国', label: '🇨🇳 +86'}, {code: '+1', name: '美国', label: '🇺🇸 +1'}]
+      };
+    }, methods: {
+      handlePhoneChange(value) {
+        console.log('手机号:', value); // +86-13800138000 } } };
+</script>
+```
+
+### 货币输入
+
+```vue
+
+<template>
+  <t-input v-model="amount" type="ant-currency" currency="USD" :currency-min="0" :currency-max="10000"/>
+</template>
+```
+
+### 银行卡输入
+
+```vue
+
+<template>
+  <t-input v-model="cardNumber" type="ant-bankCard" @bank-card-change="handleCardChange"/>
+</template>
+<script> export default {
+  methods: {
+    handleCardChange({value, display, type}) {
+      console.log('卡号:', value);// 纯数字
+      console.log('显示:', display);// 格式化后
+      console.log('类型:', type);// 银联卡/VISA等
+    }
+  }
+};
+</script>
+```
+
+### 身份证输入
+
+```vue
+
+<template>
+  <t-input v-model="idCard" type="ant-idCard" @id-card-valid="handleIdCardValid"/>
+</template>
+<script> export default {
+  methods: {
+    handleIdCardValid({valid, info}) {
+      if (valid) {
+        console.log('地区:', info.region);
+        console.log('生日:', info.birthday);
+        console.log('性别:', info.gender);
+        console.log('年龄:', info.age);
+      }
+    }
+  }
+}; </script>
+```
+
+### 验证码输入
+
+```vue
+
+<template>
+  <t-input v-model="code" type="ant-code" :code-length="6" @code-complete="handleCodeComplete"/>
+</template>
+<script> export default {
+  methods: {
+    handleCodeComplete({value}) {
+      console.log('验证码:', value); // 自动提交验证
+    }
+  }
+};
+</script>
+```
+
+### IP 地址输入
+
+```vue
+
+<template>
+  <t-input v-model="ipAddress" type="ant-ip"/>
+</template>
+```
+
+### 车牌号输入
+
+```vue
+<template> <t-input v-model="plateNumber" type="ant-plate" default-plate-province="沪" /> </template>
+```
+
+### 带图标的输入框
+
+```vue
+<template> <t-input v-model="username" prefix-icon="UserOutlined" suffix-icon="CheckCircleOutlined" /> </template>
+```
+
+### 搜索框
+
+```vue
+<template> <t-input v-model="keyword" type="ant-search" placeholder="搜索..." @append-click="handleSearch" /> </template>
+```
+
+### 多行文本
+
+```vue
+<template> <t-input v-model="description" type="ant-textarea" :rows="4" show-word-limit :maxlength="500" /> </template>
+```
+
+---
+
+## 注意事项
+
+1. **图标使用**:
+   - 支持 Ant Design Icons (如 `SearchOutlined`)
+   - 支持 iconfont (如 `iconfont icon-user`)
+
+2. **表单验证**:
+   - 身份证、邮箱、信用代码会自动显示验证状态
+   - 可通过 `inputStatus` 计算属性获取当前状态
+
+3. **数据格式**:
+   - 手机号: `{区号}-{号码}` 格式存储
+   - 银行卡: 纯数字存储，显示时自动格式化
+   - 车牌号: `{省份}{号码}` 格式存储
+   - IP/MAC: 带分隔符格式存储
+
+4. **自动格式化**:
+   - 货币: 千分位 + 小数位
+   - 银行卡: 按段分隔
+   - 身份证: 自动转大写
+
+5. **兼容性**:
+   - 基于 Ant Design Vue 4.x
+   - 需要 Vue 3.x 环境
+
+---
+
+## 样式类名
+
+| 类名 | 说明 |
+|------|------|
+| `.tvue-input__phone` | 手机号容器 |
+| `.tvue-input__phone-code` | 手机号区号选择器 |
+| `.tvue-input__phone-input` | 手机号输入框 |
+| `.tvue-input__code` | 验证码容器 |
+| `.tvue-input__code-item` | 验证码单项 |
+| `.tvue-input__plate` | 车牌号容器 |
+| `.tvue-input__plate-province` | 车牌号省份选择器 |
+| `.tvue-input__plate-number` | 车牌号输入框 |
+| `.tvue-input__ip` | IP地址容器 |
+| `.tvue-input__ip-segment` | IP地址段 |
+| `.tvue-input__ip-dot` | IP地址分隔符 |
+| `.tvue-input__mac` | MAC地址容器 |
+| `.tvue-input__mac-segment` | MAC地址段 |
+| `.tvue-input__mac-sep` | MAC地址分隔符 |
+| `.tvue-input__bank-card-type` | 银行卡类型标签 |
+| `.tvue-input__id-card-info` | 身份证信息标签 |
+| `.tvue-input__email-valid` | 邮箱验证状态 |
+| `.tvue-input__uscc-valid` | 信用代码验证状态 |
+| `.tvue-textarea__word-limit` | 文本域字数统计 |
+
+---
+
+## 更新日志
+
+- 支持13种输入类型
+- 完善的表单验证
+- 智能格式化与解析
+- 丰富的交互反馈
+- 完整的事件系统
