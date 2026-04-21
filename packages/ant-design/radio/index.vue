@@ -2,19 +2,32 @@
   <div :class="b()">
     <a-radio-group v-model:value="text"
                    :size="size"
-                   @click="handleClick"
                    :disabled="disabled"
                    :name="name"
                    :button-style="buttonStyle"
-                   :option-type="optionType">
+                   :option-type="optionType"
+                   :default-value="defaultValue"
+                   @change="handleChangeGroup"
+                   @click="handleClick">
       <slot>
-        <component :is="componentName"
-                   v-for="(item,index) in dic"
-                   :key="index"
-                   :value="item[valueKey]"
-                   :disabled="item[disabledKey] || disabled">
-          {{item[labelKey]}}
-        </component>
+        <template v-if="options && options.length > 0">
+          <component :is="radioComponent"
+                     v-for="(item, index) in options"
+                     :key="index"
+                     :value="getOptionValue(item)"
+                     :disabled="getOptionDisabled(item)">
+            {{ getOptionLabel(item) }}
+          </component>
+        </template>
+        <template v-else>
+          <component :is="radioComponent"
+                     v-for="(item, index) in dic"
+                     :key="index"
+                     :value="item[valueKey]"
+                     :disabled="item[disabledKey] || disabled">
+            {{ item[labelKey] }}
+          </component>
+        </template>
       </slot>
     </a-radio-group>
   </div>
@@ -24,16 +37,21 @@
 import create from "core/create";
 import props from "common/common/props.js";
 import event from "common/common/event.js";
+
 export default create({
   name: "ant-radio",
   mixins: [props(), event()],
-  data () {
+  data() {
     return {
       name: 'radio',
     };
   },
   props: {
     modelValue: {},
+    defaultValue: {
+      type: [String, Number, Boolean],
+      default: undefined
+    },
     buttonStyle: {
       type: String,
       default: 'outline'
@@ -41,18 +59,40 @@ export default create({
     optionType: {
       type: String,
       default: 'default'
+    },
+    options: {
+      type: Array,
+      default: () => []
     }
   },
-  watch: {},
-  created () { },
-  mounted () { },
   computed: {
-    componentName () {
-      const type = 'a'
-      const result = `${type}-${this.name}${this.button ? '-button' : ''}`
-      return result
+    radioComponent() {
+      return this.button ? 'a-radio-button' : 'a-radio';
     }
   },
-  methods: {}
+  methods: {
+    handleChangeGroup(e) {
+      const value = e.target.value;
+      this.handleChange(value);
+    },
+    getOptionValue(option) {
+      if (typeof option === 'string' || typeof option === 'number') {
+        return option;
+      }
+      return option.value;
+    },
+    getOptionLabel(option) {
+      if (typeof option === 'string' || typeof option === 'number') {
+        return option;
+      }
+      return option.label;
+    },
+    getOptionDisabled(option) {
+      if (typeof option === 'string' || typeof option === 'number') {
+        return false;
+      }
+      return option.disabled || false;
+    }
+  }
 });
 </script>

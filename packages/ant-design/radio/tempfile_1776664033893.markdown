@@ -1,0 +1,273 @@
+# Ant Radio 单选框组件
+
+基于 Ant Design Vue 的单选框组件，支持数据驱动、多种配置方式和灵活的选项渲染。
+
+## 基础用法
+
+```vue
+
+<template>
+  <ant-radio v-model="value" :dic="options"/>
+</template>
+<script> export default {
+  data() {
+    return {
+      value: '',
+      options: [{label: '选项1', value: '1'}, {label: '选项2', value: '2'}, {label: '选项3', value: '3'}]
+    }
+  }
+} </script>
+```
+
+## API
+
+### Props
+
+| 参数 | 说明 | 类型 | 默认值 | 必填 |
+|------|------|------|--------|------|
+| modelValue / v-model | 绑定值 | string \| number \| boolean | - | 否 |
+| defaultValue | 默认值 | string \| number \| boolean | undefined | 否 |
+| dic | 数据源，支持数组或函数返回数组 | Array \| Function | [] | 否 |
+| options | 选项列表（优先级高于 dic） | Array | [] | 否 |
+| disabled | 是否禁用 | Boolean | false | 否 |
+| size | 尺寸，可选值：`large` \| `middle` \| `small` | String | - | 否 |
+| button | 是否为按钮样式 | Boolean | false | 否 |
+| buttonStyle | 按钮样式，可选值：`outline` \| `solid` | String | outline | 否 |
+| optionType | 选项类型，可选值：`default` \| `button` | String | default | 否 |
+| name | 原生 name 属性 | String | radio | 否 |
+| placeholder | 占位文本 | String | - | 否 |
+| clearable | 是否可清空 | Boolean | true | 否 |
+| allowClear | 是否允许清除 | Boolean | true | 否 |
+| readonly | 是否只读 | Boolean | false | 否 |
+| type | 类型标识 | String | - | 否 |
+| dataType | 数据类型，可选值：`array` \| `string` \| `number` \| `json` | String | - | 否 |
+| separator | 分隔符，用于字符串与数组转换 | String | ',' | 否 |
+| multiple | 是否多选（继承自通用 props） | Boolean | false | 否 |
+| min | 最小值限制 | Number | - | 否 |
+| max | 最大值限制 | Number | - | 否 |
+| border | 是否显示边框 | Boolean | false | 否 |
+| popperClass | 下拉框类名 | String | - | 否 |
+| params | 额外参数对象 | Object | {} | 否 |
+| tableData | 表格数据对象 | Object | {} | 否 |
+| listType | 列表类型 | String | - | 否 |
+| column | 列配置对象 | Object | {} | 否 |
+| label | 标签文本 | String | - | 否 |
+| tip | 提示文本 | String | - | 否 |
+| rules | 验证规则数组 | Array | - | 否 |
+| dicUrl | 字典数据请求 URL | String | - | 否 |
+| dicMethod | 字典数据请求方法 | String | - | 否 |
+| dicQuery | 字典数据请求参数 | Object | {} | 否 |
+| dicFormatter | 字典数据格式化函数 | Function | - | 否 |
+| props | 自定义属性映射 | Object | 见下方 | 否 |
+| propsHttp | HTTP 相关属性映射 | Object | 见下方 | 否 |
+
+#### props 默认值
+
+```javascript
+{
+  value: 'value', // 选项值字段
+  label: 'label', // 选项标签字段
+  disabled: 'disabled',// 选项禁用字段
+  children: 'children',// 子选项字段
+  type: 'type', // 类型字段
+  desc: 'desc', // 描述字段
+  leaf: 'leaf', // 叶子节点字段
+  id: 'id', // ID 字段
+  groups: 'groups' // 分组字段
+}
+```
+
+#### propsHttp 默认值
+
+```javascript
+{
+  name: 'name', // 名称字段
+  url: 'url', // URL 字段
+  res: 'res', // 结果字段
+  fileType: 'fileType' // 文件类型字段
+}
+```
+
+### Options 格式
+
+`options` 支持以下格式：
+
+#### 1. 简单数组
+
+```javascript
+['选项1', '选项2', '选项3']
+// 或
+  [1, 2, 3]
+```
+
+#### 2. 对象数组
+
+```javascript
+[
+  { label: '选项1', value: '1', disabled: false },
+  { label: '选项2', value: '2', disabled: true },
+  { label: '选项3', value: '3' }
+]
+```
+
+### Events
+
+| 事件名 | 说明 | 回调参数 |
+|--------|------|----------|
+| change | 选中值变化时触发 | (value: any) |
+| click | 点击时触发 | (event: MouseEvent) |
+| focus | 获得焦点时触发 | (event: FocusEvent) |
+| blur | 失去焦点时触发 | (event: FocusEvent) |
+| update:modelValue | v-model 更新时触发 | (value: any) |
+
+### Slots
+
+| 插槽名 | 说明 |
+|--------|------|
+| default | 自定义选项内容，不提供时将使用 `options` 或 `dic` 渲染 |
+
+#### 自定义选项示例
+
+```vue
+<ant-radio v-model="value">
+  <a-radio value="1">自定义选项1</a-radio>
+  <a-radio value="2">自定义选项2</a-radio>
+</ant-radio>
+```
+
+### Methods
+
+| 方法名 | 说明 | 参数 |
+|--------|------|------|
+| handleChangeGroup | 处理单选组变化事件 | (e: Event) |
+| getOptionValue | 获取选项的值 | (option: any) => any |
+| getOptionLabel | 获取选项的标签 | (option: any) => string \| number |
+| getOptionDisabled | 获取选项的禁用状态 | (option: any) => boolean |
+
+## 使用示例
+
+### 1. 基础单选
+
+```vue
+
+<template>
+  <ant-radio v-model="value" :dic="options"/>
+</template>
+<script> export default {
+  data() {
+    return {value: '1', options: [{label: '男', value: 'male'}, {label: '女', value: 'female'}]}
+  }
+} </script>
+```
+### 2. 按钮样式
+
+```vue
+
+<template>
+  <ant-radio v-model="value" :options="options" :button="true" button-style="solid"/>
+</template>
+<script> export default {
+  data() {
+    return {
+      value: '1',
+      options: [{label: '选项1', value: '1'}, {label: '选项2', value: '2'}, {label: '选项3', value: '3'}]
+    }
+  }
+} </script>
+```
+
+### 3. 禁用状态
+
+```vue
+
+<template>
+  <ant-radio v-model="value" :options="options" disabled/>
+</template>
+<script> export default {
+  data() {
+    return {
+      value: '1',
+      options: [{label: '选项1', value: '1'}, {label: '选项2', value: '2', disabled: true}, {
+        label: '选项3',
+        value: '3'
+      }]
+    }
+  }
+} </script>
+```
+
+### 4. 不同尺寸
+
+```vue
+<template>
+  <div>
+    <ant-radio v-model="value1" :options="options" size="large"/>
+    <ant-radio v-model="value2" :options="options" size="middle"/>
+    <ant-radio v-model="value3" :options="options" size="small"/>
+  </div>
+</template>
+```
+
+### 5. 使用 options 属性
+
+```vue
+
+<template>
+  <ant-radio v-model="value" :options="simpleOptions" @change="handleChange"/>
+</template>
+<script> export default {
+  data() {
+    return {
+      value: 'apple',
+      simpleOptions: [{label: '苹果', value: 'apple'}, {label: '香蕉', value: 'banana'}, {
+        label: '橙子',
+        value: 'orange',
+        disabled: true
+      }]
+    }
+  }, methods: {
+    handleChange(value) {
+      console.log('选中值:', value)
+    }
+  }
+} </script>
+```
+
+### 6. 动态数据源
+
+```vue
+<template>
+  <ant-radio v-model="value" :dic-url="apiUrl" dic-method="GET" :props="{ label: 'name', value: 'id' }"/>
+</template>
+<script> export default {
+  data() {
+    return {value: '', apiUrl: '/api/dict/options'}
+  }
+} </script>
+```
+
+### 7. 自定义插槽
+
+```vue
+
+<template>
+  <ant-radio v-model="value">
+    <a-radio value="custom1"><span style="color: red;">红色选项</span></a-radio>
+    <a-radio value="custom2"><span style="color: blue;">蓝色选项</span></a-radio>
+  </ant-radio>
+</template>
+```
+
+## 注意事项
+
+1. **options 与 dic 的优先级**：当同时提供 `options` 和 `dic` 时，优先使用 `options`
+2. **按钮样式**：设置 `button=true` 时，内部会使用 `a-radio-button` 组件
+3. **数据类型**：通过 `dataType` 可以控制返回值类型，支持自动转换
+4. **禁用选项**：可以在选项数据中设置 `disabled: true` 来禁用单个选项
+5. **v-model 绑定**：推荐使用 `v-model` 进行双向绑定，也可以使用 `modelValue` + `@update:modelValue`
+
+## 依赖说明
+
+- 基于 **Ant Design Vue** 的 `a-radio` 和 `a-radio-group` 组件
+- 继承了项目通用的 props 混入（`core/common/props.js`）
+- 使用了 BEM 命名规范（通过 `b()` 方法生成类名）

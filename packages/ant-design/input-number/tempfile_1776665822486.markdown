@@ -1,0 +1,107 @@
+# Ant InputNumber 数字输入框
+
+基于 Ant Design Vue 的数字输入框组件，支持精度控制、范围限制、步进值等特性。
+
+## 基础用法
+
+```vue
+
+<template>
+  <ant-input-number v-model="value" :min="1" :max="100" :step="1"/>
+</template>
+<script> export default {
+  data() {
+    return {value: 10}
+  }
+} </script>
+```
+
+## API
+
+### Props
+
+| 参数 | 说明 | 类型 | 默认值 | 必填 |
+|------|------|------|--------|------|
+| v-model / value | 绑定值 | number/string | - | 是 |
+| precision | 数值精度 | number | - | 否 |
+| min | 最小值 | number | -Infinity | 否 |
+| max | 最大值 | number | Infinity | 否 |
+| step | 步长 | number | 1 | 否 |
+| stepMin | 最小步长 | number | 1 | 否 |
+| controls | 是否显示增减按钮 | boolean | true | 否 |
+| controlsPosition | 控制按钮位置 | string | '' | 否 |
+| placeholder | 占位文本 | string | - | 否 |
+| size | 输入框尺寸 | string | - | 否 |
+| readonly | 是否只读 | boolean | - | 否 |
+| disabled | 是否禁用 | boolean | - | 否 |
+| prefix | 前缀内容 | string | - | 否 |
+| suffix | 后缀内容 | string | - | 否 |
+| addonBefore | 前置标签 | string | - | 否 |
+| addonAfter | 后置标签 | string | - | 否 |
+| formatter | 指定输入框展示值的格式 | function(value) | - | 否 |
+| parser | 指定从 formatter 里转换回数字的方式 | function(string) | - | 否 |
+| stringMode | 字符模式，支持小数点和空字符串 | boolean | false | 否 |
+
+### Events
+
+| 事件名 | 说明 | 回调参数 |
+|--------|------|----------|
+| change | 当绑定值变化时触发的事件 | (value: number \| string) |
+| click | 点击输入框时触发 | (event: MouseEvent) |
+| focus | 获取焦点时触发 | (event: FocusEvent) |
+| blur | 失去焦点时触发 | (event: FocusEvent) |
+
+### Slots
+
+| 插槽名 | 说明 |
+|--------|------|
+| prefix | 前缀内容（通过 `prefix` prop 传入文本） |
+| suffix | 后缀内容（通过 `suffix` prop 传入文本） |
+| addonBefore | 前置标签内容（通过 `addonBefore` prop 传入文本） |
+| addonAfter | 后置标签内容（通过 `addonAfter` prop 传入文本） |
+
+### Methods
+
+| 方法名 | 说明 | 参数 |
+|--------|------|------|
+| prefixClick | 前缀点击事件处理函数 | (value: number \| string) |
+| suffixClick | 后缀点击事件处理函数 | (value: number \| string) |
+
+## 使用示例
+
+### 带精度的数字输入框
+
+```vue
+
+<ant-input-number v-model="price" :precision="2" :min="0" :step="0.01"/>
+```
+
+### 带前后缀
+
+```vue
+<ant-input-number v-model="amount" prefix="¥" suffix="元" :min="0" />
+```
+
+### 自定义格式化
+
+```vue
+
+<ant-input-number v-model="value" :formatter="value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
+                  :parser="value => value.replace(/\$\s?|(,*)/g, '')"/>
+```
+
+### 带增减按钮控制
+
+```vue
+<ant-input-number v-model="count" :controls="true" controls-position="right" :min="1" :max="10" />
+```
+
+## 注意事项
+
+1. **精度控制**：设置 `precision` 后，输入值会自动保留指定的小数位数
+2. **范围限制**：通过 `min` 和 `max` 可以限制输入值的范围
+3. **步进值**：`step` 控制每次增减的步长，`stepMin` 控制最小步长
+4. **字符模式**：启用 `stringMode` 后可以输入空字符串和小数点，适合需要更灵活输入的场景
+5. **格式化**：`formatter` 和 `parser` 需要配合使用，前者用于展示格式化，后者用于解析回原始值
+6. **前缀/后缀点击**：可以通过 `prefixClick` 和 `suffixClick` 自定义点击行为
+
