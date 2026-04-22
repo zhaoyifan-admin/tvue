@@ -1,13 +1,13 @@
 <template>
   <div :class="b()">
     <a-date-picker
-      v-if="type === 'ant-date'"
+      v-if="isSinglePicker && !isTimePicker"
       v-model:value="text"
       :size="size"
       :allow-clear="clearableVal"
       :disabled="disabled"
       :format="format"
-      :placeholder="placeholder || t('date.placeholder')"
+      :placeholder="getPlaceholder()"
       :disabled-date="getDisabledDate"
       :disabled-time="getDisabledTime"
       :default-value="defaultValue"
@@ -15,6 +15,11 @@
       :show-time="showTimeConfig"
       :show-today="showNow"
       :presets="presetsConfig"
+      :picker="pickerType"
+      :hour-step="hourStep"
+      :minute-step="minuteStep"
+      :second-step="secondStep"
+      :hide-disabled-options="hideDisabledOptions"
       :dropdown-class-name="popperClass"
       :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
       @change="handleChange"
@@ -33,93 +38,14 @@
       </template>
     </a-date-picker>
 
-    <a-month-picker
-      v-else-if="type === 'ant-month'"
-      v-model:value="text"
-      :size="size"
-      :allow-clear="clearableVal"
-      :disabled="disabled"
-      :format="format"
-      :placeholder="placeholder || t('date.monthPlaceholder')"
-      :disabled-date="getDisabledDate"
-      :default-value="defaultValue"
-      :default-picker-value="defaultPickerValue"
-      :dropdown-class-name="popperClass"
-      :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
-      @change="handleChange"
-      @open-change="handleOpenChange"
-      @panel-change="handlePanelChange"
-    >
-      <template #suffixIcon v-if="prefixIcon">
-        <component :is="prefixIcon" />
-      </template>
-    </a-month-picker>
-
-    <a-week-picker
-      v-else-if="type === 'ant-week'"
-      v-model:value="text"
-      :size="size"
-      :allow-clear="clearableVal"
-      :disabled="disabled"
-      :format="format"
-      :placeholder="placeholder || t('date.weekPlaceholder')"
-      :disabled-date="getDisabledDate"
-      :default-value="defaultValue"
-      :default-picker-value="defaultPickerValue"
-      :dropdown-class-name="popperClass"
-      :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
-      @change="handleChange"
-      @open-change="handleOpenChange"
-      @panel-change="handlePanelChange"
-    >
-      <template #suffixIcon v-if="prefixIcon">
-        <component :is="prefixIcon" />
-      </template>
-    </a-week-picker>
-
-    <a-range-picker
-      v-else-if="['ant-daterange', 'ant-datetimerange'].includes(type)"
-      v-model:value="text"
-      :size="size"
-      :allow-clear="clearableVal"
-      :disabled="disabled"
-      :format="format"
-      :placeholder="[startPlaceholder || t('date.start'), endPlaceholder || t('date.end')]"
-      :range-separator="rangeSeparator"
-      :disabled-date="getDisabledDate"
-      :disabled-time="getDisabledTime"
-      :default-value="defaultValue"
-      :default-picker-value="defaultPickerValue"
-      :show-time="showTimeConfig"
-      :show-today="showNow"
-      :separator="rangeSeparator"
-      :presets="presetsConfig"
-      :dropdown-class-name="popperClass"
-      :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
-      @change="handleChange"
-      @open-change="handleOpenChange"
-      @panel-change="handlePanelChange"
-    >
-      <template #dateRender="{ current, today }">
-        <slot :item="{ text: current.date(), renderText: current.format(format) }" v-if="$slots.default">
-        </slot>
-        <div class="ant-picker-cell-inner" v-else>
-          {{ current.date() }}
-        </div>
-      </template>
-      <template #suffixIcon v-if="prefixIcon">
-        <component :is="prefixIcon" />
-      </template>
-    </a-range-picker>
-
     <a-time-picker
-      v-else-if="type === 'ant-time'"
+      v-else-if="isTimePicker"
       v-model:value="text"
       :size="size"
       :allow-clear="clearableVal"
       :disabled="disabled"
       :format="format"
-      :placeholder="placeholder || t('date.timePlaceholder')"
+      :placeholder="getPlaceholder()"
       :disabled-hours="disabledHours"
       :disabled-minutes="disabledMinutes"
       :disabled-seconds="disabledSeconds"
@@ -137,6 +63,42 @@
         <component :is="prefixIcon" />
       </template>
     </a-time-picker>
+
+    <a-range-picker
+      v-else-if="isRangePicker"
+      v-model:value="text"
+      :size="size"
+      :allow-clear="clearableVal"
+      :disabled="disabled"
+      :format="format"
+      :placeholder="[startPlaceholder || t('date.start'), endPlaceholder || t('date.end')]"
+      :range-separator="rangeSeparator"
+      :disabled-date="getDisabledDate"
+      :disabled-time="getDisabledTime"
+      :default-value="defaultValue"
+      :default-picker-value="defaultPickerValue"
+      :show-time="showTimeConfig"
+      :show-today="showNow"
+      :separator="rangeSeparator"
+      :presets="presetsConfig"
+      :picker="pickerType"
+      :dropdown-class-name="popperClass"
+      :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
+      @change="handleChange"
+      @open-change="handleOpenChange"
+      @panel-change="handlePanelChange"
+    >
+      <template #dateRender="{ current, today }">
+        <slot :item="{ text: current.date(), renderText: current.format(format) }" v-if="$slots.default">
+        </slot>
+        <div class="ant-picker-cell-inner" v-else>
+          {{ current.date() }}
+        </div>
+      </template>
+      <template #suffixIcon v-if="prefixIcon">
+        <component :is="prefixIcon" />
+      </template>
+    </a-range-picker>
   </div>
 </template>
 
@@ -149,12 +111,18 @@ import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import 'dayjs/locale/zh-cn';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import weekYear from 'dayjs/plugin/weekYear';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 
 dayjs.extend(weekday);
 dayjs.extend(localeData);
 dayjs.extend(customParseFormat);
-dayjs.locale('zh-cn');
+dayjs.extend(weekOfYear);
+dayjs.extend(weekYear);
+dayjs.extend(advancedFormat);
+dayjs.extend(quarterOfYear);
 
 export default create({
   name: "ant-date",
@@ -182,6 +150,10 @@ export default create({
     type: {
       type: String,
       default: "ant-date",
+    },
+    pickerType: {
+      type: String,
+      default: "date",
     },
     valueFormat: String,
     format: String,
@@ -213,7 +185,6 @@ export default create({
   watch: {
     modelValue: {
       handler(val, oldVal) {
-        // 只有当值真正改变时才更新，避免循环
         if (val !== oldVal) {
           this.initDateValue();
         }
@@ -222,6 +193,15 @@ export default create({
     },
   },
   computed: {
+    isSinglePicker() {
+      return ['ant-date', 'ant-datetime', 'ant-month', 'ant-week', 'ant-time'].includes(this.type);
+    },
+    isRangePicker() {
+      return ['ant-daterange', 'ant-datetimerange'].includes(this.type);
+    },
+    isTimePicker() {
+      return this.type === 'ant-time';
+    },
     showTimeConfig() {
       if (['ant-datetimerange', 'ant-datetime'].includes(this.type)) {
         return {
@@ -249,6 +229,16 @@ export default create({
     },
   },
   methods: {
+    getPlaceholder() {
+      const placeholderMap = {
+        'ant-date': this.t('date.placeholder'),
+        'ant-datetime': this.t('date.placeholder'),
+        'ant-month': this.t('date.monthPlaceholder'),
+        'ant-week': this.t('date.weekPlaceholder'),
+        'ant-time': this.t('date.timePlaceholder'),
+      };
+      return this.placeholder || placeholderMap[this.type] || this.t('date.placeholder');
+    },
     initDateValue() {
       let val = this.modelValue;
 
@@ -257,16 +247,12 @@ export default create({
         return;
       }
 
-      // 处理范围选择器
       if (['ant-daterange', 'ant-datetimerange'].includes(this.type)) {
         if (Array.isArray(val)) {
           this.text = val.map(v => {
             if (!v) return undefined;
-            // 如果已经是 dayjs 对象，直接返回
             if (v.$isDayjsObject) return v;
-            // 先尝试用 valueFormat 解析（非严格模式）
             let parsed = this.valueFormat ? dayjs(v, this.valueFormat) : dayjs(v);
-            // 如果解析失败，尝试直接解析
             if (!parsed.isValid()) {
               parsed = dayjs(v);
             }
@@ -286,17 +272,13 @@ export default create({
           this.text = undefined;
         }
       }
-      // 处理单个日期/时间
       else {
         if (!val) {
           this.text = undefined;
         } else if (val.$isDayjsObject) {
-          // 如果已经是 dayjs 对象，直接使用
           this.text = val;
         } else {
-          // 先尝试用 valueFormat 解析（非严格模式）
           let parsed = this.valueFormat ? dayjs(val, this.valueFormat) : dayjs(val);
-          // 如果解析失败，尝试直接解析
           if (!parsed.isValid()) {
             parsed = dayjs(val);
           }
@@ -307,11 +289,9 @@ export default create({
     handleChange(date, dateString) {
       let result;
 
-      // 空值处理
       if (this.validatenull(date)) {
         result = ['ant-daterange', 'ant-datetimerange'].includes(this.type) ? [] : undefined;
       }
-      // 有 valueFormat 时，使用 format 格式化
       else if (this.valueFormat) {
         if (Array.isArray(date)) {
           result = date.map(d => {
@@ -328,7 +308,6 @@ export default create({
           }
         }
       }
-      // 无 valueFormat 时，返回时间戳
       else {
         if (Array.isArray(date)) {
           result = date.map(d => {
@@ -346,7 +325,6 @@ export default create({
         }
       }
 
-      // 对比值是否变化
       const current = this.modelValue;
       let isChanged = true;
 
@@ -393,10 +371,10 @@ export default create({
     getDisabledDate(current) {
       if (!this.disabledDate) return false;
 
-      // 将 dayjs 对象转换为 Date 对象，以便用户的 disabledDate 函数可以使用
       const dateObj = current.toDate();
       return this.disabledDate(dateObj);
     },
   },
 });
 </script>
+

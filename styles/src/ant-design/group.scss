@@ -10,8 +10,11 @@
     width: 100%;
     height: inherit;
     border: none;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
+    background-color: #e6f4ff;
+  }
+
+  .ant-collapse-item {
+    border: none;
   }
 
   .ant-collapse-content-box,
@@ -85,8 +88,6 @@
     width: 100%;
     display: flex;
     align-items: center;
-    height: 50px;
-    line-height: 50px;
     box-sizing: border-box;
   }
 

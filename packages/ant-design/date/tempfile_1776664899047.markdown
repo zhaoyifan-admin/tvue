@@ -1,0 +1,247 @@
+# Ant Date 日期选择器组件
+
+基于 Ant Design Vue 的日期选择器组件，支持多种日期类型、时间选择、范围选择等功能，使用 dayjs 进行日期处理。
+
+## 基础用法
+
+```vue
+<template>
+  <ant-date v-model="dateValue"/>
+</template>
+<script> export default {
+  data() {
+    return {dateValue: '2024-01-01'}
+  }
+} </script>
+```
+
+## API
+
+### Props
+
+| 参数 | 说明 | 类型 | 默认值 | 必填 |
+|------|------|------|--------|------|
+| modelValue / v-model | 绑定值 | string \| number \| Array \| dayjs | - | 否 |
+| type | 选择器类型，见下方类型说明 | String | ant-date | 否 |
+| format | 显示的日期格式 | String | 根据 type 自动设置 | 否 |
+| valueFormat | 绑定值的格式，不设置则返回时间戳 | String | - | 否 |
+| placeholder | 占位文本 | String | 根据 type 自动设置 | 否 |
+| startPlaceholder | 范围选择开始占位文本 | String | 开始 | 否 |
+| endPlaceholder | 范围选择结束占位文本 | String | 结束 | 否 |
+| rangeSeparator | 范围选择分隔符 | String | ~ | 否 |
+| disabled | 是否禁用 | Boolean | false | 否 |
+| size | 尺寸，可选值：`large` \| `middle` \| `small` | String | - | 否 |
+| clearable | 是否可清空 | Boolean | true | 否 |
+| allowClear | 是否允许清除 | Boolean | true | 否 |
+| readonly | 是否只读 | Boolean | false | 否 |
+| prefixIcon | 前缀图标组件名 | String | - | 否 |
+| popperClass | 下拉框类名 | String | - | 否 |
+| popperAppendToBody | 下拉框是否插入到 body | Boolean | true | 否 |
+| defaultValue | 默认值 | String \| Array | - | 否 |
+| defaultPickerValue | 默认面板日期 | String \| Array | - | 否 |
+| showNow | 是否显示"今天"按钮 | Boolean | true | 否 |
+| shortcuts | 快捷选项，支持数组或函数返回数组 | Array \| Function | [] | 否 |
+| disabledDate | 禁用日期函数 | Function(current: Date) => Boolean | - | 否 |
+| disabledHours | 禁用的小时 | Function(selectedDate?: dayjs) => number[] | - | 否 |
+| disabledMinutes | 禁用的分钟 | Function(selectedHour: number, selectedDate?: dayjs) => number[] | - | 否 |
+| disabledSeconds | 禁用的秒 | Function(selectedHour: number, selectedMinute: number, selectedDate?: dayjs) => number[] | - | 否 |
+| hourStep | 小时步长 | Number | 1 | 否 |
+| minuteStep | 分钟步长 | Number | 1 | 否 |
+| secondStep | 秒步长 | Number | 1 | 否 |
+| hideDisabledOptions | 是否隐藏禁用选项 | Boolean | false | 否 |
+| label | 标签文本 | String | - | 否 |
+| tip | 提示文本 | String | - | 否 |
+| rules | 验证规则数组 | Array | - | 否 |
+| dicUrl | 字典数据请求 URL | String | - | 否 |
+| dicMethod | 字典数据请求方法 | String | - | 否 |
+| dicQuery | 字典数据请求参数 | Object | {} | 否 |
+| dicFormatter | 字典数据格式化函数 | Function | - | 否 |
+| params | 额外参数对象 | Object | {} | 否 |
+| tableData | 表格数据对象 | Object | {} | 否 |
+| listType | 列表类型 | String | - | 否 |
+| column | 列配置对象 | Object | {} | 否 |
+| prop | 字段属性名 | String | - | 否 |
+| border | 是否显示边框 | Boolean | false | 否 |
+| dataType | 数据类型 | String | - | 否 |
+| separator | 分隔符 | String | , | 否 |
+| min | 最小值限制 | Number | - | 否 |
+| max | 最大值限制 | Number | - | 否 |
+| multiple | 是否多选 | Boolean | false | 否 |
+| button | 是否为按钮样式 | Boolean | false | 否 |
+| row | 是否换行 | Boolean | false | 否 |
+| props | 自定义属性映射 | Object | 见通用配置 | 否 |
+| propsHttp | HTTP 相关属性映射 | Object | 见通用配置 | 否 |
+
+## 📅 日期格式说明
+
+### 常用格式标记
+
+| 标记 | 说明 | 示例 |
+|------|------|------|
+| `YYYY` | 四位年份 | 2024 |
+| `YY` | 两位年份 | 24 |
+| `MM` | 月份（补零） | 01-12 |
+| `M` | 月份 | 1-12 |
+| `DD` | 日期（补零） | 01-31 |
+| `D` | 日期 | 1-31 |
+| `HH` | 小时24制（补零） | 00-23 |
+| `H` | 小时24制 | 0-23 |
+| `hh` | 小时12制（补零） | 01-12 |
+| `h` | 小时12制 | 1-12 |
+| `mm` | 分钟（补零） | 00-59 |
+| `m` | 分钟 | 0-59 |
+| `ss` | 秒数（补零） | 00-59 |
+| `s` | 秒数 | 0-59 |
+| `SSS` | 毫秒 | 000-999 |
+| `A` | AM/PM | AM, PM |
+| `a` | am/pm | am, pm |
+| `d` | 星期几 | 0-6 |
+| `ddd` | 星期缩写 | Mon-Sun |
+| `dddd` | 星期全称 | Monday-Sunday |
+| `wo` | 第几周 | 1w, 2w... |
+
+## 📅 pickerType 类型说明
+
+`pickerType` 属性用于控制日期选择器面板的展示维度。当 `type` 为 `ant-date`（单选）或 `ant-daterange`（范围）时，通过配置 `pickerType` 可以实现年、季、月、周、日等不同粒度的选择。
+
+| pickerType 值 | 说明 | 默认格式参考 (format) | 适用 type | 返回值示例 (valueFormat="YYYY-MM-DD") |
+| :--- | :--- | :--- | :--- | :--- |
+| **`date`** | 选择天（默认值） | `YYYY-MM-DD` | ant-date, ant-daterange | `"2024-01-01"` |
+| **`week`** | 选择周 | `YYYY-wo` | ant-date, ant-daterange | `"2024-1wo"` (第1周) |
+| **`month`** | 选择月 | `YYYY-MM` | ant-date, ant-daterange | `"2024-01"` |
+| **`quarter`** | 选择季度 | `YYYY-QQ` | ant-date, ant-daterange | `"2024-Q1"` |
+| **`year`** | 选择年 | `YYYY` | ant-date, ant-daterange | `"2024"` |
+
+### Events
+
+| 事件名 | 说明 | 回调参数 |
+|--------|------|----------|
+| change | 选中值变化时触发 | (value: any, date: dayjs \| dayjs[]) |
+| open-change | 下拉框打开/关闭时触发 | (open: Boolean) |
+| panel-change | 面板日期变化时触发 | ({ value: dayjs, mode: string }) |
+| focus | 获得焦点时触发 | (event: FocusEvent) |
+| blur | 失去焦点时触发 | (event: FocusEvent) |
+| update:modelValue | v-model 更新时触发 | (value: any) |
+
+### Slots
+
+| 插槽名 | 说明 | 作用域参数 |
+|--------|------|-----------|
+| default | 自定义日期单元格内容 | { item: { text: number, renderText: string } } |
+
+#### 自定义日期单元格示例
+
+```vue
+<ant-date v-model="dateValue">
+  <template #default="{ item }">
+    <div style="color: red;">{{ item.text }}</div>
+  </template>
+</ant-date>
+```
+
+## 返回值说明
+
+### 无 valueFormat 时
+
+- **单个日期**：返回时间戳（Number）
+- **日期范围**：返回时间戳数组（Number[]）
+
+```javascript
+// 单个日期
+dateValue = 1704067200000 // 2024-01-01 的时间戳
+// 日期范围
+dateRange = [1704067200000, 1706659200000]
+```
+
+### 有 valueFormat 时
+
+- **单个日期**：返回格式化字符串
+- **日期范围**：返回格式化字符串数组
+
+```javascript
+// value-format="YYYY-MM-DD"
+dateValue = "2024-01-01"
+dateRange = ["2024-01-01", "2024-01-31"]
+// value-format="YYYY-MM-DD HH:mm:ss"
+dateTimeValue = "2024-01-01 12:00:00"
+```
+
+## 注意事项
+
+1. **dayjs 依赖**：组件内部使用 dayjs 进行日期处理，已自动引入必要的插件（weekday、localeData、customParseFormat）
+
+2. **国际化**：默认
+
+[//]: # (3. 使用中文 locale（zh-cn）)
+
+3. **valueFormat 的重要性**：
+   - 不设置时返回时间戳，适合后端存储
+   - 设置后返回格式化字符串，适合直接展示
+   - 建议始终设置 valueFormat 以保证数据格式一致
+
+4. **范围选择器的值**：
+   - 空值时为数组 `[]`
+   - 有值时为 `[startDate, endDate]`
+
+5. **日期格式参考**：
+   - `YYYY` - 四位年份
+   - `MM` - 月份（01-12）
+   - `DD` - 日期（01-31）
+   - `HH` - 小时（00-23）
+   - `mm` - 分钟（00-59）
+   - `ss` - 秒（00-59）
+   - `WW` - 周数
+
+6. **性能优化**：组件内部做了值变化检测，避免不必要的更新循环
+
+7. **popperAppendToBody**：默认为 true，在模态框等特殊场景中可能需要设置为 false
+
+8. **disabledDate 函数**：接收的参数是 JavaScript Date 对象，不是 dayjs 对象
+
+## 常见问题
+
+### Q1: 如何获取当前选中的 dayjs 对象？
+
+A: 在 change 事件的第二个参数中可以获取：
+
+```javascript
+handleChange(value, date)
+{
+  console.log('dayjs对象:', date)
+  console.log('格式化:', date.format('YYYY-MM-DD'))
+}
+```
+
+### Q2: 范围选择器如何设置初始值？
+
+A: 传递数组格式：
+
+```javascript
+data()
+{
+  return {dateRange: ['2024-01-01', '2024-01-31']}
+}
+```
+
+### Q3: 如何禁用周末？
+
+```javascript
+disabledDate(current)
+{
+  return current && current.getDay() === 0 || current.getDay() === 6
+}
+```
+
+### Q4: 如何只显示未来日期？
+
+```javascript
+disabledDate(current)
+{
+  return current && current < new Date().setHours(0, 0, 0, 0)
+}
+```
+
+## 依赖说明
+
+- 基于 **Ant Design Vue** 的日期选择器组件系列
+- 使用 **dayjs** 进行日期处理和格式化

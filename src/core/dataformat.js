@@ -8,6 +8,7 @@ import {
   ARRAY_VALUE_LIST,
   MULTIPLE_LIST,
   SELECT_LIST,
+  SELECT_LIST_ANT,
   RANGE_LIST
 } from 'global/variable';
 import {detailDataType, findObject, createObj} from 'utils/util';
@@ -126,7 +127,7 @@ export const getComponent = (type, component) => {
     result = 'time';
   } else if (DATE_LIST.includes(type)) {
     result = 'date';
-  } else if (['ant-date', 'ant-datetime', 'ant-daterange', 'ant-datetimerange', 'ant-time', 'ant-month', 'ant-week'].includes(type)) {
+  } else if (['ant-date', 'ant-datetime', 'ant-month', 'ant-week', 'ant-quarter', 'ant-year', 'ant-daterange', 'ant-datetimerange', 'ant-time'].includes(type)) {
     result = 'ant-date';
   } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(type)) {
     result = 'input';
@@ -188,7 +189,7 @@ export const getPlaceholder = function (column, type) {
       return label;
     }
   } else if (validatenull(placeholder)) {
-    if (SELECT_LIST.includes(column.type)) {
+    if (SELECT_LIST.includes(column.type) || SELECT_LIST_ANT.includes(column.type)) {
       return `${t('tip.select')} ${label}`;
     } else {
       return `${t('tip.input')} ${label}`;

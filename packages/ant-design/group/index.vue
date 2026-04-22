@@ -17,8 +17,8 @@
           <div :class="b('header')">
             <i :class="[icon,b('icon')]"
                v-if="icon"></i>
-            <h1 :class="b('title')"
-                v-if="label">{{label}}</h1>
+            <div :class="b('title')"
+                v-if="label">{{label}}</div>
           </div>
         </template>
         <slot></slot>

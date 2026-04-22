@@ -3,199 +3,201 @@
     :class="[b(), { 'tvue--detail': isDetail }]"
     :style="{ width: setPx(tableOption.formWidth, '100%') }"
   >
-    <a-form
-      ref="form"
-      :model="form"
-      :scrollToFirstError="tableOption.scrollToError"
-      :labelCol="labelCol"
-      :wrapperCol="wrapperCol"
-      :layout="tableOption.layout || 'horizontal'"
-      :size="size"
-      :labelWrap="tableOption.labelWrap"
-      :wrapperWrap="tableOption.wrapperWrap"
-      :colon="tableOption.colon !== false"
-      :requiredMark="tableOption.requiredMark"
-      :labelAlign="tableOption.labelAlign"
-      autocomplete="off"
-    >
-      <a-row
-        :span="24"
-        :gutter="tableOption.gutter"
-        :class="{ 'tvue-form__tabs': isTabs }"
+    <a-config-provider :locale="antdLocale">
+      <a-form
+        ref="form"
+        :model="form"
+        :scrollToFirstError="tableOption.scrollToError"
+        :labelCol="labelCol"
+        :wrapperCol="wrapperCol"
+        :layout="tableOption.layout || 'horizontal'"
+        :size="size"
+        :labelWrap="tableOption.labelWrap"
+        :wrapperWrap="tableOption.wrapperWrap"
+        :colon="tableOption.colon !== false"
+        :requiredMark="tableOption.requiredMark"
+        :labelAlign="tableOption.labelAlign"
+        autocomplete="off"
       >
-        <tvue-ant-group
-          v-for="(item, index) in columnOption"
-          @change="handleGroupClick"
-          :key="item.prop"
-          :tabs="isTabs"
-          :arrow="item.arrow"
-          :collapse="item.collapse"
-          :display="vaildDisplay(item)"
-          :icon="item.icon"
-          :index="index"
-          :header="!isTabs"
-          :active="activeName"
-          :label="item.label"
+        <a-row
+          :span="24"
+          :gutter="tableOption.gutter"
+          :class="{ 'tvue-form__tabs': isTabs }"
         >
-          <template #tabs>
-            <a-tabs
-              v-if="isTabs && index == 1"
-              v-model:activeKey="activeName"
-              :class="b('tabs')"
-              :type="tabsType"
-              @tabClick="handleTabClick">
-              <template v-for="(tabs, index) in columnOption">
-                <a-tab-pane v-if="vaildDisplay(tabs) && index != 0" :key="index + ''">
-                  <template #tab>
-                    <span>
-                      <slot
-                        :name="getSlotName(tabs, 'H')"
-                        :column="tabs"
-                        v-if="getSlotName(tabs, 'H', $slots)"
-                      ></slot>
-                      <template v-else>
-                        <i :class="tabs.icon">&nbsp;</i>
-                        {{ tabs.label }}
-                      </template>
-                    </span>
-                  </template>
-                </a-tab-pane>
-              </template>
-            </a-tabs>
-          </template>
-          <template #header v-if="getSlotName(item, 'H', $slots)">
-            <slot :name="getSlotName(item, 'H')" :column="item"></slot>
-          </template>
-          <div
-            :class="b('group', { flex: validData(item.flex, true) })"
-            v-if="isGroupShow(item, index, isVerifyAll)"
-            v-show="isGroupShow(item, index)"
+          <tvue-ant-group
+            v-for="(item, index) in columnOption"
+            @change="handleGroupClick"
+            :key="item.prop"
+            :tabs="isTabs"
+            :arrow="item.arrow"
+            :collapse="item.collapse"
+            :display="vaildDisplay(item)"
+            :icon="item.icon"
+            :index="index"
+            :header="!isTabs"
+            :active="activeName"
+            :label="item.label"
           >
-            <template v-for="(column, cindex) in item.column">
-              <a-col
-                v-if="vaildDisplay(column)"
-                :key="cindex"
-                :span="getItemParams(column, item, 'span')"
-                :md="getItemParams(column, item, 'span')"
-                :sm="getItemParams(column, item, 'span')"
-                :xs="getItemParams(column, item, 'xsSpan')"
-                :offset="getItemParams(column, item, 'offset')"
-                :push="getItemParams(column, item, 'push')"
-                :pull="getItemParams(column, item, 'pull')"
-                :class="[ b('row'), { 'tvue--detail tvue--detail__column': vaildDetail(column) }, column.className]">
-                <a-form-item
-                  :name="column.prop"
-                  :label="column.label"
-                  :rules="column.rules"
-                  :class="b('item--' +(column.labelPosition ||item.labelPosition ||tableOption.labelPosition ||''))"
-                  :labelCol="getColumnLabelCol(column, item)"
-                  :wrapperCol="getColumnWrapperCol(column, item)"
-                  :labelAlign="column.labelAlign || item.labelAlign || tableOption.labelAlign">
-                  <template #label v-if="getSlotName(column, 'L', $slots)">
-                    <slot
-                      :name="getSlotName(column, 'L')"
-                      :column="column"
-                      :value="form[column.prop]"
-                      :readonly="column.readonly || readonly"
-                      :disabled="getDisabled(column)"
-                      :size="column.size || size"
-                      :dic="DIC[column.prop]"
-                    ></slot>
-                  </template>
-                  <template #label v-else-if="column.labelTip">
-                    <a-tooltip :placement="column.labelTipPlacement || 'topLeft'">
-                      <template #title>
-                        <div v-html="column.labelTip"></div>
-                      </template>
-                      {{ column.label }}{{ labelSuffix }}
-                    </a-tooltip>
-                  </template>
-                  <template #help v-if="getSlotName(column, 'E')">
-                    <slot
-                      :name="getSlotName(column, 'E')"
-                      :column="column"
-                      :value="form[column.prop]"
-                      :readonly="column.readonly || readonly"
-                      :disabled="getDisabled(column)"
-                      :size="column.size || size"
-                      :dic="DIC[column.prop]"
-                    ></slot>
-                  </template>
-                  <component
-                    :is="validTip(column) ? 'div' : 'aTooltip'"
-                    :disabled="validTip(column)"
-                    :content="validData(column.tip, getPlaceholder(column))"
-                    :placement="column.tipPlacement"
-                  >
-                    <div>
-                      <slot
-                        :value="form[column.prop]"
-                        :column="column"
-                        :label="form['$' + column.prop]"
-                        :size="column.size || size"
-                        :readonly="column.readonly || readonly"
-                        :disabled="getDisabled(column)"
-                        :dic="DIC[column.prop]"
-                        :name="column.prop"
-                        v-if="$slots[column.prop]"
-                      ></slot>
-                      <form-temp
-                        :column="column"
-                        v-else
-                        :box-type="boxType"
-                        :ref="column.prop"
-                        :dic="DIC[column.prop]"
-                        :props="tableOption.props"
-                        :propsHttp="tableOption.propsHttp"
-                        :render="column.render"
-                        :row="form"
-                        :clearValidate="clearValidate"
-                        :table-data="tableData"
-                        :readonly="column.readonly || readonly"
-                        v-bind="$uploadFun(column)"
-                        :disabled="getDisabled(column)"
-                        :enter="tableOption.enter"
-                        :size="size"
-                        v-model="form[column.prop]"
-                        @enter="submit"
-                        :column-slot="columnSlot"
-                        @change="propChange(item.column, column)"
-                      >
-                        <template #="scope" v-if="getSlotName(column, 'T', $slots)">
-                          <slot :name="getSlotName(column, 'T')" v-bind="scope"></slot>
+            <template #tabs>
+              <a-tabs
+                v-if="isTabs && index == 1"
+                v-model:activeKey="activeName"
+                :class="b('tabs')"
+                :type="tabsType"
+                @tabClick="handleTabClick">
+                <template v-for="(tabs, index) in columnOption">
+                  <a-tab-pane v-if="vaildDisplay(tabs) && index != 0" :key="index + ''">
+                    <template #tab>
+                      <span>
+                        <slot
+                          :name="getSlotName(tabs, 'H')"
+                          :column="tabs"
+                          v-if="getSlotName(tabs, 'H', $slots)"
+                        ></slot>
+                        <template v-else>
+                          <i :class="tabs.icon">&nbsp;</i>
+                          {{ tabs.label }}
                         </template>
-                        <template v-for="item in columnSlot" #[item]="scope">
-                          <slot v-bind="scope" :name="item"></slot>
-                        </template>
-                      </form-temp>
-                    </div>
-                  </component>
-                </a-form-item>
-              </a-col>
-              <div
-                :class="b('line')"
-                v-if="shouldShowDivider(column)"
-                :key="`line${cindex}`"
-                :style="{ width: (column.count / 24) * 100 + '%' }"
-              ></div>
+                      </span>
+                    </template>
+                  </a-tab-pane>
+                </template>
+              </a-tabs>
             </template>
-            <ant-form-menu v-if="!isMenu">
-              <template #menu-form-before="scope">
-                <slot name="menu-form-before" v-bind="scope"></slot>
+            <template #header v-if="getSlotName(item, 'H', $slots)">
+              <slot :name="getSlotName(item, 'H')" :column="item"></slot>
+            </template>
+            <div
+              :class="b('group', { flex: validData(item.flex, true) })"
+              v-if="isGroupShow(item, index, isVerifyAll)"
+              v-show="isGroupShow(item, index)"
+            >
+              <template v-for="(column, cindex) in item.column">
+                <a-col
+                  v-if="vaildDisplay(column)"
+                  :key="cindex"
+                  :span="getItemParams(column, item, 'span')"
+                  :md="getItemParams(column, item, 'span')"
+                  :sm="getItemParams(column, item, 'span')"
+                  :xs="getItemParams(column, item, 'xsSpan')"
+                  :offset="getItemParams(column, item, 'offset')"
+                  :push="getItemParams(column, item, 'push')"
+                  :pull="getItemParams(column, item, 'pull')"
+                  :class="[ b('row'), { 'tvue--detail tvue--detail__column': vaildDetail(column) }, column.className]">
+                  <a-form-item
+                    :name="column.prop"
+                    :label="column.label"
+                    :rules="column.rules"
+                    :class="b('item--' +(column.labelPosition ||item.labelPosition ||tableOption.labelPosition ||''))"
+                    :labelCol="getColumnLabelCol(column, item)"
+                    :wrapperCol="getColumnWrapperCol(column, item)"
+                    :labelAlign="column.labelAlign || item.labelAlign || tableOption.labelAlign">
+                    <template #label v-if="getSlotName(column, 'L', $slots)">
+                      <slot
+                        :name="getSlotName(column, 'L')"
+                        :column="column"
+                        :value="form[column.prop]"
+                        :readonly="column.readonly || readonly"
+                        :disabled="getDisabled(column)"
+                        :size="column.size || size"
+                        :dic="DIC[column.prop]"
+                      ></slot>
+                    </template>
+                    <template #label v-else-if="column.labelTip">
+                      <a-tooltip :placement="column.labelTipPlacement || 'topLeft'">
+                        <template #title>
+                          <div v-html="column.labelTip"></div>
+                        </template>
+                        {{ column.label }}{{ labelSuffix }}
+                      </a-tooltip>
+                    </template>
+                    <template #help v-if="getSlotName(column, 'E')">
+                      <slot
+                        :name="getSlotName(column, 'E')"
+                        :column="column"
+                        :value="form[column.prop]"
+                        :readonly="column.readonly || readonly"
+                        :disabled="getDisabled(column)"
+                        :size="column.size || size"
+                        :dic="DIC[column.prop]"
+                      ></slot>
+                    </template>
+                    <component
+                      :is="validTip(column) ? 'div' : 'aTooltip'"
+                      :disabled="validTip(column)"
+                      :content="validData(column.tip, getPlaceholder(column))"
+                      :placement="column.tipPlacement"
+                    >
+                      <div>
+                        <slot
+                          :value="form[column.prop]"
+                          :column="column"
+                          :label="form['$' + column.prop]"
+                          :size="column.size || size"
+                          :readonly="column.readonly || readonly"
+                          :disabled="getDisabled(column)"
+                          :dic="DIC[column.prop]"
+                          :name="column.prop"
+                          v-if="$slots[column.prop]"
+                        ></slot>
+                        <form-temp
+                          :column="column"
+                          v-else
+                          :box-type="boxType"
+                          :ref="column.prop"
+                          :dic="DIC[column.prop]"
+                          :props="tableOption.props"
+                          :propsHttp="tableOption.propsHttp"
+                          :render="column.render"
+                          :row="form"
+                          :clearValidate="clearValidate"
+                          :table-data="tableData"
+                          :readonly="column.readonly || readonly"
+                          v-bind="$uploadFun(column)"
+                          :disabled="getDisabled(column)"
+                          :enter="tableOption.enter"
+                          :size="size"
+                          v-model="form[column.prop]"
+                          @enter="submit"
+                          :column-slot="columnSlot"
+                          @change="propChange(item.column, column)"
+                        >
+                          <template #="scope" v-if="getSlotName(column, 'T', $slots)">
+                            <slot :name="getSlotName(column, 'T')" v-bind="scope"></slot>
+                          </template>
+                          <template v-for="item in columnSlot" #[item]="scope">
+                            <slot v-bind="scope" :name="item"></slot>
+                          </template>
+                        </form-temp>
+                      </div>
+                    </component>
+                  </a-form-item>
+                </a-col>
+                <div
+                  :class="b('line')"
+                  v-if="shouldShowDivider(column)"
+                  :key="`line${cindex}`"
+                  :style="{ width: (column.count / 24) * 100 + '%' }"
+                ></div>
               </template>
-              <template #menu-form="scope">
-                <slot name="menu-form" v-bind="scope"></slot>
-              </template>
-            </ant-form-menu>
-          </div>
-        </tvue-ant-group>
-        <ant-form-menu v-if="isMenu">
-          <template #menu-form="scope">
-            <slot name="menu-form" v-bind="scope"></slot>
-          </template>
-        </ant-form-menu>
-      </a-row>
-    </a-form>
+              <ant-form-menu v-if="!isMenu">
+                <template #menu-form-before="scope">
+                  <slot name="menu-form-before" v-bind="scope"></slot>
+                </template>
+                <template #menu-form="scope">
+                  <slot name="menu-form" v-bind="scope"></slot>
+                </template>
+              </ant-form-menu>
+            </div>
+          </tvue-ant-group>
+          <ant-form-menu v-if="isMenu">
+            <template #menu-form="scope">
+              <slot name="menu-form" v-bind="scope"></slot>
+            </template>
+          </ant-form-menu>
+        </a-row>
+      </a-form>
+    </a-config-provider>
   </div>
 </template>
 
@@ -396,12 +398,15 @@ export default create({
 
       const footerColumns = tableOption.footer || [];
 
-      const mainGroup = [
-        {
-          header: false,
-          column: mainColumn,
-        },
-      ];
+      const mainGroup =
+        mainColumn.length > 0
+          ? [
+            {
+              header: false,
+              column: mainColumn,
+            },
+          ]
+          : [];
 
       const footerGroup =
         footerColumns.length > 0
@@ -458,6 +463,9 @@ export default create({
         return wrapperCol
       }
       return {};
+    },
+    antdLocale() {
+      return this.$TVUE?.locale || null;
     },
   },
   props: {
