@@ -127,7 +127,7 @@ export const getComponent = (type, component) => {
     result = 'time';
   } else if (DATE_LIST.includes(type)) {
     result = 'date';
-  } else if (['ant-date', 'ant-datetime', 'ant-month', 'ant-week', 'ant-quarter', 'ant-year', 'ant-daterange', 'ant-datetimerange', 'ant-time'].includes(type)) {
+  } else if (['ant-date', 'ant-datetime', 'ant-month', 'ant-week', 'ant-quarter', 'ant-year', 'ant-daterange', 'ant-datetimerange', 'ant-time', 'ant-timerange'].includes(type)) {
     result = 'ant-date';
   } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(type)) {
     result = 'input';
@@ -178,7 +178,7 @@ export const formInitVal = (list = []) => {
   return tableForm;
 };
 
-export const getPlaceholder = function (column, type) {
+export const getPlaceholder = function(column, type) {
   const placeholder = column.placeholder;
   const label = column.label;
   if (type === 'search') {

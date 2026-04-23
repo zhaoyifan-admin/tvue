@@ -1,7 +1,7 @@
 <template>
   <div :class="b()">
     <a-date-picker
-      v-if="isSinglePicker && !isTimePicker"
+      v-if="isSinglePicker"
       v-model:value="text"
       :size="size"
       :allow-clear="clearableVal"
@@ -39,7 +39,7 @@
     </a-date-picker>
 
     <a-time-picker
-      v-else-if="isTimePicker"
+      v-else-if="isSingleTimePicker"
       v-model:value="text"
       :size="size"
       :allow-clear="clearableVal"
@@ -99,6 +99,33 @@
         <component :is="prefixIcon" />
       </template>
     </a-range-picker>
+
+    <a-time-range-picker
+      v-else-if="isTimeRangePicker"
+      v-model:value="text"
+      :size="size"
+      :allow-clear="clearableVal"
+      :disabled="disabled"
+      :format="format"
+      :placeholder="[startPlaceholder || t('time.start'), endPlaceholder || t('time.end')]"
+      :range-separator="rangeSeparator"
+      :disabled-hours="disabledHours"
+      :disabled-minutes="disabledMinutes"
+      :disabled-seconds="disabledSeconds"
+      :default-value="defaultValue"
+      :hour-step="hourStep"
+      :minute-step="minuteStep"
+      :second-step="secondStep"
+      :hide-disabled-options="hideDisabledOptions"
+      :dropdown-class-name="popperClass"
+      :get-popup-container="popperAppendToBody ? undefined : triggerNode => triggerNode.parentNode"
+      @change="handleChange"
+      @open-change="handleOpenChange"
+    >
+      <template #suffixIcon v-if="prefixIcon">
+        <component :is="prefixIcon" />
+      </template>
+    </a-time-range-picker>
   </div>
 </template>
 
@@ -194,13 +221,16 @@ export default create({
   },
   computed: {
     isSinglePicker() {
-      return ['ant-date', 'ant-datetime', 'ant-month', 'ant-week', 'ant-time'].includes(this.type);
+      return ['ant-date', 'ant-datetime', 'ant-month', 'ant-week'].includes(this.type);
+    },
+    isSingleTimePicker() {
+      return this.type === 'ant-time';
     },
     isRangePicker() {
       return ['ant-daterange', 'ant-datetimerange'].includes(this.type);
     },
-    isTimePicker() {
-      return this.type === 'ant-time';
+    isTimeRangePicker() {
+      return this.type === 'ant-timerange';
     },
     showTimeConfig() {
       if (['ant-datetimerange', 'ant-datetime'].includes(this.type)) {
@@ -247,7 +277,7 @@ export default create({
         return;
       }
 
-      if (['ant-daterange', 'ant-datetimerange'].includes(this.type)) {
+      if (['ant-daterange', 'ant-datetimerange', 'ant-timerange'].includes(this.type)) {
         if (Array.isArray(val)) {
           this.text = val.map(v => {
             if (!v) return undefined;
@@ -290,7 +320,7 @@ export default create({
       let result;
 
       if (this.validatenull(date)) {
-        result = ['ant-daterange', 'ant-datetimerange'].includes(this.type) ? [] : undefined;
+        result = ['ant-daterange', 'ant-datetimerange', 'ant-timerange'].includes(this.type) ? [] : undefined;
       }
       else if (this.valueFormat) {
         if (Array.isArray(date)) {
@@ -377,4 +407,5 @@ export default create({
   },
 });
 </script>
+
 

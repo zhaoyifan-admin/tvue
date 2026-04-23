@@ -1,19 +1,18 @@
-
 <!DOCTYPE html>
 
 <html class="no-js">
 
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <title></title>
-  <meta name="description" content="" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content=""/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <script src="../../cdn/vue/vue.global.min.js"></script>
-  <link rel="stylesheet" href="../../../lib/index.css" />
-  <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css" />
-  <link rel="stylesheet" href="../../cdn/element-plus/index.css" />
+  <link rel="stylesheet" href="../../../lib/index.css"/>
+  <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css"/>
+  <link rel="stylesheet" href="../../cdn/element-plus/index.css"/>
 
   <script src="../../../lib/tvue.js"></script>
   <script src="../../cdn/element-plus/index.full.min.js"></script>
@@ -32,7 +31,7 @@
 
 <body>
 <div id="app">
-  {{form}}
+  {{ form }}
   <tvue-ant-form v-model="form" :option="option"></tvue-ant-form>
 </div>
 </body>
@@ -41,52 +40,148 @@
     data() {
       return {
         value: '',
-        form: {
-        },
+        form: {},
         option: {
-          column: [
-            {
-              label: "日期",
-              prop: "datetime",
-              type: "ant-datetime",
-            },
-            {
-              label: "快捷方式",
-              prop: "date",
-              type: "ant-date",
-              shortcuts: [
-                {
-                  text: '今天',
-                  value: new Date(),
-                },
-                {
-                  text: '昨天',
-                  value: () => {
-                    const date = new Date();
-                    date.setTime(date.getTime() - 3600 * 1000 * 24);
-                    return date;
-                  },
-                },
-                {
-                  text: '一周前',
-                  value: () => {
-                    const date = new Date();
-                    date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-                    return date;
-                  },
-                },
-              ],
-            },
-            {
-              label: "禁止日期",
-              prop: "date",
-              type: "ant-date",
-              disabledDate (time) {
-                return time.getTime() < Date.now();
+          group: [{
+            label: '基本用法',
+            prop: 'jbxx',
+            icon: 'el-icon-edit-outline',
+            column: [
+              {
+                label: "日期",
+                prop: "datetime1",
+                type: "ant-datetime",
               },
-            },
-          ],
-        }
+              {
+                label: "快捷方式",
+                prop: "date1",
+                type: "ant-date",
+                shortcuts: [
+                  {
+                    text: '今天',
+                    value: new Date(),
+                  },
+                  {
+                    text: '昨天',
+                    value: () => {
+                      const date = new Date();
+                      date.setTime(date.getTime() - 3600 * 1000 * 24);
+                      return date;
+                    },
+                  },
+                  {
+                    text: '一周前',
+                    value: () => {
+                      const date = new Date();
+                      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                      return date;
+                    },
+                  },
+                ],
+              },
+              {
+                label: "禁止日期",
+                prop: "date2",
+                type: "ant-date",
+                disabledDate(time) {
+                  return time.getTime() < Date.now();
+                },
+              },
+            ]
+          }, {
+            label: '格式化',
+            prop: 'jbxx2',
+            icon: 'el-icon-edit-outline',
+            column: [
+              {
+                label: "日期",
+                prop: "datetime2",
+                type: "ant-datetime",
+                format: 'YYYY年MM月DD日 HH时mm分ss秒',
+                valueFormat: 'YYYY-MM-DD HH:mm:ss'
+              },
+              {
+                label: "时间戳",
+                prop: "datetime3",
+                type: "ant-datetime",
+                format: "YYYY-MM-DD HH:mm:ss",
+                valueFormat: "x",
+              }
+            ]
+          }, {
+            label: '其他日期单位',
+            prop: 'jbxx3',
+            icon: 'el-icon-edit-outline',
+            column: [
+              {
+                label: "时间",
+                prop: "time",
+                type: "ant-time",
+                format: 'HH:mm:ss',
+                valueFormat: 'HH:mm:ss',
+              },
+              {
+                label: "周",
+                prop: "week",
+                type: "ant-date",
+                pickerType: 'week',
+                format: "YYYY 第 ww 周"
+              },
+              {
+                label: "月",
+                prop: "month",
+                type: "ant-date",
+                pickerType: 'month',
+              },
+              {
+                label: "季度",
+                prop: "quarter",
+                type: "ant-date",
+                pickerType: 'quarter',
+              },
+              {
+                label: "年",
+                prop: "year",
+                type: "ant-date",
+                pickerType: 'year',
+              },
+              {
+                label: "时间范围",
+                prop: "timeRange",
+                type: 'ant-timerange'
+              },
+              {
+                label: "日期范围",
+                prop: "dateRange",
+                type: 'ant-daterange'
+              },
+              {
+                label: "周范围",
+                prop: "weekRange",
+                pickerType: 'week',
+                type: 'ant-daterange'
+              },
+              {
+                label: "月范围",
+                prop: "monthRange",
+                pickerType: 'month',
+                type: 'ant-daterange'
+              },
+              {
+                label: "季度范围",
+                prop: "quarterRange",
+                type: 'ant-daterange',
+                pickerType: 'quarter',
+              },
+              {
+                label: "年范围",
+                prop: "yearRange",
+                pickerType: 'year',
+                type: 'ant-daterange'
+              },
+            ]
+          }],
+        },
       }
     },
     mounted() {
@@ -113,7 +208,9 @@
     }
   })
   app.use(antd)
-  app.use(TVUE, { axios })
+  app.use(TVUE, {
+    axios: axios
+  })
   app.use(ElementPlus)
   app.mount('#app')
 </script>

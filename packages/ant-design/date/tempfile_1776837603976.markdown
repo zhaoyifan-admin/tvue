@@ -1,0 +1,194 @@
+# Ant Design Date 日期选择器组件
+
+基于 Ant Design Vue 封装的日期/时间选择器组件，支持多种类型和配置。
+
+## 基础用法
+
+```vue
+
+<template>
+  <ant-date v-model="dateValue"/>
+</template>
+<script> export default {
+  data() {
+    return {dateValue: ''}
+  }
+} </script>
+```
+
+## Props 参数
+
+### 基础参数
+
+| 参数 | 说明             | 类型 | 默认值 | 可选值 |
+|------|----------------|------|--------|--------|
+| type | 组件类型(选择器类型，见下方类型说明)         | String | `ant-date` | `ant-date`, `ant-datetime`, `ant-month`, `ant-week`, `ant-time`, `ant-daterange`, `ant-datetimerange`, `ant-timerange` |
+| value / v-model | 绑定值            | any | - | - |
+| size | 输入框尺寸          | String | - | `large`, `middle`, `small` |
+| disabled | 是否禁用           | Boolean | - | - |
+| clearable | 是否可清空          | Boolean | - | - |
+| placeholder | 占位文本           | String | 根据type自动匹配 | - |
+| startPlaceholder | 范围选择时开始日期的占位内容 | String | 国际化文本 | - |
+| endPlaceholder | 范围选择时结束日期的占位内容 | String | 国际化文本 | - |
+| rangeSeparator | 范围分隔符          | String | `~` | - |
+| prefixIcon | 自定义前缀图标        | String | - | - |
+
+## 📅 日期格式说明
+
+### 常用格式标记
+
+| 标记 | 说明 | 示例 |
+|------|------|------|
+| `YYYY` | 四位年份 | 2024 |
+| `YY` | 两位年份 | 24 |
+| `MM` | 月份（补零） | 01-12 |
+| `M` | 月份 | 1-12 |
+| `DD` | 日期（补零） | 01-31 |
+| `D` | 日期 | 1-31 |
+| `HH` | 小时24制（补零） | 00-23 |
+| `H` | 小时24制 | 0-23 |
+| `hh` | 小时12制（补零） | 01-12 |
+| `h` | 小时12制 | 1-12 |
+| `mm` | 分钟（补零） | 00-59 |
+| `m` | 分钟 | 0-59 |
+| `ss` | 秒数（补零） | 00-59 |
+| `s` | 秒数 | 0-59 |
+| `SSS` | 毫秒 | 000-999 |
+| `A` | AM/PM | AM, PM |
+| `a` | am/pm | am, pm |
+| `d` | 星期几 | 0-6 |
+| `ddd` | 星期缩写 | Mon-Sun |
+| `dddd` | 星期全称 | Monday-Sunday |
+| `wo` | 第几周 | 1w, 2w... |
+
+### 格式化参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| format | 显示格式 | String | - |
+| valueFormat | 绑定值的格式，不指定则绑定值为 Date 对象或时间戳 | String | - |
+
+**format 示例：**
+- `YYYY-MM-DD` - 2023-01-15
+- `YYYY-MM-DD HH:mm:ss` - 2023-01-15 14:30:00
+- `YYYY-MM` - 2023-01
+- `HH:mm:ss` - 14:30:00
+
+### 选择器类型参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| pickerType | 选择器类型（配合type使用） | String | `date` | `date`, `week`, `month`, `quarter`, `year` |
+
+## 📅 pickerType 类型说明
+
+`pickerType` 属性用于控制日期选择器面板的展示维度。当 `type` 为 `ant-date`（单选）或 `ant-daterange`（范围）时，通过配置 `pickerType` 可以实现年、季、月、周、日等不同粒度的选择。
+
+| pickerType 值 | 说明 | 默认格式参考 (format) | 适用 type | 返回值示例 (valueFormat="YYYY-MM-DD") |
+| :--- | :--- | :--- | :--- | :--- |
+| **`date`** | 选择天（默认值） | `YYYY-MM-DD` | ant-date, ant-daterange | `"2024-01-01"` |
+| **`week`** | 选择周 | `YYYY-wo` | ant-date, ant-daterange | `"2024-1wo"` (第1周) |
+| **`month`** | 选择月 | `YYYY-MM` | ant-date, ant-daterange | `"2024-01"` |
+| **`quarter`** | 选择季度 | `YYYY-QQ` | ant-date, ant-daterange | `"2024-Q1"` |
+| **`year`** | 选择年 | `YYYY` | ant-date, ant-daterange | `"2024"` |
+
+### 禁用相关参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| disabledDate | 禁用日期判断函数 | Function(date) | - |
+| disabledHours | 禁用小时判断函数 | Function() | - |
+| disabledMinutes | 禁用分钟判断函数 | Function(selectedHour) | - |
+| disabledSeconds | 禁用秒判断函数 | Function(selectedHour, selectedMinute) | - |
+| hideDisabledOptions | 隐藏禁止选择的选项 | Boolean | `false` |
+
+**disabledDate 示例：**
+
+```javascript
+// 禁用今天之前的日期
+disabledDate = (date) => {
+  return date.getTime() < Date.now() - 86400000;
+}
+```
+
+### 时间步进参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| hourStep | 小时选项间隔 | Number | `1` |
+| minuteStep | 分钟选项间隔 | Number | `1` |
+| secondStep | 秒选项间隔 | Number | `1` |
+
+### 默认值参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| defaultValue | 默认展示值 | String \| Array | - |
+| defaultPickerValue | 默认面板日期 | String \| Array | - |
+
+### 快捷选项参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| shortcuts | 快捷选项配置 | Array \| Function | `[]` |
+
+**shortcuts 示例：**
+
+```javascript
+shortcuts: [{text: '今天', value: () => new Date()}, {
+  text: '昨天', value: () => {
+    const date = new Date();
+    date.setTime(date.getTime() - 3600 * 1000 * 24);
+    return date;
+  }
+}, {
+  text: '最近一周', value: () => {
+    const end = new Date();
+    const start = new Date();
+    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+    return [start, end];
+  }
+}]
+```
+
+### 弹窗相关参数
+
+| 参数 | 说明 | 类型 | 默认值 |
+|------|------|------|--------|
+| popperClass | 下拉框的类名 | String | - |
+| popperAppendToBody | 是否将下拉框插入至 body 元素 | Boolean | `true` |
+| showNow | 是否显示"此刻"按钮 | Boolean | `true` |
+
+## Events 事件
+
+| 事件名 | 说明 | 回调参数 |
+|--------|------|----------|
+| change | 用户确认选定的值时触发 | `(value, date)` - 绑定值和原生日期对象 |
+| focus | 获得焦点时触发 | `(event)` |
+| blur | 失去焦点时触发 | `(event)` |
+| open-change | 下拉框打开/关闭时触发 | `(open: boolean)` |
+| panel-change | 日期面板变化时触发 | `({ value, mode })` |
+| update:modelValue | 绑定值更新时触发 | `(value)` |
+
+## Slots 插槽
+
+| 插槽名 | 说明 | 作用域参数 |
+|--------|------|------------|
+| default | 自定义日期单元格内容 | `{ item: { text, renderText } }` |
+| suffixIcon | 自定义后缀图标 | - |
+
+## 注意事项
+
+1. **dayjs 依赖**：组件内部使用 dayjs 处理日期，已自动引入所需插件（weekday、localeData、customParseFormat、weekOfYear、weekYear、advancedFormat、quarterOfYear）
+
+2. **valueFormat**：
+   - 不设置时，返回值为 dayjs 对象或时间戳
+   - 设置后，返回值为对应格式的字符串
+
+3. **范围选择器**：
+   - 绑定值为数组类型 `[startDate, endDate]`
+   - 空值时为 `undefined` 而非空数组
+
+4. **国际化**：组件内置国际化支持，可通过 locale 配置修改提示文本
+
+5. **性能优化**：建议设置 `popper-append-to-body` 为 `true`（默认值）以获得更好的弹窗定位性能
