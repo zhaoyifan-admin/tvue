@@ -399,14 +399,12 @@ export default create({
       const footerColumns = tableOption.footer || [];
 
       const mainGroup =
-        mainColumn.length > 0
-          ? [
-            {
-              header: false,
-              column: mainColumn,
-            },
-          ]
-          : [];
+        [
+          {
+            header: false,
+            column: mainColumn,
+          },
+        ]
 
       const footerGroup =
         footerColumns.length > 0
@@ -740,10 +738,13 @@ export default create({
     },
     propChange(option, column) {
       let key = column.prop;
-      if (column.type === "cascader" || column.type === "upload") {
+      if (column.type === "ant-cascader" || column.type === "ant-upload") {
         this.$nextTick(() => {
-          this.validateField(key).catch((error) => {
-          });
+          const validateResult = this.validateField(key);
+          if (validateResult && typeof validateResult.catch === 'function') {
+            validateResult.catch((error) => {
+            });
+          }
         });
       }
       if (!this.count[key]) {

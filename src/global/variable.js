@@ -42,6 +42,7 @@ export const DATE_LIST = [
 export const CHILDREN_LIST = ['table', 'dynamic'];
 export const INPUT_LIST = ['tree', 'number', 'icon', 'color', 'table', 'map', 'tag'];
 export const ARRAY_LIST = ['img', 'array', 'url'];
+export const ANT_ARRAY_LIST = ['ant-img', 'ant-array', 'ant-url'];
 export const MULTIPLE_LIST = ['cascader', 'ant-cascader', 'tree', 'select', 'ant-select', 'table'];
 export const RANGE_LIST = ['slider'];
 export const ARRAY_VALUE_LIST = ARRAY_LIST.concat(['tag', 'upload', 'dynamic', 'map', 'checkbox', 'ant-checkbox', 'cascader', 'ant-cascader', 'timerange', 'monthrange', 'daterange', 'yearrange', 'datetimerange', 'dates', 'months', 'years']);

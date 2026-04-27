@@ -1,0 +1,14 @@
+.tvue-ant-array{
+  &__item{
+    margin-bottom: 5px;
+  }
+  &__input{
+    display: flex;
+    .ant-input{
+      flex:auto;
+    }
+    .ant-btn{
+      margin-left: 5px;
+    }
+  }
+}

@@ -3,6 +3,7 @@ import {
   KEY_COMPONENT_NAME,
   DIC_SPLIT,
   ARRAY_LIST,
+  ANT_ARRAY_LIST,
   DATE_LIST,
   INPUT_LIST,
   ARRAY_VALUE_LIST,
@@ -123,6 +124,8 @@ export const getComponent = (type, component) => {
     return component;
   } else if (ARRAY_LIST.includes(type)) {
     result = 'array';
+  } else if (ANT_ARRAY_LIST.includes(type)) {
+    result = 'ant-array';
   } else if (['time', 'timerange'].includes(type)) {
     result = 'time';
   } else if (DATE_LIST.includes(type)) {

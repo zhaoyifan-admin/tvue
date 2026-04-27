@@ -8,6 +8,7 @@ import AntInputNumber from 'packages/ant-design/input-number';
 import AntRadio from 'packages/ant-design/radio';
 import AntSelect from 'packages/ant-design/select';
 import AntSwitch from 'packages/ant-design/switch';
+import AntArray from 'packages/ant-design/array';
 
 export default {
   AntCascader,
@@ -19,5 +20,6 @@ export default {
   AntInputNumber,
   AntRadio,
   AntSelect,
-  AntSwitch
+  AntSwitch,
+  AntArray
 };
