@@ -3,8 +3,9 @@ import {
   KEY_COMPONENT_NAME,
   DIC_SPLIT,
   ARRAY_LIST,
-  ANT_ARRAY_LIST,
+  ARRAY_LIST_ANT,
   DATE_LIST,
+  DATE_LIST_ANT,
   INPUT_LIST,
   ARRAY_VALUE_LIST,
   MULTIPLE_LIST,
@@ -124,13 +125,13 @@ export const getComponent = (type, component) => {
     return component;
   } else if (ARRAY_LIST.includes(type)) {
     result = 'array';
-  } else if (ANT_ARRAY_LIST.includes(type)) {
+  } else if (ARRAY_LIST_ANT.includes(type)) {
     result = 'ant-array';
   } else if (['time', 'timerange'].includes(type)) {
     result = 'time';
   } else if (DATE_LIST.includes(type)) {
     result = 'date';
-  } else if (['ant-date', 'ant-datetime', 'ant-month', 'ant-week', 'ant-quarter', 'ant-year', 'ant-daterange', 'ant-datetimerange', 'ant-time', 'ant-timerange'].includes(type)) {
+  } else if (DATE_LIST_ANT.includes(type)) {
     result = 'ant-date';
   } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(type)) {
     result = 'input';
