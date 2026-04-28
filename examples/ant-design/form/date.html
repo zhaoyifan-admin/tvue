@@ -9,12 +9,12 @@
   <meta name="description" content=""/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <script src="../../cdn/vue/vue.global.min.js"></script>
-  <link rel="stylesheet" href="../../../lib/index.css"/>
+  <link rel="stylesheet" href="../../../dist/index.css"/>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css"/>
   <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css"/>
   <link rel="stylesheet" href="../../cdn/element-plus/index.css"/>
 
-  <script src="../../../lib/tvue.js"></script>
+  <script src="../../../dist/tvue.js"></script>
   <script src="../../cdn/element-plus/index.full.min.js"></script>
   <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
   <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
@@ -51,12 +51,12 @@
               {
                 label: "日期",
                 prop: "datetime1",
-                type: "ant-datetime",
+                type: "datetime",
               },
               {
                 label: "快捷方式",
                 prop: "date1",
-                type: "ant-date",
+                type: "date",
                 shortcuts: [
                   {
                     text: '今天',
@@ -83,7 +83,7 @@
               {
                 label: "禁止日期",
                 prop: "date2",
-                type: "ant-date",
+                type: "date",
                 disabledDate(time) {
                   return time.getTime() < Date.now();
                 },
@@ -97,14 +97,14 @@
               {
                 label: "日期",
                 prop: "datetime2",
-                type: "ant-datetime",
+                type: "datetime",
                 format: 'YYYY年MM月DD日 HH时mm分ss秒',
                 valueFormat: 'YYYY-MM-DD HH:mm:ss'
               },
               {
                 label: "时间戳",
                 prop: "datetime3",
-                type: "ant-datetime",
+                type: "datetime",
                 format: "YYYY-MM-DD HH:mm:ss",
                 valueFormat: "x",
               }
@@ -117,33 +117,33 @@
               {
                 label: "时间",
                 prop: "time",
-                type: "ant-time",
+                type: "time",
                 format: 'HH:mm:ss',
                 valueFormat: 'HH:mm:ss',
               },
               {
                 label: "周",
                 prop: "week",
-                type: "ant-date",
+                type: "date",
                 pickerType: 'week',
                 format: "YYYY 第 ww 周"
               },
               {
                 label: "月",
                 prop: "month",
-                type: "ant-date",
+                type: "date",
                 pickerType: 'month',
               },
               {
                 label: "季度",
                 prop: "quarter",
-                type: "ant-date",
+                type: "date",
                 pickerType: 'quarter',
               },
               {
                 label: "年",
                 prop: "year",
-                type: "ant-date",
+                type: "date",
                 pickerType: 'year',
               },
               {

@@ -9,12 +9,12 @@
   <meta name="description" content=""/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <script src="../../cdn/vue/vue.global.min.js"></script>
-  <link rel="stylesheet" href="../../../lib/index.css"/>
+  <link rel="stylesheet" href="../../../dist/index.css"/>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css"/>
   <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css"/>
   <link rel="stylesheet" href="../../cdn/element-plus/index.css"/>
 
-  <script src="../../../lib/tvue.js"></script>
+  <script src="../../../dist/tvue.js"></script>
   <script src="../../cdn/element-plus/index.full.min.js"></script>
   <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
   <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
@@ -42,11 +42,12 @@
         value: '',
         form: {},
         option: {
+          componentType: 'ant',
           column: [
             {
               label: '开关',
               prop: 'switch',
-              type: 'ant-switch',
+              type: 'switch',
               dicData: [
                 { label: '关', value: 0 },
                 { label: '开', value: 1 }
@@ -56,7 +57,7 @@
             {
               label: '开关',
               prop: 'switch2',
-              type: 'ant-switch',
+              type: 'switch',
               dicData: [{
                 label: '关',
                 value: 0
@@ -69,7 +70,7 @@
             {
               label: '开关',
               prop: 'switch3',
-              type: 'ant-switch',
+              type: 'switch',
               props: {
                 label: 'name',
                 value: 'code'
@@ -85,7 +86,7 @@
             {
               label: '开关',
               prop: 'switch4',
-              type: 'ant-switch',
+              type: 'switch',
               props: {
                 label: 'name',
                 value: 'code'

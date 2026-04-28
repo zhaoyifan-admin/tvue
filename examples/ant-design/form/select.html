@@ -9,12 +9,12 @@
   <meta name="description" content=""/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <script src="../../cdn/vue/vue.global.min.js"></script>
-  <link rel="stylesheet" href="../../../lib/index.css"/>
+  <link rel="stylesheet" href="../../../dist/index.css"/>
   <link rel="stylesheet" href="https://cdn.staticfile.org/animate.css/3.7.0/animate.min.css"/>
   <link rel="stylesheet" href="https://unpkg.com/ant-design-vue@4.2.6/dist/reset.css"/>
   <link rel="stylesheet" href="../../cdn/element-plus/index.css"/>
 
-  <script src="../../../lib/tvue.js"></script>
+  <script src="../../../dist/tvue.js"></script>
   <script src="../../cdn/element-plus/index.full.min.js"></script>
   <script src="https://unpkg.com/dayjs/dayjs.min.js"></script>
   <script src="https://unpkg.com/axios@1.15.0/dist/axios.min.js"></script>
@@ -74,10 +74,11 @@
         value: '',
         form: {},
         option: {
+          componentType: 'ant',
           column: [{
             label: '基础用法',
             prop: 'select',
-            type: 'ant-select',
+            type: 'select',
             dicData: [{
               label: '字典1',
               value: 0
@@ -88,7 +89,7 @@
           }, {
             label: '虚拟',
             prop: 'select2',
-            type: 'ant-select',
+            type: 'select',
             virtualize: true,
             dicData: Array.from({length: 100}, (_, index) => ({
               label: '选项' + (index + 1),
@@ -97,7 +98,7 @@
           }, {
             label: '默认值',
             prop: 'select3',
-            type: 'ant-select',
+            type: 'select',
             dicData: [
               {label: '字典1', value: 0},
               {label: '字典2', value: 1}
@@ -106,7 +107,7 @@
           }, {
             label: '禁用状态',
             prop: 'select',
-            type: 'ant-select',
+            type: 'select',
             dicData: [{
               label: '字典1',
               value: 0
@@ -118,7 +119,7 @@
           }, {
             label: '禁用状态',
             prop: 'select4',
-            type: 'ant-select',
+            type: 'select',
             dicData: [{
               label: '字典1',
               value: 0,
@@ -130,7 +131,7 @@
           }, {
             label: '可清空',
             prop: 'input',
-            type: 'ant-select',
+            type: 'select',
             allowClear: true,
             dicData: [
               {label: '字典1', value: 0},
@@ -139,7 +140,7 @@
           }, {
             label: '辅助语',
             prop: 'select5',
-            type: 'ant-select',
+            type: 'select',
             dicData: [{
               label: '字典1',
               desc: '字典描述',
@@ -151,7 +152,7 @@
           }, {
             label: '字典属性',
             prop: 'select6',
-            type: 'ant-select',
+            type: 'select',
             props: {
               label: 'name',
               value: 'code'
@@ -166,7 +167,7 @@
           }, {
             label: '网络字典',
             prop: 'select7',
-            type: 'ant-select',
+            type: 'select',
             props: {
               label: 'name',
               value: 'code'
@@ -175,7 +176,7 @@
           }, {
             label: '基础多选',
             prop: 'select8',
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             // limit: 3,
             collapseTags: true,
@@ -184,7 +185,7 @@
           }, {
             label: "创建",
             prop: "select9",
-            type: 'ant-select',
+            type: 'select',
             allowCreate: true,
             multiple: true,
             filterable: true,
@@ -221,7 +222,7 @@
           }, {
             label: "动态添加选项",
             prop: "select19",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             filterable: true,
             allowAdd: true,
@@ -235,7 +236,7 @@
           }, {
             label: "自定义添加逻辑",
             prop: "select20",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             filterable: true,
             allowAdd: true,
@@ -248,7 +249,7 @@
           }, {
             label: "全选功能",
             prop: "select10",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             all: true,
             dicData: [
@@ -261,7 +262,7 @@
           }, {
             label: "带搜索和统计",
             prop: "select11",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             filterable: true,
             showTip: true,
@@ -274,7 +275,7 @@
           }, {
             label: "带提示信息",
             prop: "select12",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             filterable: true,
             showProgress: true,
@@ -332,7 +333,7 @@
           }, {
             label: "显示统计",
             prop: "select13",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             collapseTags: true,
             maxCollapseTags: 2,
@@ -411,7 +412,7 @@
           }, {
             label: "内置全选",
             prop: "select14",
-            type: 'ant-select',
+            type: 'select',
             multiple: true,
             all: true,
             collapseTags: true,
