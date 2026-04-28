@@ -179,6 +179,7 @@
                         :dic="DIC[column.prop]"
                         :props="tableOption.props"
                         :propsHttp="tableOption.propsHttp"
+                        :componentType="tableOption.componentType"
                         :render="column.render"
                         :row="form"
                         :clearValidate="clearValidate"

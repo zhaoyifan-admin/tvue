@@ -117,31 +117,74 @@ export const getSearchType = (column) => {
 };
 
 /**
- * 动态获取组件
+ * 根据 componentType 转换 type
+ * @param {String} type - 原始类型
+ * @param {String} componentType - 组件库类型 'element' | 'ant' | '' (默认为 element)
+ * @returns {String} 转换后的类型
  */
-export const getComponent = (type, component) => {
+export const transformTypeByComponentType = (type, componentType) => {
+  if (!type) return type;
+
+  // 默认使用 element，如果 componentType 为空或 'element'，移除 ant- 前缀
+  if (!componentType || componentType === 'element') {
+    // 如果 type 有 ant- 前缀，移除它
+    if (type.startsWith('ant-')) {
+      return type.replace('ant-', '');
+    }
+    return type;
+  }
+
+  // 如果是 ant 类型，添加 ant- 前缀
+  if (componentType === 'ant') {
+    // 如果已经有 ant- 前缀，直接返回
+    if (type.startsWith('ant-')) {
+      return type;
+    }
+    return `ant-${type}`;
+  }
+
+  return `${componentType}-${type}`;
+};
+
+/**
+ * 动态获取组件
+ * @param {String} type - 组件类型
+ * @param {String|Function} component - 自定义组件（可选）
+ * @param {String} componentType - 组件库类型 'element' | 'ant' | '' (默认为 element)
+ * @returns {String} 组件名称
+ */
+export const getComponent = (type, component, componentType = '') => {
   let result = type || 'input';
+
+  // 如果提供了 component，优先使用
   if (!validatenull(component)) {
     return component;
-  } else if (ARRAY_LIST.includes(type)) {
-    result = 'array';
-  } else if (ARRAY_LIST_ANT.includes(type)) {
-    result = 'ant-array';
-  } else if (['time', 'timerange'].includes(type)) {
-    result = 'time';
-  } else if (DATE_LIST.includes(type)) {
-    result = 'date';
-  } else if (DATE_LIST_ANT.includes(type)) {
-    result = 'ant-date';
-  } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(type)) {
-    result = 'input';
-  } else if (['ant-search', 'ant-phone', 'ant-currency', 'ant-bankCard', 'ant-password', 'ant-bank-card', 'ant-idCard', 'ant-id-card', 'ant-email', 'ant-code', 'ant-plate', 'ant-ip', 'ant-mac', 'ant-uscc', 'ant-textarea'].includes(type)) {
-    result = 'ant-input';
-  } else if (type === 'cron') {
-    result = 'input-cron';
-  } else if (INPUT_LIST.includes(type)) {
-    result = 'input-' + type;
   }
+
+  // 根据 componentType 转换 type（element 为默认，无需显式指定）
+  result = transformTypeByComponentType(result, componentType);
+
+  // 原有的组件映射逻辑
+  if (ARRAY_LIST.includes(result)) {
+    result = 'array';
+  } else if (ARRAY_LIST_ANT.includes(result)) {
+    result = 'ant-array';
+  } else if (['time', 'timerange'].includes(result)) {
+    result = 'time';
+  } else if (DATE_LIST.includes(result)) {
+    result = 'date';
+  } else if (DATE_LIST_ANT.includes(result)) {
+    result = 'ant-date';
+  } else if (['password', 'textarea', 'search', 'phone', 'currency', 'bankCard', 'bank-card', 'idCard', 'id-card', 'email', 'code', 'plate', 'ip', 'mac', 'uscc'].includes(result)) {
+    result = 'input';
+  } else if (['ant-search', 'ant-phone', 'ant-currency', 'ant-bankCard', 'ant-password', 'ant-bank-card', 'ant-idCard', 'ant-id-card', 'ant-email', 'ant-code', 'ant-plate', 'ant-ip', 'ant-mac', 'ant-uscc', 'ant-textarea'].includes(result)) {
+    result = 'ant-input';
+  } else if (result === 'cron') {
+    result = 'input-cron';
+  } else if (INPUT_LIST.includes(result)) {
+    result = 'input-' + result;
+  }
+
   return KEY_COMPONENT_NAME + result;
 };
 
