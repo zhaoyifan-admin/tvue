@@ -179,7 +179,6 @@
                         :dic="DIC[column.prop]"
                         :props="tableOption.props"
                         :propsHttp="tableOption.propsHttp"
-                        :componentType="tableOption.componentType"
                         :render="column.render"
                         :row="form"
                         :clearValidate="clearValidate"
@@ -263,7 +262,7 @@ import {
   setAsVal,
 } from "utils/util";
 import mock from "utils/mock";
-import config from "./config.js";
+import config from "./config";
 export default create({
   name: "form",
   mixins: [init("form")],

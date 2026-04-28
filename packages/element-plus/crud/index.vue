@@ -194,7 +194,7 @@ import create from "core/create";
 import packages from "core/packages";
 import locale from "core/locale";
 import permission from "common/directive/permission";
-import init from "common/common/init.js";
+import init from "common/common/init";
 import tableCard from "./grid/index";
 import tableItemCard from "./grid/item";
 import tablePage from "./menu/table-page";
@@ -207,7 +207,7 @@ import dialogExcel from "./dialog/dialog-excel";
 import column from "./column/column";
 import columnMenu from "./column/column-menu";
 import columnDefault from "./column/column-default";
-import config from "./config.js";
+import config from "./config";
 import { calcCascader, formInitVal } from "core/dataformat";
 import { DIC_PROPS } from "global/variable";
 import { CommonProps } from "element-plus";
@@ -306,9 +306,7 @@ export default create({
   },
   mounted() {
     this.dataInit();
-    setTimeout(()=>{
-      this.getTableHeight();
-    },500)
+    this.getTableHeight();
     this.initFun();
     this.initVirtualizeFun();
   },
@@ -599,42 +597,24 @@ export default create({
     getTableHeight() {
       this.$nextTick(() => {
         if (this.isAutoHeight) {
-          const element = this.$el;
-          if (!element) return;
-
-          const parentElement = element.parentElement;
-          if (!parentElement) return;
-
-          // 使用 requestAnimationFrame 确保布局已完成
-          requestAnimationFrame(() => {
-            let clientHeight = parentElement.clientHeight;
-            const computedStyle = window.getComputedStyle(parentElement);
-            const paddingTop = parseFloat(computedStyle.paddingTop);
-            const paddingBottom = parseFloat(computedStyle.paddingBottom);
-
-            if(this.option.card) {
-              clientHeight -=30;
-            }
-            const calcHeight = this.calcHeight || 0;
-            const tableRef = this.$refs.table;
-            const tablePageRef = this.$refs.tablePage;
-            let tableHeight = clientHeight - calcHeight - paddingTop - paddingBottom;
-
-            if (tableRef) {
-              const height = tableRef.$el.offsetTop || 0;
-              tableHeight -= height;
-            }
-            if (tablePageRef) {
-              const height = tablePageRef.$el.offsetHeight || 0;
-              tableHeight -= height;
-            }
-            this.tableHeight = tableHeight;
-            this.doLayout();
-          });
+          const clientHeight = document.documentElement.clientHeight;
+          const calcHeight = this.calcHeight || 0;
+          const tableRef = this.$refs.table;
+          const tablePageRef = this.$refs.tablePage;
+          let tableHeight = clientHeight - calcHeight;
+          if (tableRef) {
+            const height = tableRef.$el.offsetTop || 0;
+            tableHeight -= height;
+          }
+          if (tablePageRef) {
+            const height = tablePageRef.$el.offsetHeight || 0;
+            tableHeight -= height;
+          }
+          this.tableHeight = tableHeight;
         } else {
           this.tableHeight = this.tableOption.height;
-          this.doLayout();
         }
+        this.doLayout();
       });
     },
     refreshTable(callback) {
