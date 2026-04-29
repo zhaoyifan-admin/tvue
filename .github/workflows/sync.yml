@@ -2,7 +2,7 @@ name: Sync to Gitee
 
 on:
   push:
-    branches: [main]  # 触发同步的分支
+    branches: [main]
 
 jobs:
   sync:
@@ -10,10 +10,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Sync to Gitee
-        uses: wei/git-sync@v3
-        with:
-          ssh_private_key: ${{ secrets.GITEE_PRIVATE_KEY }}
-          source_repo: "git@github.com:zhaoyifan-admin/tvue.git"
-          destination_repo: "git@gitee.com:tianjin-enheng-entertainment/tvue.git"
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+          # 添加 Gitee 远程仓库
+          git remote add gitee https://gitee.com/tianjin-enheng-entertainment/tvue.git
+
+          # 设置认证信息
+          git remote set-url gitee https://oauth2:${{ secrets.GITEE_TOKEN }}@gitee.com/tianjin-enheng-entertainment/tvue.git
+
+          # 推送到 Gitee
+          git push gitee main --force
+
