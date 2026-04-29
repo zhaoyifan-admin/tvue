@@ -1,0 +1,61 @@
+name: Bidirectional Sync (GitHub ↔ Gitee)
+
+on: [ push, delete, create ]
+
+jobs:
+  # Job 1: GitHub → Gitee
+  sync-to-gitee:
+    name: Sync to Gitee
+    runs-on: ubuntu-latest
+    if: github.repository == 'zhaoyifan-admin/tvue'
+    steps:
+      - name: Checkout from GitHub
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup SSH for Gitee
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITEE_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keygen -y -f ~/.ssh/id_rsa > /dev/null
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+
+      - name: Push to Gitee
+        run: |
+          git remote add gitee git@gitee.com:tianjin-enheng-entertainment/tvue.git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git push gitee --all --force
+          git push gitee --tags --force
+
+  # Job 2: Gitee → GitHub
+  sync-to-github:
+    name: Sync to GitHub
+    runs-on: ubuntu-latest
+    if: github.repository != 'zhaoyifan-admin/tvue'
+    steps:
+      - name: Checkout from Gitee
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          repository: tianjin-enheng-entertainment/tvue
+          token: ${{ secrets.GITEE_ACCESS_TOKEN }}
+
+      - name: Setup SSH for GitHub
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITHUB_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keygen -y -f ~/.ssh/id_rsa > /dev/null
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Push to GitHub
+        run: |
+          git remote add github git@github.com:zhaoyifan-admin/tvue.git
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git push github --all --force
+          git push github --tags --force
