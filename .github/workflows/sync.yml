@@ -15,7 +15,4 @@ jobs:
           # 注意替换为你的 GitHub 源仓库地址
           source-repo: git@github.com:zhaoyifan-admin/tvue.git
           # 注意替换为你的 Gitee 目标仓库地址
-          destination-repo: git@gitee.com:tianjin-enheng-entertainment/tvue.git
-
-
-# 触发条件
+          destination-repo: git@gitee.com:enheng_zyf/tvue.git
