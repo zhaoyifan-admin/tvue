@@ -13,16 +13,19 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Sync to Gitee
+      - name: Setup SSH
         run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITEE_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-          # 添加 Gitee 远程仓库
-          git remote add gitee https://gitee.com/tianjin-enheng-entertainment/tvue.git
-
-          # 设置认证信息
-          git remote set-url gitee https://oauth2:${{ secrets.GITEE_TOKEN }}@gitee.com/tianjin-enheng-entertainment/tvue.git
+      - name: Sync to Gitee
+        run: |
+          # 添加 Gitee 远程仓库（使用 SSH）
+          git remote add gitee git@gitee.com:tianjin-enheng-entertainment/tvue.git
 
           # 推送到 Gitee
           git push gitee main --force
