@@ -1,0 +1,243 @@
+<template>
+  <!-- 操作栏 -->
+  <component
+    :is="crud.tableColumnName"
+    key="menu"
+    :class-name="crud.tableOption.menuClassName"
+    :fixed="validData(crud.tableOption.menuFixed, config.menuFixed)"
+    v-if="
+      validData(crud.tableOption.menu, config.menu) &&
+      crud.getPermission('menu')
+    "
+    :title="crud.tableOption.menuTitle || t('crud.menu')"
+    :align="crud.tableOption.menuAlign || config.menuAlign"
+    :width="
+      crud.isMobile
+        ? crud.tableOption.menuXsWidth || config.menuXsWidth
+        : crud.tableOption.menuWidth || config.menuWidth
+    "
+  >
+    <template #header>
+      <slot
+        name="menu-header"
+        :size="crud.size"
+        v-if="crud.getSlotName({ prop: 'menu' }, 'H', crud.$slots)"
+      ></slot>
+      <span v-else>{{ crud.tableOption.menuTitle || t("crud.menu") }}</span>
+    </template>
+    <template #default="{ record: row, column, index: $index }">
+      <div :class="b('menu')">
+        <slot
+          name="menu-before"
+          v-bind="menuParams({ row, column, $index })"
+        ></slot>
+        <a-dropdown v-if="isMenu" trigger="click">
+          <a-button type="link" :size="crud.size">
+            {{ crud.tableOption.menuBtnTitle || t("crud.menuBtn") }}
+            <DownOutlined />
+          </a-button>
+          <template #overlay>
+            <a-menu>
+              <slot
+                name="menu-btn-before"
+                v-bind="menuParams({ row, column, $index })"
+              ></slot>
+              <a-menu-item
+                v-if="validData(crud.tableOption.viewBtn, config.viewBtn) && crud.getPermission('viewBtn', row, $index)"
+                @click="crud.rowView(row, $index)"
+              >{{ crud.menuIcon("viewBtn") }}</a-menu-item
+              >
+              <a-menu-item
+                v-if="validData(crud.tableOption.copyBtn, config.copyBtn) && crud.getPermission('copyBtn', row, $index)"
+                @click="crud.rowCopy(row)"
+              >{{ crud.menuIcon("copyBtn") }}</a-menu-item
+              >
+              <a-menu-item
+                v-if="validData(crud.tableOption.editBtn, config.editBtn) && crud.getPermission('editBtn', row, $index)"
+                @click="crud.rowEdit(row, $index)"
+              >{{ crud.menuIcon("editBtn") }}</a-menu-item
+              >
+              <a-menu-item
+                v-if="validData(crud.tableOption.delBtn, config.delBtn) && crud.getPermission('delBtn', row, $index)"
+                @click="crud.rowDel(row, $index)"
+              >{{ crud.menuIcon("delBtn") }}</a-menu-item
+              >
+              <slot
+                name="menu-btn"
+                v-bind="menuParams({ row, column, $index })"
+              ></slot>
+            </a-menu>
+          </template>
+        </a-dropdown>
+        <template v-else-if="['button', 'text', 'icon'].includes(menuType)">
+          <template v-if="validData(crud.tableOption.cellBtn, config.cellBtn)">
+            <a-button
+              :type="menuText('primary')"
+              :class="b('editBtn')"
+              :size="crud.size"
+              :disabled="crud.btnDisabledList[$index]"
+              @click.stop="crud.rowCell(row, $index)"
+              v-if="
+                validData(crud.tableOption.editBtn, config.editBtn) &&
+                !row.$cellEdit
+              "
+              v-permission="crud.getPermission('editBtn', row, $index)"
+            >
+              <template v-if="!isIconMenu">
+                {{ crud.menuIcon("editBtn") }}
+              </template>
+            </a-button>
+            <a-button
+              :type="menuText('primary')"
+              :class="b('saveBtn')"
+              :size="crud.size"
+              :disabled="crud.btnDisabledList[$index]"
+              @click.stop="crud.rowCell(row, $index)"
+              v-else-if="
+                validData(crud.tableOption.saveBtn, config.saveBtn) &&
+                row.$cellEdit
+              "
+              v-permission="crud.getPermission('saveBtn', row, $index)"
+            >
+              <template v-if="!isIconMenu">
+                {{ crud.menuIcon("saveBtn") }}
+              </template>
+            </a-button>
+            <a-button
+              :type="menuText('primary')"
+              :class="b('cancelBtn')"
+              :size="crud.size"
+              :disabled="crud.btnDisabledList[$index]"
+              v-permission="crud.getPermission('cancelBtn', row, $index)"
+              @click.stop="crud.rowCancel(row, $index)"
+              v-if="
+                row.$cellEdit &&
+                validData(crud.tableOption.cancelBtn, config.cancelBtn)
+              "
+            >
+              <template v-if="!isIconMenu">
+                {{ crud.menuIcon("cancelBtn") }}
+              </template>
+            </a-button>
+          </template>
+          <a-button
+            :type="menuText('primary')"
+            :class="b('viewBtn')"
+            :size="crud.size"
+            :disabled="crud.btnDisabled"
+            @click.stop="crud.rowView(row, $index)"
+            v-permission="crud.getPermission('viewBtn', row, $index)"
+            v-if="validData(crud.tableOption.viewBtn, config.viewBtn)"
+          >
+            <template v-if="!isIconMenu">
+              {{ crud.menuIcon("viewBtn") }}
+            </template>
+          </a-button>
+          <a-button
+            :type="menuText('primary')"
+            :class="b('copyBtn')"
+            :size="crud.size"
+            :disabled="crud.btnDisabled"
+            @click.stop="crud.rowCopy(row)"
+            v-permission="crud.getPermission('copyBtn', row, $index)"
+            v-if="validData(crud.tableOption.copyBtn, config.copyBtn)"
+          >
+            <template v-if="!isIconMenu">
+              {{ crud.menuIcon("copyBtn") }}
+            </template>
+          </a-button>
+          <a-button
+            :type="menuText('primary')"
+            :class="b('editBtn')"
+            :size="crud.size"
+            :disabled="crud.btnDisabled"
+            @click.stop="crud.rowEdit(row, $index)"
+            v-permission="crud.getPermission('editBtn', row, $index)"
+            v-if="
+              validData(crud.tableOption.editBtn, config.editBtn) &&
+              !crud.tableOption.cellBtn
+            "
+          >
+            <template v-if="!isIconMenu">
+              {{ crud.menuIcon("editBtn") }}
+            </template>
+          </a-button>
+          <a-button
+            :type="menuText('danger')"
+            :class="b('delBtn')"
+            :size="crud.size"
+            :disabled="crud.btnDisabled"
+            @click.stop="crud.rowDel(row, $index)"
+            v-permission="crud.getPermission('delBtn', row, $index)"
+            v-if="
+              validData(crud.tableOption.delBtn, config.delBtn) &&
+              !row.$cellEdit
+            "
+          >
+            <template v-if="!isIconMenu">
+              {{ crud.menuIcon("delBtn") }}
+            </template>
+          </a-button>
+        </template>
+        <slot name="menu" v-bind="menuParams({ row, column, $index })"></slot>
+      </div>
+    </template>
+  </component>
+</template>
+
+<script>
+import create from "core/create";
+import locale from "core/locale";
+import permission from "common/directive/permission";
+import config from "../config";
+import tableItemCard from "../grid/item";
+import { DownOutlined } from '@ant-design/icons-vue';
+
+export default create({
+  name: "crud",
+  data() {
+    return {
+      config: config,
+    };
+  },
+  components: {
+    tableItemCard,
+    DownOutlined
+  },
+  mixins: [locale],
+  inject: ["crud"],
+  directives: {
+    permission,
+  },
+  computed: {
+    menuType() {
+      return this.crud.tableOption.menuType || this.$TVUE.menuType;
+    },
+    isIconMenu() {
+      return this.menuType === "icon";
+    },
+    isTextMenu() {
+      return this.menuType === "text";
+    },
+    isMenu() {
+      return this.menuType === "menu";
+    },
+  },
+  methods: {
+    menuText(value) {
+      return value;
+    },
+    menuParams({ row, column, $index }) {
+      let parent = this.crud;
+      return {
+        row,
+        column,
+        type: this.menuText("primary"),
+        disabled: parent.btnDisabled,
+        size: parent.size,
+        index: $index,
+      };
+    },
+  },
+});
+</script>

@@ -9,6 +9,7 @@ import AntRadio from 'packages/ant-design/radio';
 import AntSelect from 'packages/ant-design/select';
 import AntSwitch from 'packages/ant-design/switch';
 import AntArray from 'packages/ant-design/array';
+import AntCrud from 'packages/ant-design/crud';
 
 export default {
   AntCascader,
@@ -21,5 +22,6 @@ export default {
   AntRadio,
   AntSelect,
   AntSwitch,
-  AntArray
+  AntArray,
+  AntCrud
 };
