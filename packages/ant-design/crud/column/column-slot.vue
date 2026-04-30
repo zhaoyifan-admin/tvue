@@ -34,141 +34,143 @@
       ></slot>
       <span v-else>{{ column.label }}</span>
     </template>
-    <template #default="{ record: row, column: tableColumn, index: $index }">
-      <a-form-item
-        :name="crud.isTree ? '' : ['list', $index, column.prop]"
-        v-if="row.$cellEdit && column.cell"
-        :rules="column.rules"
-      >
-        <a-tooltip
-          :title="(crud.listError[`list.${$index}.${column.prop}`] || {}).msg"
-          :open="
-            (crud.listError[`list.${$index}.${column.prop}`] || {}).valid
-          "
-          placement="top"
+    <template #default="slotProps">
+      <template v-if="slotProps && slotProps.record">
+        <a-form-item
+          :name="crud.isTree ? '' : ['list', slotProps.index, column.prop]"
+          v-if="slotProps.record.$cellEdit && column.cell"
+          :rules="column.rules"
         >
-          <div>
-            <slot
-              v-bind="{
-                row: row,
-                tableColumn: tableColumn,
-                column: column,
-                dic: crud.DIC[column.prop],
-                size: crud.size,
-                index: $index,
-                disabled: crud.btnDisabledList[$index],
-                label: handleDetail(row, column),
-                $cell: row.$cellEdit,
-              }"
-              :name="crud.getSlotName(column, 'F')"
-              v-if="crud.getSlotName(column, 'F', crud.$slots)"
-            ></slot>
-            <form-temp
-              v-else
-              :column="column"
-              :size="crud.size"
-              :index="$index"
-              :row="row"
-              :prop="`list.${$index}.${column.prop}`"
-              :clearValidate="crud.clearValidate"
-              :render="column.renderForm"
-              :table-data="{
-                index: $index,
-                row: row,
-                label: handleDetail(row, column),
-              }"
-              :dic="
-                (crud.cascaderDIC[$index] || {})[column.prop] ||
-                crud.DIC[column.prop]
-              "
-              :props="column.props || crud.tableOption.props"
-              :readonly="column.readonly"
-              :disabled="
-                crud.disabled ||
-                crud.tableOption.disabled ||
-                column.disabled ||
-                crud.btnDisabledList[$index]
-              "
-              :clearable="validData(column.clearable, false)"
-              v-bind="$uploadFun(column, crud)"
-              v-model="row[column.prop]"
-              :column-slot="crud.mainSlot"
-              @change="columnChange(row, column, $index)"
-            >
-              <template v-for="item in crud.mainSlot" #[item]="scope">
-                <slot v-bind="scope" :name="item"></slot>
-              </template>
-            </form-temp>
-          </div>
-        </a-tooltip>
-      </a-form-item>
-      <custom
-        v-else-if="column.render"
-        :column="column"
-        :row="row"
-        :index="$index"
-        :render="column.render"
-        :event="column.event"
-        :params="column.params"
-      ></custom>
-      <slot
-        :row="row"
-        :tableColumn="tableColumn"
-        :column="column"
-        :index="$index"
-        :dic="crud.DIC[column.prop]"
-        :size="crud.size"
-        :label="handleDetail(row, column)"
-        :name="column.prop"
-        v-else-if="crud.$slots[column.prop]"
-      ></slot>
-      <template v-else>
-        <span
-          v-if="['img', 'upload'].includes(column.type)"
-          class="tvue-crud__img"
-        >
-          <template
-            v-for="(item, index) in getImgList(row, column)"
-            :key="index"
+          <a-tooltip
+            :title="(crud.listError[`list.${slotProps.index}.${column.prop}`] || {}).msg"
+            :open="
+              (crud.listError[`list.${slotProps.index}.${column.prop}`] || {}).valid
+            "
+            placement="top"
           >
-            <component
-              :src="item"
-              v-if="isMediaType(item, column.fileType)"
-              :is="isMediaType(item, column.fileType)"
-              @click.stop="openImg(row, column, index)"
-            ></component>
-            <FileOutlined v-else @click.stop="openImg(row, column, index)" />
-          </template>
-        </span>
-        <a
-          v-else-if="'url' === column.type"
-          v-for="(item, index) in corArray(row, column)"
-          :key="index"
-          :href="item"
-          :target="column.target || '_blank'"
-        >{{ item }}</a
-        >
-        <tvue-ant-rate
-          disabled
-          v-else-if="'rate' === column.type"
-          v-model:value="row[column.prop]"
-        ></tvue-ant-rate>
-        <i
-          v-else-if="'color' === column.type"
-          class="tvue-crud__color"
-          :style="{ backgroundColor: row[column.prop] }"
-        ></i>
-        <icon-temp
-          v-else-if="'icon' === column.type"
-          :text="row[column.prop]"
-        ></icon-temp>
-        <span v-else-if="column.html" v-html="handleDetail(row, column)"></span>
-        <span
-          v-else
-          :class="{ 'tvue-crud__ellipsis': column.ellipsis }"
-          :title="column.ellipsis ? handleDetail(row, column) : ''"
-          v-text="handleDetail(row, column)"
-        ></span>
+            <div>
+              <slot
+                v-bind="{
+                  row: slotProps.record,
+                  tableColumn: slotProps.column,
+                  column: column,
+                  dic: crud.DIC[column.prop],
+                  size: crud.size,
+                  index: slotProps.index,
+                  disabled: crud.btnDisabledList[slotProps.index],
+                  label: handleDetail(slotProps.record, column),
+                  $cell: slotProps.record.$cellEdit,
+                }"
+                :name="crud.getSlotName(column, 'F')"
+                v-if="crud.getSlotName(column, 'F', crud.$slots)"
+              ></slot>
+              <form-temp
+                v-else
+                :column="column"
+                :size="crud.size"
+                :index="slotProps.index"
+                :row="slotProps.record"
+                :prop="`list.${slotProps.index}.${column.prop}`"
+                :clearValidate="crud.clearValidate"
+                :render="column.renderForm"
+                :table-data="{
+                  index: slotProps.index,
+                  row: slotProps.record,
+                  label: handleDetail(slotProps.record, column),
+                }"
+                :dic="
+                  (crud.cascaderDIC[slotProps.index] || {})[column.prop] ||
+                  crud.DIC[column.prop]
+                "
+                :props="column.props || crud.tableOption.props"
+                :readonly="column.readonly"
+                :disabled="
+                  crud.disabled ||
+                  crud.tableOption.disabled ||
+                  column.disabled ||
+                  crud.btnDisabledList[slotProps.index]
+                "
+                :clearable="validData(column.clearable, false)"
+                v-bind="$uploadFun(column, crud)"
+                v-model="slotProps.record[column.prop]"
+                :column-slot="crud.mainSlot"
+                @change="columnChange(slotProps.record, column, slotProps.index)"
+              >
+                <template v-for="item in crud.mainSlot" #[item]="scope">
+                  <slot v-bind="scope" :name="item"></slot>
+                </template>
+              </form-temp>
+            </div>
+          </a-tooltip>
+        </a-form-item>
+        <custom
+          v-else-if="column.render"
+          :column="column"
+          :row="slotProps.record"
+          :index="slotProps.index"
+          :render="column.render"
+          :event="column.event"
+          :params="column.params"
+        ></custom>
+        <slot
+          :row="slotProps.record"
+          :tableColumn="slotProps.column"
+          :column="column"
+          :index="slotProps.index"
+          :dic="crud.DIC[column.prop]"
+          :size="crud.size"
+          :label="handleDetail(slotProps.record, column)"
+          :name="column.prop"
+          v-else-if="crud.$slots[column.prop]"
+        ></slot>
+        <template v-else>
+          <span
+            v-if="['img', 'upload'].includes(column.type)"
+            class="tvue-crud__img"
+          >
+            <template
+              v-for="(item, index) in getImgList(slotProps.record, column)"
+              :key="index"
+            >
+              <component
+                :src="item"
+                v-if="isMediaType(item, column.fileType)"
+                :is="isMediaType(item, column.fileType)"
+                @click.stop="openImg(slotProps.record, column, index)"
+              ></component>
+              <FileOutlined v-else @click.stop="openImg(slotProps.record, column, index)" />
+            </template>
+          </span>
+          <a
+            v-else-if="'url' === column.type"
+            v-for="(item, index) in corArray(slotProps.record, column)"
+            :key="index"
+            :href="item"
+            :target="column.target || '_blank'"
+          >{{ item }}</a
+          >
+          <tvue-ant-rate
+            disabled
+            v-else-if="'rate' === column.type"
+            v-model:value="slotProps.record[column.prop]"
+          ></tvue-ant-rate>
+          <i
+            v-else-if="'color' === column.type"
+            class="tvue-crud__color"
+            :style="{ backgroundColor: slotProps.record[column.prop] }"
+          ></i>
+          <icon-temp
+            v-else-if="'icon' === column.type"
+            :text="slotProps.record[column.prop]"
+          ></icon-temp>
+          <span v-else-if="column.html" v-html="handleDetail(slotProps.record, column)"></span>
+          <span
+            v-else
+            :class="{ 'tvue-crud__ellipsis': column.ellipsis }"
+            :title="column.ellipsis ? handleDetail(slotProps.record, column) : ''"
+            v-text="handleDetail(slotProps.record, column)"
+          ></span>
+        </template>
       </template>
     </template>
   </component>

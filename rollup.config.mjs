@@ -482,6 +482,8 @@ function createBasePlugins({
         __VUE_OPTIONS_API__: JSON.stringify(true),
         __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+        'process.env.NODE_ENV': JSON.stringify(env),
+        'process.browser': JSON.stringify(browser),
       },
     }),
     vue({

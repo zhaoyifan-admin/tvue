@@ -89,8 +89,10 @@ export default create({
           this.rowSortable && this.rowSortable.destroy();
           return
         }
-        if (!this.crud.$refs.table?.$el) return
-        const el = this.crud.$refs.table.$el.querySelectorAll(this.config.dropRowClass)[0]
+        const tableRef = this.crud.$refs.table
+        if (!tableRef || !tableRef.$el) return
+        const el = tableRef.$el.querySelectorAll(this.config.dropRowClass)[0]
+        if (!el) return
         this.rowSortable = this.crud.tableDrop('row', el, evt => {
           const oldIndex = evt.oldIndex;
           const newIndex = evt.newIndex;
@@ -104,8 +106,10 @@ export default create({
           this.columnSortable && this.columnSortable.destroy();
           return
         }
-        if (!this.crud.$refs.table?.$el) return
-        const el = this.crud.$refs.table.$el.querySelector(this.config.dropColClass);
+        const tableRef = this.crud.$refs.table
+        if (!tableRef || !tableRef.$el) return
+        const el = tableRef.$el.querySelector(this.config.dropColClass);
+        if (!el) return
         let noIndexCount = 0;
         ['selection', 'index', 'expand'].forEach(ele => {
           if (this.crud.tableOption[ele]) { noIndexCount += 1 }
@@ -118,6 +122,7 @@ export default create({
         })
       })
     },
+
   }
 })
 </script>

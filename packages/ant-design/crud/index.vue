@@ -618,12 +618,12 @@ export default create({
           const tableRef = this.$refs.table;
           const tablePageRef = this.$refs.tablePage;
           let tableHeight = clientHeight - calcHeight;
-          if (tableRef) {
-            const height = tableRef.$el?.offsetTop || 0;
+          if (tableRef && tableRef.$el) {
+            const height = tableRef.$el.offsetTop || 0;
             tableHeight -= height;
           }
-          if (tablePageRef) {
-            const height = tablePageRef.$el?.offsetHeight || 0;
+          if (tablePageRef && tablePageRef.$el) {
+            const height = tablePageRef.$el.offsetHeight || 0;
             tableHeight -= height;
           }
           this.tableHeight = tableHeight;
