@@ -28,30 +28,27 @@
         </div>
       </div>
     </template>
-    <tvue-ant-form
-      v-model="crud.tableForm"
-      v-model:status="disabled"
-      ref="tableForm"
-      @change="handleChange"
-      @submit="handleSubmit"
-      @reset-change="hide"
-      @tab-click="handleTabClick"
-      @error="handleError"
-      v-bind="$uploadFun(null, crud)"
-      v-loading="loading"
-      :element-loading-text="crud.tableOption.loadingText"
-      :element-loading-spinner="crud.tableOption.loadingSpinner"
-      :element-loading-svg="crud.tableOption.loadingSvg"
-      :element-loading-background="crud.tableOption.loadingBackground"
-      :option="option"
-    >
-      <template v-for="item in crud.formSlot" #[getSlotName(item)]="scope">
-        <slot
-          :name="item"
-          v-bind="Object.assign(scope, { type: boxType })"
-        ></slot>
-      </template>
-    </tvue-ant-form>
+    <a-spin :spinning="loading" :tip="crud.tableOption.loadingText">
+      <tvue-ant-form
+        v-model="crud.tableForm"
+        v-model:status="disabled"
+        ref="tableForm"
+        @change="handleChange"
+        @submit="handleSubmit"
+        @reset-change="hide"
+        @tab-click="handleTabClick"
+        @error="handleError"
+        v-bind="$uploadFun(null, crud)"
+        :option="option"
+      >
+        <template v-for="item in crud.formSlot" #[getSlotName(item)]="scope">
+          <slot
+            :name="item"
+            v-bind="Object.assign(scope, { type: boxType })"
+          ></slot>
+        </template>
+      </tvue-ant-form>
+    </a-spin>
     <template #footer>
       <span
         class="tvue-dialog__footer"

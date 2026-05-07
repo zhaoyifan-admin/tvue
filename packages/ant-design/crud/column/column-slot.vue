@@ -91,6 +91,7 @@
                   crud.btnDisabledList[slotProps.index]
                 "
                 :clearable="validData(column.clearable, false)"
+                :component-type="crud.tableOption.componentType"
                 v-bind="$uploadFun(column, crud)"
                 v-model="slotProps.record[column.prop]"
                 :column-slot="crud.mainSlot"

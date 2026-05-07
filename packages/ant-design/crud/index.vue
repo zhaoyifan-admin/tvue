@@ -45,84 +45,82 @@
       </div>
       <slot name="body"></slot>
       <a-form :model="cellForm" @validate="handleValidate" ref="cellForm">
-        <component
-          :is="tableName"
-          :key="reload"
-          :data-source="cellForm.list"
-          :row-key="rowKey"
-          :class="{
-            'tvue-crud--indeterminate': validData(
-              tableOption.indeterminate,
-              false
-            ),
-          }"
-          :size="size"
-          :lazy="validData(tableOption.lazy, false)"
-          :load="treeLoad"
-          :expand-row-by-click="tableOption.expandRowByClick"
-          :default-expand-all-rows="tableOption.defaultExpandAll"
-          :show-sorter-tooltip="
-            tableOption.showSorterTooltip || tableOption.showOverflowTooltip
-          "
-          @change="handleChange"
-          @expand="expandChange"
-          @expandedRowsChange="expandedRowsChange"
-          :show-summary="tableOption.showSummary"
-          :summary-method="tableSummaryMethod"
-          :custom-row="customRow"
-          :pagination="false"
-          :scroll="scrollConfig"
-          :row-selection="rowSelection"
-          :bordered="tableOption.border"
-          @resizeColumn="handleResizeColumn"
-          ref="table"
-          v-loading.lock="tableLoading"
-          :element-loading-text="tableOption.loadingText"
-          :element-loading-spinner="tableOption.loadingSpinner"
-          :element-loading-svg="tableOption.loadingSvg"
-          :element-loading-background="tableOption.loadingBackground"
-        >
-          <template #emptyText>
-            <div :class="b('empty')">
-              <slot name="empty" v-if="$slots.empty"></slot>
-              <a-empty
-                v-else
-                :description="tableOption.emptyText || t('crud.emptyText')"
-              ></a-empty>
-            </div>
-          </template>
-          <column v-if="!virtualize" :columnOption="columnOption">
-            <template #header>
-              <column-default ref="columnDefault">
-                <template #expand="{ record, index }">
-                  <slot :row="record" :index="index" name="expand"></slot>
-                </template>
-              </column-default>
+        <a-spin :spinning="tableLoading" :tip="tableOption.loadingText">
+          <component
+            :is="tableName"
+            :key="reload"
+            :data-source="cellForm.list"
+            :columns="!virtualize && !gridShow ? columnOptionForATable : undefined"
+            :row-key="rowKey"
+            :class="{
+              'tvue-crud--indeterminate': validData(
+                tableOption.indeterminate,
+                false
+              ),
+            }"
+            :size="size"
+            :lazy="validData(tableOption.lazy, false)"
+            :load="treeLoad"
+            :expand-row-by-click="tableOption.expandRowByClick"
+            :default-expand-all-rows="tableOption.defaultExpandAll"
+            :show-sorter-tooltip="
+              tableOption.showSorterTooltip || tableOption.showOverflowTooltip
+            "
+            @change="handleChange"
+            @expand="expandChange"
+            @expandedRowsChange="expandedRowsChange"
+            :show-summary="tableOption.showSummary"
+            :summary-method="tableSummaryMethod"
+            :custom-row="customRow"
+            :pagination="false"
+            :scroll="scrollConfig"
+            :row-selection="rowSelection"
+            :bordered="tableOption.border"
+            @resizeColumn="handleResizeColumn"
+            ref="table"
+          >
+            <template #emptyText>
+              <div :class="b('empty')">
+                <slot name="empty" v-if="$slots.empty"></slot>
+                <a-empty
+                  v-else
+                  :description="tableOption.emptyText || t('crud.emptyText')"
+                ></a-empty>
+              </div>
             </template>
-            <template v-for="item in mainSlot" #[item]="scope">
-              <slot v-bind="scope" :name="item"></slot>
-            </template>
-            <template #footer>
-              <column-menu>
-                <template #menu-header="scope">
-                  <slot name="menu-header" v-bind="scope"></slot>
-                </template>
-                <template #menu="scope">
-                  <slot name="menu" v-bind="scope"></slot>
-                </template>
-                <template #menu-btn="scope">
-                  <slot name="menu-btn" v-bind="scope"></slot>
-                </template>
-                <template #menu-before="scope">
-                  <slot name="menu-before" v-bind="scope"></slot>
-                </template>
-                <template #menu-btn-before="scope">
-                  <slot name="menu-btn-before" v-bind="scope"></slot>
-                </template>
-              </column-menu>
-            </template>
-          </column>
-        </component>
+            <column v-if="!virtualize" :columnOption="columnOption">
+              <template #header>
+                <column-default ref="columnDefault">
+                  <template #expand="{ record, index }">
+                    <slot :row="record" :index="index" name="expand"></slot>
+                  </template>
+                </column-default>
+              </template>
+              <template v-for="item in mainSlot" #[item]="scope">
+                <slot v-bind="scope" :name="item"></slot>
+              </template>
+              <template #footer>
+                <column-menu>
+                  <template #menu-header="scope">
+                    <slot name="menu-header" v-bind="scope"></slot>
+                  </template>
+                  <template #menu="scope">
+                    <slot name="menu" v-bind="scope"></slot>
+                  </template>
+                  <template #menu-btn="scope">
+                    <slot name="menu-btn" v-bind="scope"></slot>
+                  </template>
+                  <template #menu-before="scope">
+                    <slot name="menu-before" v-bind="scope"></slot>
+                  </template>
+                  <template #menu-btn-before="scope">
+                    <slot name="menu-btn-before" v-bind="scope"></slot>
+                  </template>
+                </column-menu>
+              </template>
+            </column>
+          </component>
+        </a-spin>
       </a-form>
       <slot name="footer"></slot>
     </a-card>
@@ -286,12 +284,12 @@ export default create({
     },
     tableName() {
       if (this.virtualize) {
-        return "aTableV2";
+        return "ATableV2";
       }
-      return this.gridShow ? "tableCard" : "aTable";
+      return this.gridShow ? "tableCard" : "ATable";
     },
     tableColumnName() {
-      return this.gridShow ? "tableItemCard" : "aTableColumn";
+      return this.gridShow ? "tableItemCard" : "ATableColumn";
     },
     virtualize() {
       return this.tableOption.virtualize;
@@ -434,30 +432,57 @@ export default create({
       };
     },
     customRow() {
-      return {
-        on: {
-          click: (event, record) => {
-            this.rowClick(record, event);
-          },
-          dblclick: (event, record) => {
-            this.rowDblclick(record, event);
-          },
-          contextmenu: (event, record) => {
-            this.rowContextmenu(record, event);
-          },
-          mouseenter: (event, record) => {
-            const column = {};
-            const cell = {};
-            this.cellMouseEnter(record, column, cell, event);
-          },
-          mouseleave: (event, record) => {
-            const column = {};
-            const cell = {};
-            this.cellMouseLeave(record, column, cell, event);
-          },
+      return (record, index) => ({
+        onClick: (event) => {
+          this.rowClick(record, event);
         },
-      };
+        onDblclick: (event) => {
+          this.rowDblclick(record, event);
+        },
+        onContextmenu: (event) => {
+          this.rowContextmenu(record, event);
+        },
+        onMouseenter: (event) => {
+          const column = {};
+          const cell = {};
+          this.cellMouseEnter(record, column, cell, event);
+        },
+        onMouseleave: (event) => {
+          const column = {};
+          const cell = {};
+          this.cellMouseLeave(record, column, cell, event);
+        },
+      });
     },
+    columnOptionForATable() {
+      return this.columnOption.map(col => {
+        // 将 TVUE 格式的列配置转换为 Ant Design Vue 格式
+        const convertedCol = {
+          title: col.label,
+          dataIndex: col.prop,
+          key: col.prop,
+          slots: { customRender: col.prop },
+          width: col.width,
+          fixed: col.fixed,
+          align: col.align || col.headerAlign,
+          ellipsis: col.ellipsis,
+          sorter: col.sortable,
+          filters: col.filters,
+          filteredValue: col.filteredValue,
+          sortOrder: col.sortOrder
+        };
+
+        // 移除 undefined 值
+        Object.keys(convertedCol).forEach(key => {
+          if (convertedCol[key] === undefined) {
+            delete convertedCol[key];
+          }
+        });
+
+        return convertedCol;
+      });
+    },
+
   },
   watch: {
     modelValue: {
@@ -666,7 +691,8 @@ export default create({
       this.$refs.table.clearSelection();
     },
     dataInit() {
-      this.list = this.data;
+      this.list = this.data || [];
+      this.cellForm.list = this.list;
       this.list.forEach((ele, index) => {
         if (ele.$cellEdit && !this.cascaderFormList[index]) {
           this.cascaderFormList[index] = this.deepClone(ele);
