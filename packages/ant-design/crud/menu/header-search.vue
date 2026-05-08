@@ -23,7 +23,7 @@
                     v-if="show===false"
                     @click="handleSearchIconShow">
             <template #icon>
-              <DownOutlined />
+              <component :is="getIconComponent('DownOutlined')" />
             </template>
             {{t('crud.open')}}
           </a-button>
@@ -31,11 +31,12 @@
                     v-if="show===true"
                     @click="handleSearchIconShow">
             <template #icon>
-              <UpOutlined />
+              <component :is="getIconComponent('UpOutlined')" />
             </template>
             {{t('crud.shrink')}}
           </a-button>
         </template>
+
 
       </template>
       <template v-for="item in crud.searchSlot"
@@ -57,6 +58,7 @@ import { getSearchType } from "core/dataformat";
 import { filterParams } from 'utils/util'
 import config from "../config";
 import { DownOutlined, UpOutlined } from '@ant-design/icons-vue';
+import { getAntIcon } from "utils/antIcon";
 
 export default create({
   name: "crud__search",
@@ -207,6 +209,9 @@ export default create({
   methods: {
     initFun () {
       ['searchReset', 'searchChange'].forEach(ele => this.crud[ele] = this[ele])
+    },
+    getIconComponent(icon, defaultIcon) {
+      return getAntIcon(icon, defaultIcon);
     },
     getSlotName (item) {
       return item.replace('-search', '')

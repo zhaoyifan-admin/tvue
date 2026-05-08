@@ -1,5 +1,5 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
-import { detailDataType, getAsVal } from '../utils/util.mjs';
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+import { getAsVal, detailDataType } from '../utils/util.mjs';
 import { validatenull } from '../utils/validate.mjs';
 import { DIC_PROPS } from '../global/variable.mjs';
 

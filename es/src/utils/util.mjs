@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { validatenull } from './validate.mjs';
 import { typeList, DIC_PROPS, CHILDREN_LIST } from '../global/variable.mjs';
 import _get from 'lodash-es/get.js';

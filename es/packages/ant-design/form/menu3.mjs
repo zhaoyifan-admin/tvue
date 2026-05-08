@@ -1,5 +1,5 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
-import { resolveComponent, openBlock, createBlock, normalizeClass, normalizeStyle, withCtx, renderSlot, createTextVNode, toDisplayString, createCommentVNode, resolveDynamicComponent, createElementBlock } from 'vue';
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+import { resolveComponent, openBlock, createBlock, normalizeClass, normalizeStyle, withCtx, renderSlot, createTextVNode, toDisplayString, resolveDynamicComponent, createCommentVNode } from 'vue';
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_a_button = resolveComponent("a-button");
@@ -27,8 +27,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 size: _ctx.formSafe.size,
                 disabled: _ctx.formSafe.allDisabled
               }, {
+                icon: withCtx(() => [
+                  (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent('edit'))))
+                ]),
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString(_ctx.validData(_ctx.formSafe.tableOption.mockText, _ctx.t("form.mockBtn"))), 1 /* TEXT */)
+                  createTextVNode(" " + toDisplayString(_ctx.validData(_ctx.formSafe.tableOption.mockText, _ctx.t("form.mockBtn"))), 1 /* TEXT */)
                 ]),
                 _: 1 /* STABLE */
               }, 8 /* PROPS */, ["onClick", "size", "disabled"]))
@@ -41,8 +44,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 size: _ctx.formSafe.size,
                 disabled: _ctx.formSafe.allDisabled
               }, {
+                icon: withCtx(() => [
+                  (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent('printer'))))
+                ]),
                 default: withCtx(() => [
-                  createTextVNode(toDisplayString(_ctx.validData(_ctx.formSafe.tableOption.printText, _ctx.t("form.printBtn"))), 1 /* TEXT */)
+                  createTextVNode(" " + toDisplayString(_ctx.validData(_ctx.formSafe.tableOption.printText, _ctx.t("form.printBtn"))), 1 /* TEXT */)
                 ]),
                 _: 1 /* STABLE */
               }, 8 /* PROPS */, ["onClick", "size", "disabled"]))
@@ -55,15 +61,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 size: _ctx.formSafe.size,
                 loading: _ctx.formSafe.allDisabled
               }, {
+                icon: withCtx(() => [
+                  (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent(_ctx.formSafe.tableOption.submitIcon, 'CheckOutlined'))))
+                ]),
                 default: withCtx(() => [
-                  (_ctx.isAntdIcon(_ctx.getIconName(_ctx.formSafe.tableOption.submitIcon, 'CheckOutlined')))
-                    ? (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent(_ctx.formSafe.tableOption.submitIcon, 'CheckOutlined')), { key: 0 }))
-                    : (_ctx.isIconfont(_ctx.getIconName(_ctx.formSafe.tableOption.submitIcon, 'CheckOutlined')))
-                      ? (openBlock(), createElementBlock("i", {
-                          key: 1,
-                          class: normalizeClass(_ctx.getIconfontClass(_ctx.getIconName(_ctx.formSafe.tableOption.submitIcon, 'CheckOutlined')))
-                        }, null, 2 /* CLASS */))
-                      : createCommentVNode("v-if", true),
                   createTextVNode(" " + toDisplayString(_ctx.validData(_ctx.formSafe.tableOption.submitText, _ctx.t("form.submitBtn"))), 1 /* TEXT */)
                 ]),
                 _: 1 /* STABLE */
@@ -76,15 +77,10 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                 disabled: _ctx.formSafe.allDisabled,
                 onClick: _ctx.formSafe.resetForm
               }, {
+                icon: withCtx(() => [
+                  (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent(_ctx.formSafe.tableOption.emptyIcon, 'DeleteOutlined'))))
+                ]),
                 default: withCtx(() => [
-                  (_ctx.isAntdIcon(_ctx.getIconName(_ctx.formSafe.tableOption.emptyIcon, 'DeleteOutlined')))
-                    ? (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent(_ctx.formSafe.tableOption.emptyIcon, 'DeleteOutlined')), { key: 0 }))
-                    : (_ctx.isIconfont(_ctx.getIconName(_ctx.formSafe.tableOption.emptyIcon, 'DeleteOutlined')))
-                      ? (openBlock(), createElementBlock("i", {
-                          key: 1,
-                          class: normalizeClass(_ctx.getIconfontClass(_ctx.getIconName(_ctx.formSafe.tableOption.emptyIcon, 'DeleteOutlined')))
-                        }, null, 2 /* CLASS */))
-                      : createCommentVNode("v-if", true),
                   createTextVNode(" " + toDisplayString(_ctx.validData(_ctx.formSafe.tableOption.emptyText, _ctx.t("form.emptyBtn"))), 1 /* TEXT */)
                 ]),
                 _: 1 /* STABLE */

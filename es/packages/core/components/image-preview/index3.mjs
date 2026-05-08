@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { isMediaType, setPx } from '../../../../src/utils/util.mjs';
 import create from '../../../../src/core/create.mjs';
 import Print from '../../../../src/plugin/print/index.mjs';

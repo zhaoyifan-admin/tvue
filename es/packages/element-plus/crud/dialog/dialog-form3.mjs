@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { resolveComponent, resolveDirective, openBlock, createBlock, resolveDynamicComponent, mergeProps, withCtx, withDirectives, createSlots, renderList, renderSlot, normalizeProps, guardReactiveProps, createElementVNode, normalizeClass, createTextVNode, toDisplayString, createCommentVNode, createVNode } from 'vue';
 
 const _hoisted_1 = { class: "el-dialog__title" };

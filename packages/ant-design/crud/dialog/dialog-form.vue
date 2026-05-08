@@ -3,8 +3,8 @@
     v-if="boxVisible"
     :is="dialogType"
     :class="[
-      'tvue-dialog',
-      b('dialog'),
+      'tvue-ant-modal',
+      b('modal'),
       this.crud.tableOption.dialogCustomClass,
     ]"
     :get-container="validData(crud.tableOption.dialogAppendToBody, true) ? 'body' : false"
@@ -14,17 +14,17 @@
     :mask-closable="validData(crud.tableOption.dialogClickModal, false)"
     :keyboard="crud.tableOption.dialogEscape"
     :open="boxVisible"
+    v-bind="params"
     @cancel="hide"
   >
     <template #title>
-      <div :class="b('dialog__header')">
-        <span>{{ dialogTitle }}</span>
-        <div :class="b('dialog__menu')">
-          <a @click="handleFullScreen" style="cursor: pointer;">
-            <component
-              :is="fullscreen ? CopyOutlined : FullscreenOutlined"
-            />
-          </a>
+      <div :class="b('modal__header')">
+        <span class="ant-modal__title">{{ dialogTitle }}</span>
+        <div :class="b('modal__menu')">
+          <component
+            :is="fullscreen ? getIconComponent('FullscreenExitOutlined') : getIconComponent('FullscreenOutlined')"
+            @click="handleFullScreen"
+          />
         </div>
       </div>
     </template>
@@ -51,8 +51,8 @@
     </a-spin>
     <template #footer>
       <span
-        class="tvue-dialog__footer"
-        :class="'tvue-dialog__footer--' + dialogMenuPosition"
+        class="tvue-modal__footer"
+        :class="'tvue-modal__footer--' + dialogMenuPosition"
       >
         <slot name="menu-form-before" v-bind="menuParams()"></slot>
         <a-button
@@ -62,6 +62,9 @@
           :size="crud.size"
           v-if="validData(option.mockBtn, false) && !isView"
         >
+          <template #icon>
+            <component :is="getIconComponent(option.mockIcon)" />
+          </template>
           {{ option.mockText }}
         </a-button>
         <a-button
@@ -70,15 +73,23 @@
           :loading="disabled || loading"
           :size="crud.size"
           type="primary"
-        >{{ option.submitText }}</a-button
         >
+          <template #icon>
+            <component :is="getIconComponent(option.submitIcon)" />
+          </template>
+          {{ option.submitText }}
+        </a-button>
         <a-button
           v-if="validData(option.emptyBtn, true) && !isView"
           @click="reset"
           :disabled="disabled || loading"
           :size="crud.size"
-        >{{ option.emptyText }}</a-button
         >
+          <template #icon>
+            <component :is="getIconComponent(option.emptyIcon)" />
+          </template>
+          {{ option.emptyText }}
+        </a-button>
         <slot name="menu-form" v-bind="menuParams()"></slot>
       </span>
     </template>
@@ -90,17 +101,13 @@ import create from "core/create";
 import locale from "core/locale";
 import config from "../config";
 import { filterParams } from "utils/util";
-import { FullscreenOutlined, CopyOutlined } from '@ant-design/icons-vue';
+import {getAntIcon} from "utils/antIcon";
 
 export default create({
   name: "crud",
   mixins: [locale],
   emits: ["update:modelValue", "change"],
   inject: ["crud"],
-  components: {
-    FullscreenOutlined,
-    CopyOutlined
-  },
   data() {
     return {
       loading: false,
@@ -154,6 +161,7 @@ export default create({
         }
         : {
           width: this.width,
+          fullscreen: this.fullscreen,
         };
       return Object.assign(result, this.$uploadFun({}, this.crud));
     },
@@ -208,6 +216,9 @@ export default create({
     },
   },
   methods: {
+    getIconComponent(icon, defaultIcon) {
+      return getAntIcon(icon, defaultIcon);
+    },
     menuParams() {
       return {
         disabled: this.disabled,

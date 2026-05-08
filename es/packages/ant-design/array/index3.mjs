@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { resolveComponent, openBlock, createElementBlock, normalizeClass, createBlock, withCtx, resolveDynamicComponent, createCommentVNode, Fragment, renderList, createElementVNode, createVNode, createSlots, toDisplayString } from 'vue';
 
 const _hoisted_1 = { class: "tvue-array__word-limit" };

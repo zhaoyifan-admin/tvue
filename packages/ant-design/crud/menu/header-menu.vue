@@ -123,15 +123,12 @@
     </div>
   </div>
 </template>
-
 <script>
 import create from "core/create";
 import locale from "core/locale";
-import packages from "core/packages";
 import permission from 'common/directive/permission';
-import { validData, getAsVal } from "utils/util";
+import { getAntIcon } from 'utils/antIcon';
 import config from "../config";
-import * as AntIcons from '@ant-design/icons-vue';
 
 export default create({
   name: "crud",
@@ -181,27 +178,10 @@ export default create({
     }
   },
   methods: {
-    getIconComponent(iconName) {
-      if (!iconName) return null;
-      const iconMap = {
-        'plus': AntIcons.PlusOutlined,
-        'eye': AntIcons.EyeOutlined,
-        'edit': AntIcons.EditOutlined,
-        'copy': AntIcons.CopyOutlined,
-        'printer': AntIcons.PrinterOutlined,
-        'download': AntIcons.DownloadOutlined,
-        'delete': AntIcons.DeleteOutlined,
-        'search': AntIcons.SearchOutlined,
-        'plus-circle': AntIcons.PlusCircleOutlined,
-        'check-circle': AntIcons.CheckCircleOutlined,
-        'close-circle': AntIcons.CloseCircleOutlined,
-        'setting': AntIcons.SettingOutlined,
-        'filter': AntIcons.FilterOutlined,
-        'appstore': AntIcons.AppstoreOutlined,
-        'reload': AntIcons.ReloadOutlined,
-      };
-      return iconMap[iconName] || AntIcons.PlusOutlined;
+    getIconComponent(iconName, defaultIcon) {
+      return getAntIcon(iconName, defaultIcon);
     },
+
     dateChange (val) {
       if (this.dateCreate) {
         this.crud.$emit("date-change", val);
@@ -222,3 +202,4 @@ export default create({
   }
 });
 </script>
+

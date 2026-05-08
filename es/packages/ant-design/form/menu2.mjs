@@ -1,6 +1,7 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import locale from '../../../src/core/locale.mjs';
 import create from '../../../src/core/create.mjs';
+import { getAntIcon } from '../../../src/utils/antIcon.mjs';
 
 var script = create({
   name: 'ant-form',
@@ -23,23 +24,18 @@ var script = create({
     }
   },
   methods: {
+    // 使用统一的图标工具方法
+    getIconComponent(icon, defaultIcon) {
+      return getAntIcon(icon, defaultIcon);
+    },
     isAntdIcon(icon) {
       if (!icon) return false;
       return typeof icon === 'string' && icon.endsWith('Outlined');
-    },
-    isIconfont(icon) {
-      if (!icon) return false;
-      return typeof icon === 'string' && (icon.startsWith('icon-') || icon.startsWith('iconfont'));
     },
     getIconName(icon, defaultIcon) {
       if (icon === false) return null;
       if (!icon) return defaultIcon;
       return icon;
-    },
-    getIconComponent(icon, defaultIcon) {
-      const iconName = this.getIconName(icon, defaultIcon);
-      if (!iconName) return null;
-      return iconName;
     },
     getIconfontClass(icon) {
       if (!icon) return '';

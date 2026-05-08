@@ -50,7 +50,7 @@
             :is="tableName"
             :key="reload"
             :data-source="cellForm.list"
-            :columns="!virtualize && !gridShow ? columnOptionForATable : undefined"
+            :columns="!gridShow ? columnOptionForATable : undefined"
             :row-key="rowKey"
             :class="{
               'tvue-crud--indeterminate': validData(
@@ -88,7 +88,7 @@
                 ></a-empty>
               </div>
             </template>
-            <column v-if="!virtualize" :columnOption="columnOption">
+            <column :columnOption="columnOption">
               <template #header>
                 <column-default ref="columnDefault">
                   <template #expand="{ record, index }">
@@ -267,7 +267,6 @@ export default create({
     this.dataInit();
     this.getTableHeight();
     this.initFun();
-    this.initVirtualizeFun();
   },
   computed: {
     columnVirtualizeOption() {
@@ -283,19 +282,13 @@ export default create({
       });
     },
     tableName() {
-      if (this.virtualize) {
-        return "ATableV2";
-      }
       return this.gridShow ? "tableCard" : "ATable";
     },
     tableColumnName() {
       return this.gridShow ? "tableItemCard" : "ATableColumn";
     },
-    virtualize() {
-      return this.tableOption.virtualize;
-    },
     size() {
-      return this.tableOption.size || this.$TVUE.tableSize || this.$TVUE.size;
+      return this.tableOption.size || this.$TVUE.tableSize || this.$TVUE.size || 'middle';
     },
     isSortable() {
       return this.tableOption.sortable;
@@ -580,15 +573,6 @@ export default create({
     },
   },
   methods: {
-    initVirtualizeFun() {
-      if (!this.virtualize) return;
-      this.initTableMethods([
-        "scrollTo",
-        "scrollToTop",
-        "scrollToLeft",
-        "scrollRow",
-      ]);
-    },
     initFun() {
       this.initTableMethods([
         "scrollTo",

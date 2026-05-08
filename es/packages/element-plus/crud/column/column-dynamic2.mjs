@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import './column-slot.mjs';
 import '../grid/item.mjs';
 import script$1 from '../grid/item2.mjs';

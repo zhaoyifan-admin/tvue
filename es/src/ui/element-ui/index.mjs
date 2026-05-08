@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import CountUp from 'packages/element-ui/count-up';
 import Article from 'packages/element-ui/article';
 import Crud from 'packages/element-ui/crud';

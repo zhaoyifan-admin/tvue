@@ -1,4 +1,4 @@
-/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { validatenull } from '../utils/validate.mjs';
 import { DIC_SPLIT, MULTIPLE_LIST, ARRAY_VALUE_LIST, RANGE_LIST, ARRAY_LIST, SELECT_LIST, KEY_COMPONENT_NAME, DATE_LIST, ARRAY_LIST_ANT, DATE_LIST_ANT, INPUT_LIST } from '../global/variable.mjs';
 import { detailDataType, createObj, findObject } from '../utils/util.mjs';

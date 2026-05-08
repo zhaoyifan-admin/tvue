@@ -19,6 +19,9 @@
       :disabled="formSafe.allDisabled"
       v-if="formSafe.isMock"
     >
+      <template #icon>
+        <component :is="getIconComponent('edit')" />
+      </template>
       {{ validData(formSafe.tableOption.mockText, t("form.mockBtn")) }}
     </a-button>
     <a-button
@@ -28,6 +31,9 @@
       :disabled="formSafe.allDisabled"
       v-if="formSafe.isPrint"
     >
+      <template #icon>
+        <component :is="getIconComponent('printer')" />
+      </template>
       {{ validData(formSafe.tableOption.printText, t("form.printBtn")) }}
     </a-button>
     <a-button
@@ -37,14 +43,11 @@
       :loading="formSafe.allDisabled"
       v-if="validData(formSafe.tableOption.submitBtn, true)"
     >
-      <component
-        :is="getIconComponent(formSafe.tableOption.submitIcon, 'CheckOutlined')"
-        v-if="isAntdIcon(getIconName(formSafe.tableOption.submitIcon, 'CheckOutlined'))"
-      />
-      <i
-        v-else-if="isIconfont(getIconName(formSafe.tableOption.submitIcon, 'CheckOutlined'))"
-        :class="getIconfontClass(getIconName(formSafe.tableOption.submitIcon, 'CheckOutlined'))"
-      ></i>
+      <template #icon>
+        <component
+          :is="getIconComponent(formSafe.tableOption.submitIcon, 'CheckOutlined')"
+        />
+      </template>
       {{ validData(formSafe.tableOption.submitText, t("form.submitBtn")) }}
     </a-button>
     <a-button
@@ -53,14 +56,11 @@
       v-if="validData(formSafe.tableOption.emptyBtn, true)"
       @click="formSafe.resetForm"
     >
-      <component
-        :is="getIconComponent(formSafe.tableOption.emptyIcon, 'DeleteOutlined')"
-        v-if="isAntdIcon(getIconName(formSafe.tableOption.emptyIcon, 'DeleteOutlined'))"
-      />
-      <i
-        v-else-if="isIconfont(getIconName(formSafe.tableOption.emptyIcon, 'DeleteOutlined'))"
-        :class="getIconfontClass(getIconName(formSafe.tableOption.emptyIcon, 'DeleteOutlined'))"
-      ></i>
+      <template #icon>
+        <component
+          :is="getIconComponent(formSafe.tableOption.emptyIcon, 'DeleteOutlined')"
+        />
+      </template>
       {{ validData(formSafe.tableOption.emptyText, t("form.emptyBtn")) }}
     </a-button>
     <slot
@@ -74,6 +74,7 @@
 <script>
 import locale from "core/locale";
 import create from "core/create";
+import { getAntIcon } from "utils/antIcon";
 
 
 export default create({
@@ -97,23 +98,18 @@ export default create({
     }
   },
   methods: {
+    // 使用统一的图标工具方法
+    getIconComponent(icon, defaultIcon) {
+      return getAntIcon(icon, defaultIcon);
+    },
     isAntdIcon(icon) {
       if (!icon) return false;
       return typeof icon === 'string' && icon.endsWith('Outlined');
-    },
-    isIconfont(icon) {
-      if (!icon) return false;
-      return typeof icon === 'string' && (icon.startsWith('icon-') || icon.startsWith('iconfont'));
     },
     getIconName(icon, defaultIcon) {
       if (icon === false) return null;
       if (!icon) return defaultIcon;
       return icon;
-    },
-    getIconComponent(icon, defaultIcon) {
-      const iconName = this.getIconName(icon, defaultIcon);
-      if (!iconName) return null;
-      return iconName;
     },
     getIconfontClass(icon) {
       if (!icon) return '';
@@ -125,3 +121,4 @@ export default create({
   }
 })
 </script>
+
