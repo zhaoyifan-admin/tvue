@@ -1,4 +1,4 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { resolveComponent, openBlock, createElementBlock, normalizeClass, createBlock, withCtx, resolveDynamicComponent, createCommentVNode, Fragment, renderList, createElementVNode, createVNode, createSlots, toDisplayString } from 'vue';
 
 const _hoisted_1 = { class: "tvue-array__word-limit" };
@@ -24,12 +24,13 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       ? (openBlock(), createBlock(_component_a_button, {
           key: 0,
           type: "primary",
+          shape: "circle",
           size: _ctx.size,
           disabled: _ctx.disabled,
           onClick: _cache[0] || (_cache[0] = $event => (_ctx.add()))
         }, {
           icon: withCtx(() => [
-            (openBlock(), createBlock(resolveDynamicComponent('PlusOutlined')))
+            (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent('PlusOutlined'))))
           ]),
           _: 1 /* STABLE */
         }, 8 /* PROPS */, ["size", "disabled"]))
@@ -94,24 +95,26 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
                   ? (openBlock(), createBlock(_component_a_button, {
                       key: 0,
                       type: "primary",
+                      shape: "circle",
                       size: _ctx.size,
                       disabled: _ctx.disabled,
                       onClick: $event => (_ctx.add(index))
                     }, {
                       icon: withCtx(() => [
-                        (openBlock(), createBlock(resolveDynamicComponent('PlusOutlined')))
+                        (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent('PlusOutlined'))))
                       ]),
                       _: 1 /* STABLE */
                     }, 8 /* PROPS */, ["size", "disabled", "onClick"]))
                   : createCommentVNode("v-if", true),
                 createVNode(_component_a_button, {
                   danger: "",
+                  shape: "circle",
                   size: _ctx.size,
                   disabled: _ctx.disabled,
                   onClick: $event => (_ctx.remove(index))
                 }, {
                   icon: withCtx(() => [
-                    (openBlock(), createBlock(resolveDynamicComponent('MinusOutlined')))
+                    (openBlock(), createBlock(resolveDynamicComponent(_ctx.getIconComponent('MinusOutlined'))))
                   ]),
                   _: 1 /* STABLE */
                 }, 8 /* PROPS */, ["size", "disabled", "onClick"])

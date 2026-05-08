@@ -2,12 +2,15 @@
   <div :class="b()">
     <a-button
       type="primary"
+      shape="circle"
       :size="size"
       v-if="validatenull(text)"
       :disabled="disabled"
       @click="add()">
       <template #icon>
-        <component :is="'PlusOutlined'" />
+        <component
+          :is="getIconComponent('PlusOutlined')"
+        />
       </template>
     </a-button>
     <div :class="b('item')"
@@ -49,19 +52,25 @@
         <template v-if="!(disabled || readonly || alone)">
           <a-button v-if="!isLimit"
                     type="primary"
+                    shape="circle"
                     :size="size"
                     :disabled="disabled"
                     @click="add(index)">
             <template #icon>
-              <component :is="'PlusOutlined'" />
+              <component
+                :is="getIconComponent('PlusOutlined')"
+              />
             </template>
           </a-button>
           <a-button danger
+                    shape="circle"
                     :size="size"
                     :disabled="disabled"
                     @click="remove(index)">
             <template #icon>
-              <component :is="'MinusOutlined'" />
+              <component
+                :is="getIconComponent('MinusOutlined')"
+              />
             </template>
           </a-button>
         </template>
@@ -75,6 +84,7 @@ import create from "core/create";
 import props from "common/common/props.js";
 import event from "common/common/event.js";
 import { isMediaType } from "utils/util";
+import {getAntIcon} from "utils/antIcon";
 
 export default create({
   name: 'ant-array',
@@ -113,6 +123,9 @@ export default create({
     }
   },
   methods: {
+    getIconComponent(iconName, defaultIcon) {
+      return getAntIcon(iconName, defaultIcon);
+    },
     isMediaType (item) {
       return isMediaType(item, this.fileType)
     },

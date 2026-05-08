@@ -46,6 +46,7 @@
       <a-tooltip :title="t('crud.excelBtn')">
         <a-button :class="b('excelBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="rowExcel"
                   v-permission="crud.getPermission('excelBtn')"
                   v-if="validData(crud.tableOption.excelBtn,config.excelBtn)">
@@ -57,6 +58,7 @@
       <a-tooltip :title="t('crud.printBtn')">
         <a-button :class="b('printBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="rowPrint"
                   v-permission="crud.getPermission('printBtn')"
                   v-if="validData(crud.tableOption.printBtn,config.printBtn)">
@@ -68,6 +70,7 @@
       <a-tooltip :title="t('crud.refreshBtn')">
         <a-button :class="b('refreshBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="crud.refreshChange"
                   v-permission="crud.getPermission('refreshBtn')"
                   v-if="validData(crud.tableOption.refreshBtn,config.refreshBtn)">
@@ -79,6 +82,7 @@
       <a-tooltip :title="t('crud.columnBtn')">
         <a-button :class="b('columnBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="crud.$refs.dialogColumn.handleShow()"
                   v-permission="crud.getPermission('columnBtn')"
                   v-if="validData(crud.tableOption.columnBtn,config.columnBtn)">
@@ -90,6 +94,7 @@
       <a-tooltip :title="t('crud.searchBtn')" v-if="(crud.$refs.headerSearch || {}).searchFlag&&validData(crud.tableOption.searchShowBtn,true)">
         <a-button :class="b('searchBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="crud.$refs.headerSearch.handleSearchShow()">
           <template #icon>
             <component :is="getIconComponent(crud.getBtnIcon('searchBtn'))" />
@@ -99,6 +104,7 @@
       <a-tooltip :title="t('crud.filterBtn')">
         <a-button :class="b('filterBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="crud.$refs.dialogFilter.handleShow()"
                   v-permission="crud.getPermission('filterBtn')"
                   v-if="validData(crud.tableOption.filterBtn,config.filterBtn)">
@@ -111,6 +117,7 @@
       <a-tooltip :title="t('crud.gridBtn')">
         <a-button :class="b('gridBtn')"
                   :size="crud.size"
+                  shape="circle"
                   @click="crud.handleGridShow()"
                   v-permission="crud.getPermission('gridBtn')"
                   v-if="validData(crud.tableOption.gridBtn,config.gridBtn)">
@@ -181,7 +188,6 @@ export default create({
     getIconComponent(iconName, defaultIcon) {
       return getAntIcon(iconName, defaultIcon);
     },
-
     dateChange (val) {
       if (this.dateCreate) {
         this.crud.$emit("date-change", val);

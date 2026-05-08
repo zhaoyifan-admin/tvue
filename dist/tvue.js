@@ -1,4 +1,4 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('vue'), require('element-plus'), require('axios'), require('@element-plus/icons-vue')) :
   typeof define === 'function' && define.amd ? define(['vue', 'element-plus', 'axios', '@element-plus/icons-vue'], factory) :
@@ -45886,6 +45886,9 @@
       }
     },
     methods: {
+      getIconComponent: function getIconComponent(iconName, defaultIcon) {
+        return getAntIcon(iconName, defaultIcon);
+      },
       isMediaType: function isMediaType$1(item) {
         return isMediaType(item, this.fileType);
       },
@@ -45952,6 +45955,7 @@
     }, [_ctx.validatenull(_ctx.text) ? (vue.openBlock(), vue.createBlock(_component_a_button, {
       key: 0,
       type: "primary",
+      shape: "circle",
       size: _ctx.size,
       disabled: _ctx.disabled,
       onClick: _cache[0] || (_cache[0] = function ($event) {
@@ -45959,7 +45963,7 @@
       })
     }, {
       icon: vue.withCtx(function () {
-        return [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent('PlusOutlined')))];
+        return [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(_ctx.getIconComponent('PlusOutlined'))))];
       }),
       _: 1 /* STABLE */
     }, 8 /* PROPS */, ["size", "disabled"])) : vue.createCommentVNode("v-if", true), (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.text, function (item, index) {
@@ -46013,6 +46017,7 @@
       }, [!_ctx.isLimit ? (vue.openBlock(), vue.createBlock(_component_a_button, {
         key: 0,
         type: "primary",
+        shape: "circle",
         size: _ctx.size,
         disabled: _ctx.disabled,
         onClick: function onClick($event) {
@@ -46020,11 +46025,12 @@
         }
       }, {
         icon: vue.withCtx(function () {
-          return [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent('PlusOutlined')))];
+          return [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(_ctx.getIconComponent('PlusOutlined'))))];
         }),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["size", "disabled", "onClick"])) : vue.createCommentVNode("v-if", true), vue.createVNode(_component_a_button, {
         danger: "",
+        shape: "circle",
         size: _ctx.size,
         disabled: _ctx.disabled,
         onClick: function onClick($event) {
@@ -46032,7 +46038,7 @@
         }
       }, {
         icon: vue.withCtx(function () {
-          return [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent('MinusOutlined')))];
+          return [(vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(_ctx.getIconComponent('MinusOutlined'))))];
         }),
         _: 1 /* STABLE */
       }, 8 /* PROPS */, ["size", "disabled", "onClick"])], 64 /* STABLE_FRAGMENT */)) : vue.createCommentVNode("v-if", true)], 2 /* CLASS */)], 2 /* CLASS */);
@@ -46979,6 +46985,7 @@
           key: 0,
           "class": vue.normalizeClass(_ctx.b('excelBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _ctx.rowExcel
         }, {
           icon: vue.withCtx(function () {
@@ -46996,6 +47003,7 @@
           key: 0,
           "class": vue.normalizeClass(_ctx.b('printBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _ctx.rowPrint
         }, {
           icon: vue.withCtx(function () {
@@ -47013,6 +47021,7 @@
           key: 0,
           "class": vue.normalizeClass(_ctx.b('refreshBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _ctx.crud.refreshChange
         }, {
           icon: vue.withCtx(function () {
@@ -47030,6 +47039,7 @@
           key: 0,
           "class": vue.normalizeClass(_ctx.b('columnBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _cache[0] || (_cache[0] = function ($event) {
             return _ctx.crud.$refs.dialogColumn.handleShow();
           })
@@ -47049,6 +47059,7 @@
         return [vue.createVNode(_component_a_button, {
           "class": vue.normalizeClass(_ctx.b('searchBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _cache[1] || (_cache[1] = function ($event) {
             return _ctx.crud.$refs.headerSearch.handleSearchShow();
           })
@@ -47068,6 +47079,7 @@
           key: 0,
           "class": vue.normalizeClass(_ctx.b('filterBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _cache[2] || (_cache[2] = function ($event) {
             return _ctx.crud.$refs.dialogFilter.handleShow();
           })
@@ -47087,6 +47099,7 @@
           key: 0,
           "class": vue.normalizeClass(_ctx.b('gridBtn')),
           size: _ctx.crud.size,
+          shape: "circle",
           onClick: _cache[3] || (_cache[3] = function ($event) {
             return _ctx.crud.handleGridShow();
           })
@@ -52709,7 +52722,7 @@
   function _objectSpread$2(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys$2(Object(t), true).forEach(function (r) { _defineProperty$cr(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys$2(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
   var components = _objectSpread$2(_objectSpread$2(_objectSpread$2({}, AntDesign), elementComponents), dataComponents);
 
-  var version = '0.0.19';
+  var version = '3.7.23-beta';
 
   var contextmenu = (function () {
     var dialogDom;

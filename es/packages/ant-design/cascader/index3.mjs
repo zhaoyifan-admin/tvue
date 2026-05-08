@@ -1,4 +1,4 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { resolveComponent, openBlock, createBlock, normalizeClass, withCtx, renderSlot, createElementBlock, toDisplayString } from 'vue';
 
 const _hoisted_1 = { key: 1 };

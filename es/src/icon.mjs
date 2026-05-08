@@ -1,4 +1,4 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import * as Icons from '@element-plus/icons-vue';
 import * as index from '../node_modules/.pnpm/@ant-design_icons-vue@7.0.1_vue@3.5.33_typescript@5.9.3_/node_modules/@ant-design/icons-vue/es/index.mjs';
 

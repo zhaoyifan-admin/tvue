@@ -1,4 +1,4 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { DIC_PROPS, DIC_HTTP_PROPS, DIC_SPLIT } from '../../../src/global/variable.mjs';
 import slot from '../../../src/core/slot.mjs';
 

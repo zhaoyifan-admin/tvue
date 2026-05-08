@@ -1,8 +1,9 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import create from '../../../src/core/create.mjs';
 import props from '../../core/common/props2.mjs';
 import event from '../../core/common/event2.mjs';
 import { isMediaType } from '../../../src/utils/util.mjs';
+import { getAntIcon } from '../../../src/utils/antIcon.mjs';
 
 var script = create({
   name: 'ant-array',
@@ -41,6 +42,9 @@ var script = create({
     }
   },
   methods: {
+    getIconComponent(iconName, defaultIcon) {
+      return getAntIcon(iconName, defaultIcon);
+    },
     isMediaType (item) {
       return isMediaType(item, this.fileType)
     },

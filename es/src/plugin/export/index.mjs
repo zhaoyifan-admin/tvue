@@ -1,4 +1,4 @@
-/*! Tvue.js v0.0.19 | (c) 2017-2026 Smallwei | Released under the MIT License. */
+/*! Tvue.js v3.7.23-beta | (c) 2017-2026 Smallwei | Released under the MIT License. */
 import { isJson, downFile, validData } from '../../utils/util.mjs';
 import packages from '../../core/packages.mjs';
 import dayjs from '../../../_virtual/dayjs.min.mjs';
