@@ -1,6 +1,6 @@
 <template>
   <a-drawer v-if="box"
-            :class="['tvue-dialog',b('filter')].join(' ')"
+            :class="['tvue-modal',b('filter')].join(' ')"
             :get-container="false"
             :title="t('crud.filterTitle')"
             :width="crud.isMobile?'100%':'60%'"
@@ -53,7 +53,7 @@
         </a-button>
       </a-col>
     </a-row>
-    <span class="tvue-dialog__footer">
+    <span class="tvue-modal__footer">
       <a-button type="primary"
                 :size="crud.size"
                 @click="handleSubmit">{{t('crud.filter.submitBtn')}}</a-button>

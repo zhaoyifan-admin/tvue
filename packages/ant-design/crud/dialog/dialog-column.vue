@@ -1,7 +1,7 @@
 <template>
   <a-drawer v-if="columnBox"
             :get-container="false"
-            :class="['tvue-dialog',b('column')].join(' ')"
+            :class="['tvue-modal',b('column')].join(' ')"
             :title="t('crud.showTitle')"
             :width="crud.isMobile?'100%':'40%'"
             :open="columnBox"

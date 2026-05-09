@@ -4,7 +4,8 @@
       :is="tableOption.titleSize || 'h2'"
       :style="tableOption.titleStyle"
       v-if="tableOption.title"
-    >{{ tableOption.title }}</component
+    >{{ tableOption.title }}
+    </component
     >
     <!-- 搜索组件 -->
     <header-search ref="headerSearch">
@@ -50,7 +51,7 @@
             :is="tableName"
             :key="reload"
             :data-source="cellForm.list"
-            :columns="!gridShow ? columnOptionForATable : undefined"
+            :columns="columnOptionForATable"
             :row-key="rowKey"
             :class="{
               'tvue-crud--indeterminate': validData(
@@ -100,7 +101,7 @@
                 <slot v-bind="scope" :name="item"></slot>
               </template>
               <template #footer>
-                <column-menu>
+                <column-menu-render>
                   <template #menu-header="scope">
                     <slot name="menu-header" v-bind="scope"></slot>
                   </template>
@@ -116,7 +117,7 @@
                   <template #menu-btn-before="scope">
                     <slot name="menu-btn-before" v-bind="scope"></slot>
                   </template>
-                </column-menu>
+                </column-menu-render>
               </template>
             </column>
           </component>
@@ -148,6 +149,7 @@
   </div>
 </template>
 <script>
+import { h } from 'vue';
 import create from "core/create";
 import packages from "core/packages";
 import locale from "core/locale";
@@ -165,10 +167,11 @@ import dialogExcel from "./dialog/dialog-excel";
 import column from "./column/column";
 import columnMenu from "./column/column-menu";
 import columnDefault from "./column/column-default";
+import columnMenuRender from "./column/column-menu-render";
 import config from "./config";
-import { calcCascader, formInitVal } from "core/dataformat";
-import { DIC_PROPS } from "global/variable";
-import { getColumn } from "utils/util";
+import {calcCascader, formInitVal} from "core/dataformat";
+import {DIC_PROPS} from "global/variable";
+import {getColumn} from "utils/util";
 
 export default create({
   name: "ant-crud",
@@ -232,6 +235,7 @@ export default create({
     column,
     columnDefault,
     columnMenu,
+    columnMenuRender,
     tablePage,
     headerSearch,
     headerMenu,
@@ -269,18 +273,6 @@ export default create({
     this.initFun();
   },
   computed: {
-    columnVirtualizeOption() {
-      return this.columnOption.map((ele) => {
-        return {
-          ...ele,
-          ...{
-            key: ele.prop,
-            title: ele.label,
-            dataIndex: ele.prop,
-          },
-        };
-      });
-    },
     tableName() {
       return this.gridShow ? "tableCard" : "ATable";
     },
@@ -341,6 +333,7 @@ export default create({
     },
     propOption() {
       let result = [];
+
       function findProp(list = []) {
         if (!Array.isArray(list)) return;
         list.forEach((ele) => {
@@ -348,6 +341,7 @@ export default create({
           else result.push(ele);
         });
       }
+
       findProp(this.columnOption);
       result = calcCascader(result);
       return result;
@@ -448,13 +442,52 @@ export default create({
       });
     },
     columnOptionForATable() {
-      return this.columnOption.map(col => {
-        // 将 TVUE 格式的列配置转换为 Ant Design Vue 格式
+      const columns = [];
+
+      // 添加展开列
+      if (this.tableOption.expand) {
+        columns.push({
+          key: 'expand',
+          type: 'expand',
+          width: this.tableOption.expandWidth || config.expandWidth,
+          fixed: this.validData(this.tableOption.expandFixed, config.expandFixed),
+          className: this.tableOption.expandClassName,
+          customRender: ({record}) => this.$slots.expand
+            ? this.$slots.expand({row: record, index: record.$index})
+            : null
+        });
+      }
+
+      // 添加选择框列
+      if (this.tableOption.selection) {
+        columns.push({
+          key: 'selection',
+          type: 'checkbox',
+          width: this.tableOption.selectionWidth || config.selectionWidth,
+          fixed: this.validData(this.tableOption.selectionFixed, config.selectionFixed),
+          className: this.tableOption.selectionClassName
+        });
+      }
+
+      // 添加序号列
+      if (this.validData(this.tableOption.index)) {
+        columns.push({
+          key: 'index',
+          title: this.tableOption.indexLabel || config.indexLabel,
+          width: this.tableOption.indexWidth || config.indexWidth,
+          fixed: this.validData(this.tableOption.indexFixed, config.indexFixed),
+          className: this.tableOption.indexClassName,
+          customRender: ({index}) => this.indexMethod(index)
+        });
+      }
+
+      // 添加普通数据列
+      this.columnOption.forEach(col => {
         const convertedCol = {
           title: col.label,
           dataIndex: col.prop,
           key: col.prop,
-          slots: { customRender: col.prop },
+          slots: {customRender: col.prop},
           width: col.width,
           fixed: col.fixed,
           align: col.align || col.headerAlign,
@@ -465,17 +498,35 @@ export default create({
           sortOrder: col.sortOrder
         };
 
-        // 移除 undefined 值
         Object.keys(convertedCol).forEach(key => {
           if (convertedCol[key] === undefined) {
             delete convertedCol[key];
           }
         });
 
-        return convertedCol;
+        columns.push(convertedCol);
       });
-    },
 
+      // 添加操作列
+      if (this.validData(this.tableOption.menu, config.menu) && this.getPermission('menu')) {
+        const menuWidth = this.isMobile
+          ? this.tableOption.menuXsWidth || config.menuXsWidth
+          : this.tableOption.menuWidth || config.menuWidth;
+
+        columns.push({
+          title: this.tableOption.menuTitle || this.t('crud.menu'),
+          key: 'menu',
+          dataIndex: 'menu',
+          className: this.tableOption.menuClassName,
+          fixed: this.validData(this.tableOption.menuFixed, config.menuFixed),
+          align: this.tableOption.menuAlign || config.menuAlign,
+          width: menuWidth,
+          customRender: ({record, index}) => this.renderMenuColumn(record, index)
+        });
+      }
+
+      return columns;
+    },
   },
   watch: {
     modelValue: {
@@ -573,6 +624,21 @@ export default create({
     },
   },
   methods: {
+    indexMethod(index) {
+      return (
+        index +
+        1 +
+        ((this.page.currentPage || 1) - 1) *
+        (this.page.pageSize || 10)
+      );
+    },
+    renderMenuColumn(record, index) {
+      return h(columnMenuRender, {
+        row: record,
+        index: index,
+        key: `menu-${record[this.rowKey] || index}`
+      });
+    },
     initFun() {
       this.initTableMethods([
         "scrollTo",
@@ -605,7 +671,7 @@ export default create({
     },
     handleValidate(prop, valid, msg) {
       if (!this.listError[prop])
-        this.listError[prop] = { valid: false, msg: "" };
+        this.listError[prop] = {valid: false, msg: ""};
 
       this.listError[prop].valid = !valid;
       this.listError[prop].msg = msg;
@@ -888,7 +954,7 @@ export default create({
     },
     rowDel(row, index) {
       this.$emit("row-del", row, index, () => {
-        let { parentList, index } = this.findData(row[this.rowKey]);
+        let {parentList, index} = this.findData(row[this.rowKey]);
         if (parentList) parentList.splice(index, 1);
       });
     },
@@ -898,7 +964,7 @@ export default create({
     tableSummaryMethod(param) {
       let sumsList = {};
       let sums = [];
-      const { columns, data } = param;
+      const {columns, data} = param;
       if (typeof this.summaryMethod === "function") {
         sums = this.summaryMethod(param);
         columns.forEach((column, index) => {

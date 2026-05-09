@@ -28,8 +28,10 @@
              :title="crud.tableOption.indexLabel || config.indexLabel"
              :class-name="crud.tableOption.indexClassName"
              :width="crud.tableOption.indexWidth || config.indexWidth"
-             :custom-render="({ index }) => indexMethod(index)"
              :fixed="validData(crud.tableOption.indexFixed,config.indexFixed)">
+    <template #default="{ index }">
+      {{ indexMethod(index) }}
+    </template>
   </component>
 </template>
 

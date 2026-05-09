@@ -1,9 +1,10 @@
 $color-blue: #2196f3;
 $space-width: 15px;
 
-.tvue-ant-crud {
+.tvue-crud {
   margin: 0 auto;
   width: 100%;
+
   .ant-card + .ant-card {
     margin-top: 8px;
   }
@@ -43,6 +44,7 @@ $space-width: 15px;
     .ant-form-item__content {
       line-height: inherit;
       font-size: inherit;
+
       .ant-tooltip__trigger {
         width: 100%;
       }
@@ -84,7 +86,6 @@ $space-width: 15px;
     justify-content: space-between;
     position: relative;
     width: 100%;
-    min-height: 40px;
     height: auto;
     overflow: hidden;
     margin-bottom: 5px;
@@ -245,7 +246,7 @@ $space-width: 15px;
     }
   }
 
-  &__dialog {
+  &__modal {
     &__header {
       position: relative;
       display: flex;
@@ -275,26 +276,34 @@ $space-width: 15px;
       max-height: inherit;
     }
 
-    .ant-dialog__headerbtn {
+    .ant-modal__headerbtn {
       top: 5px;
     }
 
-    .ant-dialog__body {
+    .ant-modal-close {
+      top: 21px;
+    }
+
+    .ant-modal__body {
       padding: 20px 20px 5px 10px;
     }
   }
 
   &__grid {
     overflow-y: auto;
+
     .ant-switch {
       height: 22px;
     }
+
     .ant-switch__core {
       height: 16px;
     }
+
     .ant-switch__action {
       height: 14px;
     }
+
     .ant-col {
       padding: 10px;
       padding-left: 0;
@@ -366,12 +375,14 @@ $space-width: 15px;
     .row {
       width: 100%;
     }
+
     .selection {
       width: inherit;
       position: absolute;
       top: -2px;
       right: -8px;
     }
+
     .index {
       width: inherit;
       position: absolute;
@@ -416,6 +427,7 @@ $space-width: 15px;
     max-width: 100%;
     display: inline-block;
   }
+
   .ant-table__body-wrapper tr td.ant-table-fixed-column--left,
   .ant-table__body-wrapper tr td.ant-table-fixed-column--right,
   .ant-table__body-wrapper tr th.ant-table-fixed-column--left,
@@ -429,5 +441,22 @@ $space-width: 15px;
   .ant-table__header-wrapper tr th.ant-table-fixed-column--left,
   .ant-table__header-wrapper tr th.ant-table-fixed-column--right {
     background-color: #fff;
+  }
+}
+
+.full-modal {
+  .ant-modal {
+    max-width: 100%;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh);
+  }
+  .ant-modal-body {
+    flex: 1;
   }
 }

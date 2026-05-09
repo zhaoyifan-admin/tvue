@@ -3,12 +3,12 @@
     v-if="boxVisible"
     :is="dialogType"
     :class="[
-      'tvue-ant-modal',
+      'tvue-modal',
       b('modal'),
       this.crud.tableOption.dialogCustomClass,
     ]"
     :get-container="validData(crud.tableOption.dialogAppendToBody, true) ? 'body' : false"
-    :wrap-class-name="crud.tableOption.headerClass"
+    :wrap-class-name="fullscreen? 'full-modal':''"
     :body-style="{}"
     :closable="crud.tableOption.dialogCloseBtn"
     :mask-closable="validData(crud.tableOption.dialogClickModal, false)"
@@ -160,8 +160,7 @@ export default create({
           placement: this.crud.tableOption.dialogDirection || 'right',
         }
         : {
-          width: this.width,
-          fullscreen: this.fullscreen,
+          width: this.fullscreen ? "100%" : this.width,
         };
       return Object.assign(result, this.$uploadFun({}, this.crud));
     },
@@ -312,7 +311,9 @@ export default create({
     },
     hide(done) {
       const callback = () => {
-        done && done();
+        if (typeof done === 'function') {
+          done();
+        }
         this.crud.tableIndex = -1;
         this.crud.tableForm = {};
         this.crud.setVal();

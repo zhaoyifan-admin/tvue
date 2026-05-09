@@ -2,7 +2,7 @@
   <div v-if="box">
     <a-modal :title="t('crud.excelBtn')"
              :get-container="false"
-             class="tvue-dialog"
+             class="tvue-modal"
              :open="box"
              :width="crud.isMobile?'100%':'30%'"
              @cancel="box = false"
@@ -11,7 +11,7 @@
                  v-model="form"
                  :option="option">
       </tvue-ant-form>
-      <span class="tvue-dialog__footer">
+      <span class="tvue-modal__footer">
         <a-button type="primary"
                   :size="crud.size"
                   @click="handleSubmit">{{t('crud.filter.submitBtn')}}</a-button>

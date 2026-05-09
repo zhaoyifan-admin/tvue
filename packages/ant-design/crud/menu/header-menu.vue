@@ -113,7 +113,6 @@
           </template>
         </a-button>
       </a-tooltip>
-
       <a-tooltip :title="t('crud.gridBtn')">
         <a-button :class="b('gridBtn')"
                   :size="crud.size"
@@ -126,7 +125,6 @@
           </template>
         </a-button>
       </a-tooltip>
-
     </div>
   </div>
 </template>
