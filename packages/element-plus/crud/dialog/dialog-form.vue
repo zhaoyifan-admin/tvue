@@ -60,40 +60,39 @@
         ></slot>
       </template>
     </tvue-form>
-    <span
-      class="tvue-dialog__footer"
-      :class="'tvue-dialog__footer--' + dialogMenuPosition"
-    >
-      <slot name="menu-form-before" v-bind="menuParams()"></slot>
-      <el-button
-        type="primary"
-        @click="($refs.tableForm || {}).handleMock"
-        :loading="disabled || loading"
-        :size="crud.size"
-        :icon="option.mockIcon"
-        v-if="validData(option.mockBtn, false) && !isView"
-      >
-        {{ option.mockText }}
-      </el-button>
-      <el-button
-        v-if="validData(option.submitBtn, true) && !isView"
-        @click="submit"
-        :loading="disabled || loading"
-        :size="crud.size"
-        :icon="option.submitIcon"
-        type="primary"
+    <template #footer>
+      <div class="tvue-dialog__footer" :class="'tvue-dialog__footer--' + dialogMenuPosition">
+        <slot name="menu-form-before" v-bind="menuParams()"></slot>
+        <el-button
+          type="primary"
+          @click="($refs.tableForm || {}).handleMock"
+          :loading="disabled || loading"
+          :size="crud.size"
+          :icon="option.mockIcon"
+          v-if="validData(option.mockBtn, false) && !isView"
+        >
+          {{ option.mockText }}
+        </el-button>
+        <el-button
+          v-if="validData(option.submitBtn, true) && !isView"
+          @click="submit"
+          :loading="disabled || loading"
+          :size="crud.size"
+          :icon="option.submitIcon"
+          type="primary"
         >{{ option.submitText }}</el-button
-      >
-      <el-button
-        v-if="validData(option.emptyBtn, true) && !isView"
-        @click="reset"
-        :disabled="disabled || loading"
-        :size="crud.size"
-        :icon="option.emptyIcon"
+        >
+        <el-button
+          v-if="validData(option.emptyBtn, true) && !isView"
+          @click="reset"
+          :disabled="disabled || loading"
+          :size="crud.size"
+          :icon="option.emptyIcon"
         >{{ option.emptyText }}</el-button
-      >
-      <slot name="menu-form" v-bind="menuParams()"></slot>
-    </span>
+        >
+        <slot name="menu-form" v-bind="menuParams()"></slot>
+      </div>
+    </template>
   </component>
 </template>
 
