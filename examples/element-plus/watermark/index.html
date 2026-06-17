@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="../../cdn/element-plus/index.css" />
     <script src="../../cdn/element-plus/index.full.min.js"></script>
     <script src="../../cdn/element-plus/icons-vue.js"></script>
-    <link rel="stylesheet" href="../../../lib/index.css" />
-    <script src="../../../lib/tvue.js"></script>
+    <link rel="stylesheet" href="../../../dist/index.css" />
+    <script src="../../../dist/tvue.js"></script>
     <style>
       #test {
         position: relative;
@@ -44,7 +44,7 @@
       methods: {
         submit() {
           this.$message.success("添加水印成功");
-          this.obj = this.$Watermark({ text: "avue全局水印演示" });
+          this.obj = this.$Watermark({ text: "tvue全局水印演示" });
         },
         submit1() {
           this.$message.success("添加水印成功");
@@ -53,7 +53,7 @@
             fontSize: "14px",
             width: 120,
             height: 80,
-            text: "avue局部水印演示",
+            text: "tvue局部水印演示",
           });
         },
         del() {

@@ -1,4 +1,4 @@
-import { validatenull } from "utils/validate";
+import { validatenull } from 'utils/validate';
 import {
   KEY_COMPONENT_NAME,
   DIC_SPLIT,
@@ -9,30 +9,31 @@ import {
   MULTIPLE_LIST,
   SELECT_LIST,
   RANGE_LIST,
-} from "global/variable";
-import { detailDataType, findObject, createObj } from "utils/util";
-import { t } from "locale";
-/**
- * 计算级联属性
- */
-export const calcCascader = (list = []) => {
+} from 'global/variable';
+import { detailDataType, findObject, createObj } from 'utils/util';
+import { t } from '../locale';
+
+let count = 0;
+
+export const calcCascader = (list: Record<string, any>[] = []) => {
   list.forEach((ele) => {
-    let cascader = ele.cascader;
+    const cascader = ele.cascader;
     if (!validatenull(cascader)) {
-      let parentProp = ele.prop;
-      cascader.forEach((citem) => {
-        let column = findObject(list, citem);
+      const parentProp = ele.prop;
+      cascader.forEach((citem: string) => {
+        const column = findObject(list, citem);
         if (column) column.parentProp = parentProp;
       });
     }
   });
   return list;
 };
-/**
- * 计算空白列row
- */
-let count = 0;
-export const calcCount = (ele, spanDefault = 12, init = false) => {
+
+export const calcCount = (
+  ele: Record<string, any>,
+  spanDefault = 12,
+  init = false
+) => {
   const spanAll = 24;
   if (init) count = 0;
   const currentSpan = (ele.span || spanDefault) + (ele.offset || 0);
@@ -46,19 +47,8 @@ export const calcCount = (ele, spanDefault = 12, init = false) => {
   return ele;
 };
 
-/**
- * 初始化数据格式
- */
-export const initVal = (value, safe) => {
-  let {
-    type,
-    multiple,
-    dataType,
-    separator = DIC_SPLIT,
-    alone,
-    emitPath,
-    range,
-  } = safe;
+export const initVal = (value: any, safe: Record<string, any>) => {
+  let { type, multiple, dataType, separator = DIC_SPLIT, alone, emitPath, range } = safe;
   let list = value;
   if (
     (MULTIPLE_LIST.includes(type) && multiple == true) ||
@@ -69,102 +59,108 @@ export const initVal = (value, safe) => {
       if (validatenull(list)) {
         list = [];
       } else {
-        if (dataType == "json") {
+        if (dataType == 'json') {
           list = JSON.parse(list);
         } else {
-          list = (list + "").split(separator) || [];
+          list = (list + '').split(separator) || [];
         }
       }
     }
-    // 数据转化
-    list.forEach((ele, index) => {
+    list.forEach((ele: any, index: number) => {
       list[index] = detailDataType(ele, dataType);
     });
-    if (ARRAY_LIST.includes(type) && validatenull(list) && alone) list = [""];
+    if (ARRAY_LIST.includes(type) && validatenull(list) && alone) list = [''];
   } else {
     list = detailDataType(list, dataType);
   }
   return list;
 };
 
-/**
- * 搜索框获取动态组件
- */
-export const getSearchType = (column) => {
+export const getSearchType = (column: Record<string, any>) => {
   const type = column.type;
   const range = column.searchRange;
   let result = type;
   if (column.searchType) return column.searchType;
-  if (["radio", "checkbox", "switch"].includes(type)) {
-    result = "select";
+  if (['radio', 'checkbox', 'switch'].includes(type)) {
+    result = 'select';
   } else if (DATE_LIST.includes(type)) {
-    let rangeKey = "range";
+    const rangeKey = 'range';
     if (range) {
       if (!type.includes(rangeKey)) {
         result = type + rangeKey;
       } else {
         result = type;
       }
-    } else result = type.replace(rangeKey, "");
-  } else if (["textarea"].includes(type)) {
-    result = "input";
+    } else result = type.replace(rangeKey, '');
+  } else if (['textarea'].includes(type)) {
+    result = 'input';
   }
   return result;
 };
 
-/**
- * 动态获取组件
- */
-export const getComponent = (type, component) => {
-  let result = type || "input";
+export const getComponent = (type?: string, component?: string) => {
+  let result = type || 'input';
   if (!validatenull(component)) {
     return component;
-  } else if (ARRAY_LIST.includes(type)) {
-    result = "array";
-  } else if (["time", "timerange"].includes(type)) {
-    result = "time";
-  } else if (DATE_LIST.includes(type)) {
-    result = "date";
-  } else if (["password", "textarea", "search", "phone", "currency", "bankCard", "bank-card", "idCard", "id-card", "email", "code", "plate", "ip", "mac", "uscc"].includes(type)) {
-    result = "input";
-  } else if (type === "cron") {
-    result = "input-cron";
-  } else if (INPUT_LIST.includes(type)) {
-    result = "input-" + type;
+  } else if (ARRAY_LIST.includes(type || '')) {
+    result = 'array';
+  } else if (['time', 'timerange'].includes(type || '')) {
+    result = 'time';
+  } else if (DATE_LIST.includes(type || '')) {
+    result = 'date';
+  } else if (
+    [
+      'password',
+      'textarea',
+      'search',
+      'phone',
+      'currency',
+      'bankCard',
+      'bank-card',
+      'idCard',
+      'id-card',
+      'email',
+      'code',
+      'plate',
+      'ip',
+      'mac',
+      'uscc',
+    ].includes(type || '')
+  ) {
+    result = 'input';
+  } else if (type === 'cron') {
+    result = 'input-cron';
+  } else if (INPUT_LIST.includes(type || '')) {
+    result = 'input-' + type;
   }
   return KEY_COMPONENT_NAME + result;
 };
 
-/**
- * 表格初始化值
- */
-
-export const formInitVal = (list = []) => {
-  let tableForm = {};
+export const formInitVal = (list: Record<string, any>[] = []) => {
+  let tableForm: Record<string, any> = {};
   list.forEach((ele) => {
     if (
-      ["rate", "slider", "number"].includes(ele.type) ||
-      ele.dataType === "number" ||
-      (ele.type == "select" && ele.virtualize == true)
+      ['rate', 'slider', 'number'].includes(ele.type) ||
+      ele.dataType === 'number' ||
+      (ele.type == 'select' && ele.virtualize == true)
     ) {
       tableForm[ele.prop] = undefined;
     } else if (
       (ARRAY_VALUE_LIST.includes(ele.type) &&
         ele.emitPath !== false &&
-        ele.dataType != "json") ||
+        ele.dataType != 'json') ||
       (MULTIPLE_LIST.includes(ele.type) && ele.multiple) ||
-      ele.dataType === "array"
+      ele.dataType === 'array'
     ) {
       tableForm[ele.prop] = [];
     } else if (RANGE_LIST.includes(ele.type) && ele.range == true) {
       tableForm[ele.prop] = [0, 0];
     } else {
-      tableForm[ele.prop] = "";
+      tableForm[ele.prop] = '';
     }
     if (ele.bind) {
       tableForm = createObj(tableForm, ele.bind);
     }
-    // 表单默认值设置
     if (!validatenull(ele.value)) {
       tableForm[ele.prop] = ele.value;
     }
@@ -172,10 +168,10 @@ export const formInitVal = (list = []) => {
   return tableForm;
 };
 
-export const getPlaceholder = function (column, type) {
+export const getPlaceholder = function (column: Record<string, any>, type?: string) {
   const placeholder = column.placeholder;
   const label = column.label;
-  if (type === "search") {
+  if (type === 'search') {
     const searchPlaceholder = column.searchPlaceholder;
     if (!validatenull(searchPlaceholder)) {
       return searchPlaceholder;
@@ -184,9 +180,9 @@ export const getPlaceholder = function (column, type) {
     }
   } else if (validatenull(placeholder)) {
     if (SELECT_LIST.includes(column.type)) {
-      return `${t("tip.select")} ${label}`;
+      return `${t('tip.select')} ${label}`;
     } else {
-      return `${t("tip.input")} ${label}`;
+      return `${t('tip.input')} ${label}`;
     }
   }
 

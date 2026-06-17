@@ -41,7 +41,7 @@ const UPLOAD_HOOK_KEYS = [
   "uploadSized",
 ] as const;
 
-export interface AvueInstallOptions extends AnyRecord {
+export interface TvueInstallOptions extends AnyRecord {
   size?: string;
   calcHeight?: number;
   menuType?: string;
@@ -83,7 +83,7 @@ const directive: AnyRecord = {
   contextmenu,
 };
 
-export const install = function (app: App, opts: AvueInstallOptions = {}) {
+export const install = function (app: App, opts: TvueInstallOptions = {}) {
   const defaultOption = {
     size: opts.size ?? "default",
     calcHeight: opts.calcHeight ?? 0,
@@ -92,7 +92,7 @@ export const install = function (app: App, opts: AvueInstallOptions = {}) {
     crudOption: opts.crudOption ?? {},
     appendToBody: validData(opts.appendToBody, true),
     canvas: {
-      text: "avuejs.com",
+      text: "tvuejs.com",
       fontFamily: "microsoft yahei",
       color: "#999",
       fontSize: 16,
@@ -166,7 +166,7 @@ export const install = function (app: App, opts: AvueInstallOptions = {}) {
   app.config.globalProperties.$axios = opts.axios || axios;
 };
 
-const Avue = {
+const Tvue = {
   version,
   locale,
   install,
@@ -174,4 +174,4 @@ const Avue = {
   ...plugins,
 };
 
-export default Avue;
+export default Tvue;

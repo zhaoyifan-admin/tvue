@@ -14,10 +14,6 @@ export default function () {
       };
     },
     props: {
-      allowClear: {
-        type: Boolean,
-        default: true
-      },
       blur: Function,
       focus: Function,
       change: Function,
@@ -167,9 +163,6 @@ export default function () {
     computed: {
       clearableVal () {
         return this.disabled ? false : this.clearable
-      },
-      allowClearVal() {
-        return this.disabled ? false : this.allowClear
       },
       componentName () {
         const type = 'el'

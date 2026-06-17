@@ -14,8 +14,8 @@
     <script src="../../cdn/element-plus/icons-vue.js"></script>
     <script src="../../cdn/ali-oss/aliyun-oss-sdk.min.js"></script>
 
-    <link rel="stylesheet" href="../../../lib/index.css" />
-    <script src="../../../lib/tvue.js"></script>
+    <link rel="stylesheet" href="../../../dist/index.css" />
+    <script src="../../../dist/tvue.js"></script>
   </head>
 
   <body>
@@ -37,7 +37,7 @@
       data() {
         return {
           form: {
-            imgUrl: "https://avuejs.com/images/logo-bg.jpg",
+            imgUrl: "https://tvuejs.com/images/logo-bg.jpg",
           },
           option: {
             labelWidth: 120,
@@ -48,7 +48,7 @@
                 type: "upload",
                 listType: "picture-img",
                 canvasOption: {
-                  text: "avue",
+                  text: "tvue",
                   ratio: 0.1,
                 },
                 oss: "ali",
@@ -61,7 +61,7 @@
         };
       },
       created() {
-        axios.get("https://api.avuejs.com/sts").then((token) => {
+        axios.get("https://api.tvuejs.com/sts").then((token) => {
           token = token.data;
           this.option.column[0].ali = {
             region: "oss-cn-beijing",
@@ -69,7 +69,7 @@
             accessKeyId: token.AccessKeyId,
             accessKeySecret: token.AccessKeySecret,
             stsToken: token.SecurityToken,
-            bucket: "avue",
+            bucket: "tvue",
           };
         });
       },

@@ -14,8 +14,8 @@
     <script src="../../cdn/element-plus/icons-vue.js"></script>
     <script src="../../cdn/mock/mock-min.js"></script>
 
-    <link rel="stylesheet" href="../../../lib/index.css" />
-    <script src="../../../lib/tvue.js"></script>
+    <link rel="stylesheet" href="../../../dist/index.css" />
+    <script src="../../../dist/tvue.js"></script>
   </head>
 
   <body>
@@ -46,7 +46,7 @@
         },
       ],
     };
-    let baseUrl = "https://cli.avuejs.com/api/area";
+    let baseUrl = "https://cli.tvuejs.com/api/area";
     let app = Vue.createApp({
       el: "#app",
       data() {
@@ -107,7 +107,7 @@
                   label: "name",
                   value: "code",
                 },
-                dicUrl: "http://cli.avuejs.com/api/area/getProvince",
+                dicUrl: "http://cli.tvuejs.com/api/area/getProvince",
                 span: 6,
                 mock: {
                   type: "dic",

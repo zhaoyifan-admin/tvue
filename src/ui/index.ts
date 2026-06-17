@@ -1,3 +1,6 @@
 import Element from './element-plus/';
 import Data from './data/';
-export default { ...Element, ...Data };
+
+const components = { ...Element, ...Data };
+
+export default components;

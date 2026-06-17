@@ -8,7 +8,7 @@
           :params="params"
           :event="event"></custom>
   <component v-else
-             :is="getComponent(column, componentType)"
+             :is="getComponent(column)"
              v-model="text"
              v-bind="getBind(column)"
              align="left"
@@ -113,9 +113,6 @@ export default {
     props: {
       type: Object
     },
-    componentType: {
-      type: String
-    },
     dic: {
       type: Array
     },
@@ -156,8 +153,8 @@ export default {
     }
   },
   methods: {
-    getComponent (column, componentType) {
-      return getComponent(column.type, column.component, componentType)
+    getComponent (column) {
+      return getComponent(column.type, column.component)
     },
     getPlaceholder,
     getBind (column) {

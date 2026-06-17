@@ -2,7 +2,7 @@ import type { App, Component, Plugin } from "vue";
 
 type AnyRecord = Record<string, any>;
 
-export interface TvueInstallOptions {
+export interface TvueCanvasOptions {
   text?: string;
   fontFamily?: string;
   color?: string;
