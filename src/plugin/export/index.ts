@@ -11,6 +11,8 @@ declare global {
   }
 }
 
+const getXLSX = () => (typeof window === 'undefined' ? undefined : window.XLSX);
+
 const XLSX = window.XLSX;
 
 export default {
@@ -99,7 +101,7 @@ export default {
     return merges;
   },
 
-  aoa_to_sheet(data: any[][], headerRows: number) {
+  aoa_to_sheet(data: any[][], headerRows: number, xlsx: any) {
     const ws: Record<string, any> = {};
     const range = { s: { c: 10000000, r: 10000000 }, e: { c: 0, r: 0 } };
     for (let R = 0; R !== data.length; ++R) {
@@ -141,7 +143,7 @@ export default {
             bgColor: { theme: 7, tint: 0.3999755851924192, rgb: 'F5F7FA' }
           };
         }
-        const cell_ref = XLSX.utils.encode_cell({ c: C, r: R });
+        const cell_ref = xlsx.utils.encode_cell({ c: C, r: R });
         if (typeof cell.v === 'number') {
           cell.t = 'n';
         } else if (typeof cell.v === 'boolean') {
@@ -153,7 +155,7 @@ export default {
       }
     }
     if (range.s.c < 10000000) {
-      ws['!ref'] = XLSX.utils.encode_range(range);
+      ws['!ref'] = xlsx.utils.encode_range(range);
     }
     return ws;
   },
@@ -168,7 +170,8 @@ export default {
   },
 
   excel(params: any) {
-    if (!window.XLSX) {
+    const xlsx = getXLSX();
+    if (!xlsx) {
       packages.logs('xlsx');
       return;
     }
@@ -199,7 +202,7 @@ export default {
       const headerRows = _params.header.length;
       _params.header.push(..._params.data, []);
       const merges = this.doMerges(_params.header);
-      const ws = this.aoa_to_sheet(_params.header, headerRows);
+      const ws = this.aoa_to_sheet(_params.header, headerRows, xlsx);
       ws['!merges'] = merges;
       ws['!freeze'] = {
         xSplit: '1',
@@ -220,7 +223,7 @@ export default {
         type: 'binary',
         cellStyles: true
       };
-      const wbout = XLSX.write(workbook, wopts);
+      const wbout = xlsx.write(workbook, wopts);
       const blob = new Blob([this.s2ab(wbout)], { type: 'application/octet-stream' });
       downFile(blob, _params.title + '.xlsx');
       resolve();
@@ -228,7 +231,7 @@ export default {
   },
 
   xlsx(file: File) {
-    if (!window.saveAs || !window.XLSX) {
+    if (typeof window === 'undefined' || !window.saveAs || !window.XLSX) {
       packages.logs('file-saver');
       packages.logs('xlsx');
       return;

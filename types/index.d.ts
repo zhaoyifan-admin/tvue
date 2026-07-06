@@ -34,6 +34,11 @@ export interface TvueAliOptions {
   [key: string]: any;
 }
 
+export interface TvueOptionWarning {
+  path: string;
+  message: string;
+}
+
 export type TvueLocalePrimitive = string | number | boolean;
 
 export interface TvueLocaleMessages {
@@ -68,6 +73,7 @@ export interface TvueInstallOptions {
   formOption?: AnyRecord;
   crudOption?: AnyRecord;
   appendToBody?: boolean;
+  optionValidate?: boolean;
   canvas?: TvueCanvasOptions;
   qiniu?: TvueQiniuOptions;
   ali?: TvueAliOptions;
@@ -99,6 +105,8 @@ export interface TvueUtilityExports {
   loadScript(type?: "js" | "css", url?: string, dom?: "head" | "body"): Promise<void>;
   findObject<T = AnyRecord>(list?: T[], value?: any, prop?: string): T | undefined;
   randomId(): string;
+  validateOption(option?: AnyRecord, component?: string): TvueOptionWarning[];
+  warnOption(warnings?: TvueOptionWarning[], component?: string): void;
 }
 
 export type TvueDialogFormOpener = (opt?: AnyRecord) => any;
@@ -201,7 +209,96 @@ export interface TvuePlugin
 
 declare const Tvue: TvuePlugin;
 
+export const version: string;
+export const locale: TvueLocale;
 export function install(app: App, options?: TvueInstallOptions): void;
+export const $DialogForm: TvueDialogFormFactory;
+export const $ImagePreview: TvueImagePreviewFactory;
+export const $Export: any;
+export const $Print: any;
+export const $Clipboard: ({ text }: { text: string }) => Promise<void>;
+export const $Watermark: any;
+export const $Log: any;
+export const $Screenshot: (doc: HTMLElement, option?: AnyRecord) => any;
+export const deepClone: TvueUtilityExports["deepClone"];
+export const dataURLtoFile: TvueUtilityExports["dataURLtoFile"];
+export const isJson: TvueUtilityExports["isJson"];
+export const setPx: TvueUtilityExports["setPx"];
+export const validData: TvueUtilityExports["validData"];
+export const findArray: TvueUtilityExports["findArray"];
+export const findNode: TvueUtilityExports["findNode"];
+export const validatenull: TvueUtilityExports["validatenull"];
+export const downFile: TvueUtilityExports["downFile"];
+export const loadScript: TvueUtilityExports["loadScript"];
+export const findObject: TvueUtilityExports["findObject"];
+export const randomId: TvueUtilityExports["randomId"];
+export const validateOption: TvueUtilityExports["validateOption"];
+export const warnOption: TvueUtilityExports["warnOption"];
+export const Arrays: Component;
+export const Article: Component;
+export const Card: Component;
+export const Cascader: Component;
+export const Chat: Component;
+export const Checkbox: Component;
+export const Comment: Component;
+export const CountUp: Component;
+export const Crud: Component;
+export const DataBox: Component;
+export const DataCard: Component;
+export const DataCardText: Component;
+export const DataCountdown: Component;
+export const DataDashboard: Component;
+export const DataDisplay: Component;
+export const DataIcons: Component;
+export const DataImgText: Component;
+export const DataList: Component;
+export const DataNotice: Component;
+export const DataOperaText: Component;
+export const DataPanel: Component;
+export const DataPay: Component;
+export const DataPrice: Component;
+export const DataProduct: Component;
+export const DataProfile: Component;
+export const DataProgress: Component;
+export const DataRank: Component;
+export const DataRotate: Component;
+export const DataStatistic: Component;
+export const DataTabs: Component;
+export const DataTask: Component;
+export const DataWeather: Component;
+export const Date: Component;
+export const Draggable: Component;
+export const Dynamic: Component;
+export const Flow: Component;
+export const Form: Component;
+export const Group: Component;
+export const Input: Component;
+export const InputColor: Component;
+export const InputCron: Component;
+export const InputIcon: Component;
+export const InputMap: Component;
+export const InputNumber: Component;
+export const InputTable: Component;
+export const InputTag: Component;
+export const InputTree: Component;
+export const License: Component;
+export const Login: Component;
+export const Mention: Component;
+export const Radio: Component;
+export const Rate: Component;
+export const Search: Component;
+export const Select: Component;
+export const Sign: Component;
+export const Slider: Component;
+export const Switchs: Component;
+export const Tabs: Component;
+export const Time: Component;
+export const Title: Component;
+export const Tree: Component;
+export const Upload: Component;
+export const Verifys: Component;
+export const Video: Component;
+export const textEllipsis: Component;
 export default Tvue;
 
 declare module "@vue/runtime-core" {

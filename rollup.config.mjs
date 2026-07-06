@@ -649,6 +649,7 @@ function createDistConfig({ minify, env, writeStyles }) {
       format: "umd",
       name: "TVUE",
       exports: "default",
+      inlineDynamicImports: true,
       banner,
       sourcemap: !minify,
       globals: globalExternals,

@@ -4,7 +4,7 @@
       :is="tableOption.titleSize || 'h2'"
       :style="tableOption.titleStyle"
       v-if="tableOption.title"
-      >{{ tableOption.title }}</component
+    >{{ tableOption.title }}</component
     >
     <!-- 搜索组件 -->
     <header-search ref="headerSearch">
@@ -39,8 +39,8 @@
           {{ t("crud.tipEndTitle") }}
         </span>
         <span class="tvue-crud__tip-button" @click="clearSelection">{{
-          t("crud.emptyBtn")
-        }}</span>
+            t("crud.emptyBtn")
+          }}</span>
         <slot name="tip"></slot>
       </div>
       <slot name="body"></slot>
@@ -55,7 +55,7 @@
           :class="{
             'tvue-crud--indeterminate': validData(
               tableOption.indeterminate,
-              false
+              false,
             ),
           }"
           :size="size"
@@ -208,6 +208,13 @@ import column from "./column/column";
 import columnMenu from "./column/column-menu";
 import columnDefault from "./column/column-default";
 import config from "./config";
+import {
+  applyColumnState,
+  createColumnState,
+  loadColumnState,
+  removeColumnState,
+  saveColumnState,
+} from "core/column-state";
 import { calcCascader, formInitVal } from "core/dataformat";
 import { DIC_PROPS } from "global/variable";
 import { CommonProps } from "element-plus";
@@ -258,6 +265,8 @@ export default create({
     "row-update",
     "change",
     "scroll",
+    "column-state-change",
+    "column-state-reset",
   ],
   directives: {
     permission,
@@ -302,13 +311,13 @@ export default create({
       btnDisabled: false,
       default: {},
       gridShow: false,
+      columnStateSource: null,
     };
   },
   mounted() {
     this.dataInit();
     this.getTableHeight();
     this.initFun();
-    this.initVirtualizeFun();
   },
   computed: {
     columnVirtualizeOption() {
@@ -366,7 +375,7 @@ export default create({
       return this.getSlotList(
         ["-error", "-label", "-type", "-form", "-header", "-desc"],
         this.$slots,
-        this.propOption
+        this.propOption,
       );
     },
     searchSlot() {
@@ -381,7 +390,7 @@ export default create({
       return this.getSlotList(
         ["-header", "-form"],
         this.$slots,
-        this.propOption
+        this.propOption,
       ).concat(result);
     },
     calcHeight() {
@@ -435,6 +444,22 @@ export default create({
     },
     columnOption() {
       return getColumn(this.tableOption.column);
+    },
+    columnStateKey() {
+      return (
+        this.tableOption.columnStateKey ||
+        this.tableOption.columnPersistKey ||
+        this.tableOption.tableId
+      );
+    },
+    columnStateStorage() {
+      return this.tableOption.columnStateStorage || "localStorage";
+    },
+    columnStateEnabled() {
+      return (
+        this.validData(this.tableOption.columnState, true) !== false &&
+        !this.validatenull(this.columnStateKey)
+      );
     },
     sumColumnList() {
       return this.tableOption.sumColumnList || [];
@@ -539,15 +564,6 @@ export default create({
     },
   },
   methods: {
-    initVirtualizeFun() {
-      if (!this.virtualize) return;
-      this.initTableMethods([
-        "scrollTo",
-        "scrollToTop",
-        "scrollToLeft",
-        "scrollRow",
-      ]);
-    },
     initFun() {
       this.initTableMethods([
         "scrollTo",
@@ -556,6 +572,7 @@ export default create({
         "columns",
         "doLayout",
         "updateKeyChildren",
+        "getHalfSelectionRows",
         "toggleAllSelection",
         "toggleRowSelection",
         "toggleRowExpansion",
@@ -572,6 +589,48 @@ export default create({
             return tableRef[ele](...args);
           }
         };
+      });
+    },
+    restoreColumnState() {
+      if (!this.columnStateEnabled) return;
+      this.columnStateSource = this.deepClone(this.tableOption.column);
+      const loader = this.tableOption.columnStateLoad;
+      const state =
+        typeof loader === "function"
+          ? loader(this.columnStateKey, this.tableOption)
+          : loadColumnState(this.columnStateKey, this.columnStateStorage);
+      if (!state) return;
+      this.tableOption.column = applyColumnState(this.tableOption.column, state);
+    },
+    saveColumnState(reason = "change") {
+      if (!this.columnStateEnabled) return;
+      if (this.validData(this.tableOption.columnStateAutoSave, true) === false) {
+        return;
+      }
+      const state = createColumnState(this.columnOption);
+      const saver = this.tableOption.columnStateSave;
+      if (typeof saver === "function") {
+        saver(state, this.columnStateKey, reason, this.tableOption);
+      } else {
+        saveColumnState(this.columnStateKey, state, this.columnStateStorage);
+      }
+      this.$emit("column-state-change", state, reason);
+    },
+    resetColumnState(callback) {
+      if (!this.columnStateEnabled) return;
+      const remover = this.tableOption.columnStateRemove;
+      if (typeof remover === "function") {
+        remover(this.columnStateKey, this.tableOption);
+      } else {
+        removeColumnState(this.columnStateKey, this.columnStateStorage);
+      }
+      if (this.columnStateSource) {
+        this.tableOption.column = this.deepClone(this.columnStateSource);
+      }
+      this.refreshTable(() => {
+        this.doLayout();
+        callback && callback();
+        this.$emit("column-state-reset", this.columnStateKey);
       });
     },
     handleGridShow() {
@@ -597,42 +656,24 @@ export default create({
     getTableHeight() {
       this.$nextTick(() => {
         if (this.isAutoHeight) {
-          const element = this.$el;
-          if (!element) return;
-
-          const parentElement = element.parentElement;
-          if (!parentElement) return;
-
-          // 使用 requestAnimationFrame 确保布局已完成
-          requestAnimationFrame(() => {
-            let clientHeight = parentElement.clientHeight;
-            const computedStyle = window.getComputedStyle(parentElement);
-            const paddingTop = parseFloat(computedStyle.paddingTop);
-            const paddingBottom = parseFloat(computedStyle.paddingBottom);
-
-            if(this.option.card) {
-              clientHeight -=30;
-            }
-            const calcHeight = this.calcHeight || 0;
-            const tableRef = this.$refs.table;
-            const tablePageRef = this.$refs.tablePage;
-            let tableHeight = clientHeight - calcHeight - paddingTop - paddingBottom;
-
-            if (tableRef) {
-              const height = tableRef.$el.offsetTop || 0;
-              tableHeight -= height;
-            }
-            if (tablePageRef) {
-              const height = tablePageRef.$el.offsetHeight || 0;
-              tableHeight -= height;
-            }
-            this.tableHeight = tableHeight;
-            this.doLayout();
-          });
+          const clientHeight = document.documentElement.clientHeight;
+          const calcHeight = this.calcHeight || 0;
+          const tableRef = this.$refs.table;
+          const tablePageRef = this.$refs.tablePage;
+          let tableHeight = clientHeight - calcHeight;
+          if (tableRef) {
+            const height = tableRef.$el.offsetTop || 0;
+            tableHeight -= height;
+          }
+          if (tablePageRef) {
+            const height = tablePageRef.$el.offsetHeight || 0;
+            tableHeight -= height;
+          }
+          this.tableHeight = tableHeight;
         } else {
           this.tableHeight = this.tableOption.height;
-          this.doLayout();
         }
+        this.doLayout();
       });
     },
     refreshTable(callback) {
@@ -652,7 +693,7 @@ export default create({
     menuIcon(value) {
       return this.validData(
         this.tableOption[value + "Text"],
-        this.t("crud." + value)
+        this.t("crud." + value),
       );
     },
     getBtnIcon(value) {
@@ -682,11 +723,16 @@ export default create({
     },
     //拖动表头事件
     headerDragend(newWidth, oldWidth, column, event) {
+      const prop = column.property || column.prop;
+      if (prop && this.objectOption[prop]) {
+        this.objectOption[prop].width = newWidth;
+        this.saveColumnState("width");
+      }
       this.$emit("header-dragend", newWidth, oldWidth, column, event);
     },
     headerSort(oldIndex, newIndex) {
       const visibleColumns = this.columnOption.filter(
-        (col) => col.hide !== true
+        (col) => col.hide !== true,
       );
       const oldProp = visibleColumns[oldIndex].prop;
       const newProp = visibleColumns[newIndex].prop;
@@ -696,6 +742,12 @@ export default create({
       const targetRow = allColumns.splice(realOldIndex, 1)[0];
       allColumns.splice(realNewIndex, 0, targetRow);
       this.doLayout();
+      this.saveColumnState("sort");
+      this.$emit("column-sortable-change", {
+        oldIndex,
+        newIndex,
+        column: targetRow,
+      });
     },
     scroll(params) {
       this.$emit("scroll", params);
@@ -790,8 +842,8 @@ export default create({
             $index: len,
           },
           formDefault,
-          row
-        )
+          row,
+        ),
       );
       this.list.push(row);
     },
@@ -944,7 +996,7 @@ export default create({
       } else {
         columns.forEach((column, index) => {
           let currItem = this.sumColumnList.find(
-            (item) => item.name === column.property
+            (item) => item.name === column.property,
           );
           if (currItem) {
             let decimals = currItem.decimals !== void 0 ? currItem.decimals : 2;
@@ -955,7 +1007,7 @@ export default create({
                 break;
               case "avg":
                 let avgValues = data.map((item) =>
-                  Number(item[column.property])
+                  Number(item[column.property]),
                 );
                 let nowindex = 1;
                 sums[index] = avgValues.reduce((perv, curr) => {

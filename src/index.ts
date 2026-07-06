@@ -28,6 +28,7 @@ import $Print from "plugin/print/";
 import $ImagePreview from "packages/core/components/image-preview/";
 import $DialogForm from "packages/core/components/dialog-form/";
 import createIcon from "./icon";
+import { validateOption, warnOption } from "core/option";
 
 type AnyRecord = Record<string, any>;
 type AppWithContext = App & { _context: any };
@@ -48,6 +49,7 @@ export interface TvueInstallOptions extends AnyRecord {
   formOption?: AnyRecord;
   crudOption?: AnyRecord;
   appendToBody?: boolean;
+  optionValidate?: boolean;
   canvas?: AnyRecord;
   qiniu?: AnyRecord;
   ali?: AnyRecord;
@@ -77,6 +79,8 @@ const plugins: AnyRecord = {
   loadScript,
   findObject,
   randomId,
+  validateOption,
+  warnOption,
 };
 
 const directive: AnyRecord = {
@@ -91,6 +95,7 @@ export const install = function (app: App, opts: TvueInstallOptions = {}) {
     formOption: opts.formOption ?? {},
     crudOption: opts.crudOption ?? {},
     appendToBody: validData(opts.appendToBody, true),
+    optionValidate: validData(opts.optionValidate, true),
     canvas: {
       text: "tvuejs.com",
       fontFamily: "microsoft yahei",
@@ -134,7 +139,7 @@ export const install = function (app: App, opts: TvueInstallOptions = {}) {
   Object.keys(plugins).forEach((key) => {
     if (["$DialogForm", "$ImagePreview"].includes(key)) {
       app.config.globalProperties[key] = plugins[key](
-        (app as AppWithContext)._context
+        (app as AppWithContext)._context,
       );
       return;
     }
@@ -150,13 +155,13 @@ export const install = function (app: App, opts: TvueInstallOptions = {}) {
   locale.i18n(opts.i18n);
   app.config.globalProperties.$uploadFun = function (
     column: AnyRecord = {},
-    safe: any
+    safe: any,
   ) {
     const ctx = safe ?? this;
     const result: AnyRecord = {};
 
     UPLOAD_HOOK_KEYS.forEach((key) => {
-      if (column && column.type === "upload" && !column[key]) {
+      if (!column || (column.type === "upload" && !column[key])) {
         result[key] = ctx[key];
       }
     });
@@ -174,4 +179,31 @@ const Tvue = {
   ...plugins,
 };
 
+export { version, locale };
+export {
+  $DialogForm,
+  $ImagePreview,
+  $Export,
+  $Print,
+  $Clipboard,
+  $Watermark,
+  $Log,
+  $Screenshot,
+  deepClone,
+  dataURLtoFile,
+  isJson,
+  setPx,
+  validData,
+  findArray,
+  findNode,
+  validatenull,
+  downFile,
+  loadScript,
+  findObject,
+  randomId,
+  validateOption,
+  warnOption,
+};
+export * from "./ui/element-plus/";
+export * from "./ui/data/";
 export default Tvue;

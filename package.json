@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "3.9.0",
+  "version": "3.9.2-beta",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/index.js",
   "module": "es/index.mjs",
