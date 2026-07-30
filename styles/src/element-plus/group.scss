@@ -3,15 +3,13 @@
 
   .el-collapse,
   .el-collapse-item__wrap {
-    border-color: #fff;
+    border-top: none;
   }
 
   .el-collapse-item__header {
     width: 100%;
     height: inherit;
-    border: none;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 20px;
+    border-bottom: 1px solid var(--el-fill-color-light);
   }
 
   .el-collapse-item__content,

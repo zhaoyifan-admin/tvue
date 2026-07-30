@@ -242,7 +242,7 @@ body {
   }
   .el-dialog__header,
   .el-drawer__header {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--el-fill-color-light);
   }
 
   .el-dialog__title,
@@ -271,7 +271,7 @@ body {
 
   .el-dialog__footer{
     padding:10px;
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid var(--el-fill-color-light);
   }
 
   .el-drawer {
