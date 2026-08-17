@@ -206,12 +206,12 @@ body {
 }
 
 .tvue-icon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 
-  svg,
-  i {
+  >svg,
+  >.tvue-icon__font {
     width: 20px;
     height: 20px;
     font-size: 20px;
@@ -219,15 +219,14 @@ body {
 
   &--small {
 
-    svg,
-    i {
+    >svg,
+    >.tvue-icon__font {
       font-size: 15px;
       width: 15px;
       height: 15px;
     }
   }
 }
-
 
 .tvue-dialog {
   min-height: 180px;

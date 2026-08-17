@@ -1,8 +1,8 @@
 <template>
-  <div v-if="box"> 
+  <div v-if="box">
     <el-dialog :title="t('crud.excelBtn')"
                lock-scroll
-               :append-to-body="$TVUE.appendToBody"
+               :append-to-body="$tvue.appendToBody"
                class="tvue-dialog"
                v-model="box"
                :width="crud.isMobile?'100%':'30%'">
@@ -153,7 +153,7 @@ export default {
         list.forEach((ele, index) => {
           let children = ele.children
           if (children && !Array.isArray(children)) delete ele.children
-          else if (ele.showColumn === false) count.push(index)
+          else if (ele.showColumn === false || ele.excel === false) count.push(index)
           else {
             ele.prop = ele.prop || uuid()
             prop.push(ele.prop)

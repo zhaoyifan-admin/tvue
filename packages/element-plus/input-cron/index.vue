@@ -13,7 +13,7 @@
               @focus="handleShow">
       <template #append>
         <el-button @click="handleShow" :disabled="disabled">
-          <i class="el-icon-setting"></i>
+          <icon-temp text="el-icon-setting" :size="16"></icon-temp>
         </el-button>
       </template>
     </el-input>
@@ -74,6 +74,7 @@
 import create from "core/create";
 import props from "common/common/props";
 import event from "common/common/event";
+import iconTemp from "common/components/icon/index";
 import locale from "core/locale";
 
 // Cron Tab 子组件
@@ -162,7 +163,10 @@ const CronTab = {
 
 export default create({
   name: "input-cron",
-  components: { CronTab },
+  components: {
+    CronTab,
+    iconTemp
+  },
   mixins: [props(), event(), locale],
   props: {
     prefixIcon: String,
@@ -333,11 +337,11 @@ export default create({
     matchCron(date, parts) {
       const [second, minute, hour, day, month, week] = parts;
       return this.matchPart(date.getSeconds(), second) &&
-             this.matchPart(date.getMinutes(), minute) &&
-             this.matchPart(date.getHours(), hour) &&
-             this.matchPart(date.getDate(), day) &&
-             this.matchPart(date.getMonth() + 1, month) &&
-             this.matchPart(date.getDay() || 7, week);
+        this.matchPart(date.getMinutes(), minute) &&
+        this.matchPart(date.getHours(), hour) &&
+        this.matchPart(date.getDate(), day) &&
+        this.matchPart(date.getMonth() + 1, month) &&
+        this.matchPart(date.getDay() || 7, week);
     },
     matchPart(value, pattern) {
       if (pattern === '*' || pattern === '?') return true;

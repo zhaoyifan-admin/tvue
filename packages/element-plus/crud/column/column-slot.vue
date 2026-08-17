@@ -159,7 +159,7 @@
           :key="index"
           :href="item"
           :target="column.target || '_blank'"
-          >{{ item }}</el-link
+        >{{ item }}</el-link
         >
         <tvue-rate
           disabled
@@ -191,7 +191,6 @@
 let count = {};
 import { detail } from "core/detail";
 import { DIC_PROPS, DIC_SHOW_SPLIT, DIC_SPLIT } from "global/variable";
-import { sendDic } from "core/dic";
 import { isMediaType, blankVal } from "utils/util";
 import custom from "common/components/form/custom";
 import formTemp from "common/components/form/index";
@@ -271,14 +270,15 @@ export default {
           ) {
             return;
           }
-          sendDic(
+          this.crud.requestDic(
             {
               column: columnNext,
               value: value,
               form: row,
             },
-            this
+            `cell-cascader:${rowIndex}:${columnNextProp}`
           ).then((res) => {
+            if (!res) return;
             const dic = res || [];
             //首次加载的放入队列记录
             if (!this.crud.cascaderIndexList.includes(rowIndex)) {
@@ -300,8 +300,8 @@ export default {
             ) {
               row[columnNextProp] =
                 dic[columnNext.cascaderIndex][
-                  (columnNext.props || {}).value || DIC_PROPS.value
-                ];
+                (columnNext.props || {}).value || DIC_PROPS.value
+                  ];
             }
           });
         });

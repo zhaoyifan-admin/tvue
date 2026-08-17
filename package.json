@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "3.9.2-beta",
+  "version": "3.9.3-beta",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/index.js",
   "module": "es/index.mjs",
@@ -72,7 +72,8 @@
     "countup.js": "^1.9.3",
     "dayjs": "^1.10.4",
     "lodash": "^4.17.21",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "qrcode-generator": "^2.0.4"
   },
   "files": [
     "es",

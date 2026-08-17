@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html class="no-js">
   <head>
@@ -91,7 +91,7 @@
     </div>
   </body>
   <script>
-    let baseUrl = "https://cli.tvuejs.com/api/area";
+    let baseUrl = "https://api.avuejs.com/area";
     var app = Vue.createApp({
       data() {
         return {
@@ -243,7 +243,7 @@
                   label: "name",
                   value: "code",
                 },
-                dicUrl: "http://cli.tvuejs.com/api/area/getProvince",
+                dicUrl: "https://api.avuejs.com/area/getProvince",
                 search: true,
                 searchDefault: ["110000"],
                 searchMmultiple: true,
@@ -428,7 +428,7 @@
           }, 1000);
           setTimeout(() => {
             this.$message.success(
-              "编辑数据" + JSON.stringify(form) + "数据序号" + index
+              "编辑数据" + JSON.stringify(form) + "数据序号" + index,
             );
             done();
           }, 2000);
@@ -510,7 +510,7 @@
         searchChange(params, done) {
           this.$message.success(
             "search callback" +
-              JSON.stringify(Object.assign(params, this.searchForm))
+              JSON.stringify(Object.assign(params, this.searchForm)),
           );
           done();
         },
@@ -530,7 +530,7 @@
         },
       },
     });
-    app.use(ElementPlus, { locale: ElementPlus.lang.zhCn });
+    app.use(ElementPlus);
     app.use(TVUE);
     app.mount("#app");
   </script>
