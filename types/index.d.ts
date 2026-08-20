@@ -119,21 +119,68 @@ export type TvueImagePreviewOpener = (
 ) => any;
 export type TvueImagePreviewFactory = (context: any) => TvueImagePreviewOpener;
 
+export interface TvueClipboardOptions {
+  text: string | number | null | undefined;
+  fallback?: boolean;
+}
+
+export interface TvueScreenshotOptions extends AnyRecord {
+  download?: boolean;
+  filename?: string;
+  type?: string;
+  quality?: number;
+  onSuccess?: (canvas: HTMLCanvasElement) => void;
+  onError?: (error: Error) => void;
+}
+
+export interface TvueWatermarkOptions extends AnyRecord {
+  id?: string | HTMLElement;
+  text?: string;
+  width?: number;
+  height?: number;
+  fontSize?: string | number;
+  fontStyle?: string;
+  color?: string;
+  degree?: number;
+  zIndex?: number;
+}
+
+export interface TvueWatermarkInstance {
+  remove(): void;
+  Repaint(option?: TvueWatermarkOptions): TvueWatermarkInstance;
+}
+
+export interface TvuePrintOptions extends AnyRecord {
+  noPrint?: string;
+  documentTitle?: string;
+  timeout?: number;
+  onReady?: () => void;
+  onBeforePrint?: () => void;
+  onAfterPrint?: () => void;
+  onError?: (error: Error) => void;
+}
+
+export interface TvueExcelPlugin {
+  excel(params: AnyRecord): Promise<{ filename: string; sheetName: string; rows: number }>;
+  xlsx(file: File, options?: AnyRecord): Promise<{ header: any[]; results: any[]; sheetName: string }>;
+  [key: string]: any;
+}
+
 export interface TvuePluginExports extends TvueUtilityExports {
   $DialogForm: TvueDialogFormFactory;
   $ImagePreview: TvueImagePreviewFactory;
-  $Export: any;
-  $Print: any;
-  $Clipboard: ({ text }: { text: string }) => Promise<void>;
-  $Watermark: any;
+  $Export: TvueExcelPlugin;
+  $Print: (dom: string | HTMLElement | { $el: HTMLElement }, options?: TvuePrintOptions) => any;
+  $Clipboard: (options: TvueClipboardOptions) => Promise<void>;
+  $Watermark: (option?: TvueWatermarkOptions) => TvueWatermarkInstance;
   $Log: any;
-  $Screenshot: (doc: HTMLElement, option?: AnyRecord) => any;
+  $Screenshot: (doc: HTMLElement, option?: TvueScreenshotOptions) => Promise<HTMLCanvasElement>;
 }
 
 export interface TvueComponentExports {
   Arrays: Component;
   Article: Component;
-  Card: Component;
+  Captcha: Component;
   Cascader: Component;
   Chat: Component;
   Checkbox: Component;
@@ -166,6 +213,8 @@ export interface TvueComponentExports {
   Date: Component;
   Draggable: Component;
   Dynamic: Component;
+  FileManager: Component;
+  FilterBuilder: Component;
   Flow: Component;
   Form: Component;
   Group: Component;
@@ -196,7 +245,6 @@ export interface TvueComponentExports {
   Title: Component;
   Tree: Component;
   Upload: Component;
-  Verifys: Component;
   Video: Component;
   textEllipsis: Component;
 }
@@ -217,12 +265,12 @@ export const locale: TvueLocale;
 export function install(app: App, options?: TvueInstallOptions): void;
 export const $DialogForm: TvueDialogFormFactory;
 export const $ImagePreview: TvueImagePreviewFactory;
-export const $Export: any;
-export const $Print: any;
-export const $Clipboard: ({ text }: { text: string }) => Promise<void>;
-export const $Watermark: any;
+export const $Export: TvueExcelPlugin;
+export const $Print: (dom: string | HTMLElement | { $el: HTMLElement }, options?: TvuePrintOptions) => any;
+export const $Clipboard: (options: TvueClipboardOptions) => Promise<void>;
+export const $Watermark: (option?: TvueWatermarkOptions) => TvueWatermarkInstance;
 export const $Log: any;
-export const $Screenshot: (doc: HTMLElement, option?: AnyRecord) => any;
+export const $Screenshot: (doc: HTMLElement, option?: TvueScreenshotOptions) => Promise<HTMLCanvasElement>;
 export const deepClone: TvueUtilityExports["deepClone"];
 export const dataURLtoFile: TvueUtilityExports["dataURLtoFile"];
 export const isJson: TvueUtilityExports["isJson"];
@@ -239,7 +287,7 @@ export const validateOption: TvueUtilityExports["validateOption"];
 export const warnOption: TvueUtilityExports["warnOption"];
 export const Arrays: Component;
 export const Article: Component;
-export const Card: Component;
+export const Captcha: Component;
 export const Cascader: Component;
 export const Chat: Component;
 export const Checkbox: Component;
@@ -272,6 +320,8 @@ export const DataWeather: Component;
 export const Date: Component;
 export const Draggable: Component;
 export const Dynamic: Component;
+export const FileManager: Component;
+export const FilterBuilder: Component;
 export const Flow: Component;
 export const Form: Component;
 export const Group: Component;
@@ -302,7 +352,6 @@ export const Time: Component;
 export const Title: Component;
 export const Tree: Component;
 export const Upload: Component;
-export const Verifys: Component;
 export const Video: Component;
 export const textEllipsis: Component;
 export default Tvue;
@@ -312,12 +361,12 @@ declare module "@vue/runtime-core" {
     $TVUE: AnyRecord;
     $DialogForm: TvueDialogFormOpener;
     $ImagePreview: TvueImagePreviewOpener;
-    $Export: any;
-    $Print: any;
-    $Clipboard: ({ text }: { text: string }) => Promise<void>;
-    $Watermark: any;
+    $Export: TvueExcelPlugin;
+    $Print: (dom: string | HTMLElement | { $el: HTMLElement }, options?: TvuePrintOptions) => any;
+    $Clipboard: (options: TvueClipboardOptions) => Promise<void>;
+    $Watermark: (option?: TvueWatermarkOptions) => TvueWatermarkInstance;
     $Log: any;
-    $Screenshot: (doc: HTMLElement, option?: AnyRecord) => any;
+    $Screenshot: (doc: HTMLElement, option?: TvueScreenshotOptions) => Promise<HTMLCanvasElement>;
     $axios: any;
     $uploadFun: (column?: AnyRecord, safe?: any) => AnyRecord;
   }

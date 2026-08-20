@@ -1,7 +1,6 @@
 import CountUp from 'packages/element-plus/count-up';
 import Article from 'packages/element-plus/article';
 import Crud from 'packages/element-plus/crud';
-import Card from 'packages/element-plus/card';
 import Chat from 'packages/element-plus/chat';
 import Comment from 'packages/element-plus/comment';
 import Form from 'packages/element-plus/form';
@@ -26,6 +25,7 @@ import InputTable from 'packages/element-plus/input-table';
 import InputCron from 'packages/element-plus/input-cron';
 import InputOtp from 'packages/element-plus/input-otp';
 import Mention from 'packages/element-plus/mention';
+import Captcha from 'packages/element-plus/captcha';
 import Verifys from 'packages/element-plus/verify';
 import Switchs from 'packages/element-plus/switch';
 import Rate from 'packages/element-plus/rate';
@@ -43,12 +43,13 @@ import Arrays from 'packages/element-plus/array';
 import textEllipsis from 'packages/element-plus/text-ellipsis';
 import QRCode from 'packages/element-plus/qrcode';
 import Iframe from 'packages/element-plus/iframe';
+import FilterBuilder from 'packages/element-plus/filter-builder';
+import FileManager from 'packages/element-plus/file-manager';
 
 export {
   Arrays,
   Article,
   Crud,
-  Card,
   Chat,
   Comment,
   Form,
@@ -74,6 +75,7 @@ export {
   InputCron,
   InputOtp,
   Mention,
+  Captcha,
   Verifys,
   Switchs,
   Rate,
@@ -90,13 +92,14 @@ export {
   textEllipsis,
   QRCode,
   Iframe,
+  FilterBuilder,
+  FileManager,
 };
 
 const elementComponents = {
   Arrays,
   Article,
   Crud,
-  Card,
   Chat,
   Comment,
   Form,
@@ -132,12 +135,15 @@ const elementComponents = {
   Tabs,
   Dynamic,
   Video,
+  Captcha,
   Verifys,
   textEllipsis,
   Sign,
   Login,
   QRCode,
   Iframe,
+  FilterBuilder,
+  FileManager,
 };
 
 export default elementComponents;
