@@ -157,8 +157,8 @@
           runValidate() {
             try {
               const option = this.parseOption();
-              const warnings = Tvue.validateOption(option, "form");
-              Tvue.warnOption(warnings, "form");
+              const warnings = TVUE.validateOption(option, "form");
+              TVUE.warnOption(warnings, "form");
               this.resultText = warnings.length
                 ? JSON.stringify(warnings, null, 2)
                 : "未发现配置问题";
@@ -178,7 +178,7 @@
         },
       });
       app.use(ElementPlus);
-      app.use(Tvue, { optionValidate: true });
+      app.use(TVUE, { optionValidate: true });
       app.mount("#app");
     </script>
   </body>

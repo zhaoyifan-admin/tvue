@@ -37,7 +37,7 @@
       data() {
         return {
           form: {
-            imgUrl: "https://avuejs.com/images/logo-bg.jpg",
+            imgUrl: "https://tvuejs.com/images/logo-bg.jpg",
           },
           option: {
             labelWidth: 120,
@@ -61,7 +61,7 @@
         };
       },
       created() {
-        axios.get("https://api.avuejs.com/sts").then((token) => {
+        axios.get("https://api.tvuejs.com/sts").then((token) => {
           token = token.data;
           this.option.column[0].ali = {
             region: "oss-cn-beijing",
