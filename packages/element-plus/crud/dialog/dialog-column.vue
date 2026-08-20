@@ -1,98 +1,45 @@
 <template>
-  <el-popover
-    v-if="triggerRef"
-    v-model:visible="columnBox"
-    :virtual-ref="triggerRef"
-    virtual-triggering
-    placement="bottom-end"
-    :width="crud.isMobile ? 320 : 320"
-    popper-class="tvue-crud__column-popper"
-    @hide="handleHide"
-  >
+  <el-popover v-if="triggerRef" v-model:visible="columnBox" :virtual-ref="triggerRef" :width="crud.isMobile ? 320 : 320"
+              placement="bottom-end" popper-class="tvue-crud__column-popper" virtual-triggering @hide="handleHide">
     <div class="tvue-crud__column-panel">
       <div class="tvue-crud__column-panel__header">
-        <el-checkbox
-          :model-value="isAllVisible"
-          :indeterminate="isIndeterminate"
-          @change="handleCheckAll"
-        >
+        <el-checkbox :model-value="isAllVisible" :indeterminate="isIndeterminate" @change="handleCheckAll">
           {{ t("crud.column.all") }}
         </el-checkbox>
       </div>
       <div ref="list" class="tvue-crud__column-panel__list">
-        <div
-          v-for="column in data"
-          :key="column.prop"
-          class="tvue-crud__column-panel__item"
-        >
-          <el-checkbox
-            :model-value="isVisible(column)"
-            :aria-label="column.label"
-            @change="handleVisibleChange(column, $event)"
-          />
-          <span class="tvue-crud__column-panel__drag" aria-hidden="true"
-          >⠿</span
-          >
+        <div v-for="column in data" :key="column.prop" class="tvue-crud__column-panel__item">
+          <el-checkbox :model-value="isVisible(column)" :aria-label="column.label"
+                       @change="handleVisibleChange(column, $event)"/>
+          <span class="tvue-crud__column-panel__drag" aria-hidden="true">⠿</span>
           <span class="tvue-crud__column-panel__label">{{ column.label }}</span>
           <div class="tvue-crud__column-panel__actions">
             <el-tooltip :content="t('crud.column.fixedLeft')" placement="top">
-              <el-button
-                text
-                circle
-                icon="el-icon-d-arrow-left"
-                :class="{ 'is-active': isFixed(column, 'left') }"
-                :aria-label="t('crud.column.fixedLeft')"
-                @click="handleFixedChange(column, 'left')"
-              />
+              <el-button text circle icon="el-icon-d-arrow-left" :class="{ 'is-active': isFixed(column, 'left') }"
+                         :aria-label="t('crud.column.fixedLeft')" @click="handleFixedChange(column, 'left')"/>
             </el-tooltip>
             <el-tooltip :content="t('crud.column.fixedRight')" placement="top">
-              <el-button
-                text
-                circle
-                icon="el-icon-d-arrow-right"
-                :class="{ 'is-active': isFixed(column, 'right') }"
-                :aria-label="t('crud.column.fixedRight')"
-                @click="handleFixedChange(column, 'right')"
-              />
+              <el-button text circle icon="el-icon-d-arrow-right" :class="{ 'is-active': isFixed(column, 'right') }"
+                         :aria-label="t('crud.column.fixedRight')" @click="handleFixedChange(column, 'right')"/>
             </el-tooltip>
             <el-tooltip :content="t('crud.column.filters')" placement="top">
-              <el-button
-                text
-                circle
-                icon="el-icon-filter"
-                :class="{ 'is-active': isLegacyEnabled(column, 'filters') }"
-                :aria-label="t('crud.column.filters')"
-                @click="handleLegacyChange(column, 'filters')"
-              />
+              <el-button text circle icon="el-icon-filter" :class="{ 'is-active': isLegacyEnabled(column, 'filters') }"
+                         :aria-label="t('crud.column.filters')" @click="handleLegacyChange(column, 'filters')"/>
             </el-tooltip>
             <el-tooltip :content="t('crud.column.sortable')" placement="top">
-              <el-button
-                text
-                circle
-                icon="el-icon-sort"
-                :class="{ 'is-active': isLegacyEnabled(column, 'sortable') }"
-                :aria-label="t('crud.column.sortable')"
-                @click="handleLegacyChange(column, 'sortable')"
-              />
+              <el-button text circle icon="el-icon-sort" :class="{ 'is-active': isLegacyEnabled(column, 'sortable') }"
+                         :aria-label="t('crud.column.sortable')" @click="handleLegacyChange(column, 'sortable')"/>
             </el-tooltip>
           </div>
         </div>
       </div>
       <div class="tvue-crud__column-panel__footer">
-        <el-button
-          text
-          :disabled="!crud.columnStateEnabled"
-          @click="handleReset"
-        >
+        <el-button text :disabled="!crud.columnStateEnabled" @click="handleReset">
           {{ t("crud.column.restore") }}
         </el-button>
         <span class="tvue-crud__column-panel__footer-actions">
-          <el-button text @click="handleCancel">{{
-              t("crud.column.cancel")
-            }}</el-button>
-          <el-button text type="primary" @click="handleConfirm">{{
-              t("crud.column.confirm")
-            }}</el-button>
+          <el-button text @click="handleCancel">{{ t("crud.column.cancel") }}</el-button>
+          <el-button text type="primary" @click="handleConfirm">{{ t("crud.column.confirm") }}</el-button>
         </span>
       </div>
     </div>
@@ -200,6 +147,7 @@ export default create({
       if (!this.confirmed) this.restoreColumn();
       this.destroySortable();
       this.data = [];
+      this.triggerRef = null;
     },
     handleReset() {
       if (!this.crud.columnStateEnabled) return;
