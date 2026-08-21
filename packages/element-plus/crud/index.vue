@@ -669,25 +669,48 @@ export default create({
     },
     getTableHeight() {
       this.$nextTick(() => {
-        if (this.isAutoHeight) {
-          const clientHeight = document.documentElement.clientHeight;
+        if (!this.isAutoHeight) {
+          this.tableHeight = this.tableOption.height;
+          this.doLayout();
+          return;
+        }
+
+        const element = this.$el;
+        if (!element || !element.parentElement) return;
+        const parentElement = element.parentElement;
+
+        requestAnimationFrame(() => {
+          const COMPENSATE_CARD = 30;
+          let clientHeight = parentElement.clientHeight;
+          const computedStyle = window.getComputedStyle(parentElement);
+
+          // 兜底防止parseFloat得到NaN
+          const paddingTop = parseFloat(computedStyle.paddingTop) || 0;
+          const paddingBottom = parseFloat(computedStyle.paddingBottom) || 0;
+
+          if (this.option.card) {
+            clientHeight -= COMPENSATE_CARD;
+          }
+
           const calcHeight = this.calcHeight || 0;
           const tableRef = this.$refs.table;
           const tablePageRef = this.$refs.tablePage;
-          let tableHeight = clientHeight - calcHeight;
-          if (tableRef) {
-            const height = tableRef.$el.offsetTop || 0;
-            tableHeight -= height;
+
+          let tableHeight = clientHeight - calcHeight - paddingTop - paddingBottom;
+
+          // 减去表格距离父容器顶部偏移
+          if (tableRef && tableRef.$el) {
+            tableHeight -= tableRef.$el.offsetTop || 0;
           }
-          if (tablePageRef) {
-            const height = tablePageRef.$el.offsetHeight || 0;
-            tableHeight -= height;
+          // 减去分页组件高度
+          if (tablePageRef && tablePageRef.$el) {
+            tableHeight -= tablePageRef.$el.offsetHeight || 0;
           }
-          this.tableHeight = tableHeight;
-        } else {
-          this.tableHeight = this.tableOption.height;
-        }
-        this.doLayout();
+
+          // 最小高度保护，不能为负数
+          this.tableHeight = Math.max(tableHeight, 0);
+          this.doLayout();
+        });
       });
     },
     refreshTable(callback) {
