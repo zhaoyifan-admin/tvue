@@ -244,7 +244,7 @@ body {
 
 .tvue-dialog {
   min-height: 180px;
-  border-radius: 2px;
+  border-radius: 8px;
   max-height: calc(100% - 200px);
   max-width: calc(100% - 100px);
   display: flex;
@@ -255,24 +255,36 @@ body {
   }
   .el-dialog__header,
   .el-drawer__header {
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--el-fill-color-light);
   }
 
   .el-dialog__title,
   .el-drawer__header {
-    color: rgba(0, 0, 0, 0.85);
     font-weight: 500;
     word-wrap: break-word;
   }
 
   .el-dialog__body {
-    padding: 20px 20px 60px 20px;
+    padding: 10px;
     flex: 1;
-    overflow: auto;
+    overflow-y: overlay;
   }
+
+  /* 容器内滚动条样式 */
+  .el-dialog__body::-webkit-scrollbar {
+    width: 6px;
+  }
+  .el-dialog__body::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .el-dialog__body::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+  }
+
   .el-dialog__footer {
-    padding: 20px;
-    padding-top: 10px;
+    padding:10px;
+    border-top: 1px solid var(--el-fill-color-light);
   }
 
   .el-drawer {
@@ -293,17 +305,8 @@ body {
   }
 
   &__footer {
-    z-index: 2;
-    padding-top: 20px;
     display: block;
-    padding: 10px 16px;
-    box-sizing: border-box;
-    border-top: 1px solid #f0f0f0;
     width: 100%;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    background-color: #fff;
     text-align: right;
 
     &--left {
