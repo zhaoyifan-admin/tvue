@@ -59,8 +59,7 @@ export default create({
       data: [],
       columnBox: false,
       triggerRef: null,
-      columnSnapshot: null,
-      confirmed: false,
+      columnDraft: null,
       columnSortable: null,
     };
   },
@@ -89,65 +88,150 @@ export default create({
       this.data = this.crud.propOption.filter(
         (column) => column.showColumn !== false,
       );
-      this.columnSnapshot = this.crud.deepClone(this.crud.tableOption.column);
-      this.confirmed = false;
+      this.buildDraft();
       this.columnBox = true;
       this.$nextTick(() => this.rowDrop());
     },
+    // 构建草稿：仅在此副本上操作，确认前不触碰真实元数据
+    buildDraft() {
+      const draft = {};
+      this.data.forEach((column) => {
+        const obj = this.crud.objectOption[column.prop] || {};
+        draft[column.prop] = {
+          hide: obj.hide,
+          fixed: obj.fixed,
+          filters: obj.filters,
+          sortable: obj.sortable,
+        };
+      });
+      this.columnDraft = draft;
+    },
+    // 优先读取草稿，草稿不存在时回退到真实元数据
+    getDraft(prop) {
+      if (this.columnDraft && Object.prototype.hasOwnProperty.call(this.columnDraft, prop)) {
+        return this.columnDraft[prop];
+      }
+      const obj = this.crud.objectOption[prop] || {};
+      return {
+        hide: obj.hide,
+        fixed: obj.fixed,
+        filters: obj.filters,
+        sortable: obj.sortable,
+      };
+    },
     isVisible(column) {
-      return this.crud.objectOption[column.prop]?.hide !== true;
+      return this.getDraft(column.prop).hide !== true;
     },
     isFixed(column, position) {
-      const fixed = this.crud.objectOption[column.prop]?.fixed;
+      const fixed = this.getDraft(column.prop).fixed;
       return position === "left"
         ? fixed === true || fixed === "left"
         : fixed === "right";
     },
     isLegacyEnabled(column, prop) {
-      return this.crud.objectOption[column.prop]?.[prop] === true;
+      return this.getDraft(column.prop)[prop] === true;
     },
     handleCheckAll(visible) {
       this.data.forEach((column) => {
-        this.crud.objectOption[column.prop].hide = !visible;
+        this.columnDraft[column.prop].hide = !visible;
       });
-      this.handleChange("hide");
     },
+    // 只修改草稿，不写入元数据
     handleVisibleChange(column, visible) {
-      this.crud.objectOption[column.prop].hide = !visible;
-      this.handleChange("hide");
+      this.columnDraft[column.prop].hide = !visible;
     },
     handleFixedChange(column, position) {
-      const target = this.crud.objectOption[column.prop];
-      target.fixed = this.isFixed(column, position) ? false : position;
-      this.handleChange("fixed");
+      const draft = this.columnDraft[column.prop];
+      const current = draft.fixed;
+      const isCurrent = position === "left"
+        ? current === true || current === "left"
+        : current === "right";
+      draft.fixed = isCurrent ? false : position;
     },
     handleLegacyChange(column, prop) {
-      const target = this.crud.objectOption[column.prop];
-      target[prop] = !this.isLegacyEnabled(column, prop);
-      this.handleChange(prop);
+      const draft = this.columnDraft[column.prop];
+      draft[prop] = !draft[prop];
     },
-    handleChange(prop) {
-      if (prop === "hide") {
-        this.crud.gridShow ? this.crud.refreshTable() : this.crud.doLayout();
-      } else if (prop === "filters") {
-        this.crud.refreshTable();
-      }
-      this.crud.saveColumnState(prop);
-    },
+    // 确认时才把草稿写入真实元数据，并统一刷新与持久化一次
     handleConfirm() {
-      this.confirmed = true;
+      this.applyDraft();
       this.columnBox = false;
     },
+    // 取消：丢弃草稿，不修改元数据
     handleCancel() {
-      this.restoreColumn();
-      this.confirmed = true;
+      this.columnDraft = null;
       this.columnBox = false;
     },
+    // 面板关闭（含点击外部/ESC/确认后）：丢弃未确认的草稿
     handleHide() {
-      if (!this.confirmed) this.restoreColumn();
+      this.columnDraft = null;
       this.destroySortable();
       this.data = [];
       this.triggerRef = null;
+    },
+    applyDraft() {
+      if (!this.columnDraft) return;
+      const props = Object.keys(this.columnDraft);
+      let changed = false;
+      let needRefresh = false;
+      props.forEach((prop) => {
+        const target = this.crud.objectOption[prop];
+        if (!target) return;
+        const d = this.columnDraft[prop];
+        if (d.hide !== undefined && d.hide !== target.hide) {
+          target.hide = d.hide;
+          changed = true;
+        }
+        if (d.fixed !== undefined && d.fixed !== target.fixed) {
+          target.fixed = d.fixed;
+          changed = true;
+        }
+        if (d.filters !== undefined && d.filters !== target.filters) {
+          target.filters = d.filters;
+          changed = true;
+          if (d.filters === true) needRefresh = true;
+        }
+        if (d.sortable !== undefined && d.sortable !== target.sortable) {
+          target.sortable = d.sortable;
+          changed = true;
+        }
+      });
+      const orderChanged = this.applyOrder();
+      if (orderChanged) changed = true;
+      if (changed) {
+        if (this.crud.gridShow || needRefresh || orderChanged) {
+          this.crud.refreshTable(() => this.crud.doLayout());
+        } else {
+          this.crud.doLayout();
+        }
+        this.crud.saveColumnState("confirm");
+      }
+      this.columnDraft = null;
+    },
+    // 将面板中的拖拽顺序应用到真实列顺序（仅确认时执行）
+    applyOrder() {
+      if (!this.data || this.data.length === 0) return false;
+      const dataProps = this.data.map((c) => c.prop);
+      const allColumns = this.crud.tableOption.column || [];
+      const byProp = {};
+      allColumns.forEach((c) => {
+        byProp[c.prop] = c;
+      });
+      const dataSet = new Set(dataProps);
+      const ordered = dataProps.map((p) => byProp[p]).filter(Boolean);
+      const rest = allColumns.filter((c) => !dataSet.has(c.prop));
+      const newOrder = [...ordered, ...rest];
+      let changed = false;
+      for (let i = 0; i < newOrder.length; i++) {
+        if (newOrder[i] !== allColumns[i]) {
+          changed = true;
+          break;
+        }
+      }
+      if (changed) {
+        this.crud.tableOption.column = newOrder;
+      }
+      return changed;
     },
     handleReset() {
       if (!this.crud.columnStateEnabled) return;
@@ -155,14 +239,10 @@ export default create({
         this.data = this.crud.propOption.filter(
           (column) => column.showColumn !== false,
         );
+        // 重置后基于最新元数据重建草稿，避免确认时把旧改动覆盖回去
+        this.buildDraft();
         this.$nextTick(() => this.rowDrop());
       });
-    },
-    restoreColumn() {
-      if (!this.columnSnapshot) return;
-      this.crud.tableOption.column = this.crud.deepClone(this.columnSnapshot);
-      this.crud.refreshTable(() => this.crud.doLayout());
-      this.crud.saveColumnState("cancel");
     },
     destroySortable() {
       if (this.columnSortable) this.columnSortable.destroy();
@@ -180,12 +260,9 @@ export default create({
           if (oldIndex === newIndex) return;
           const column = this.data.splice(oldIndex, 1)[0];
           this.data.splice(newIndex, 0, column);
-          this.sortColumn(oldIndex, newIndex);
+          // 拖拽顺序仅在确认时通过 applyOrder 写入真实元数据
         },
       );
-    },
-    sortColumn(oldIndex, newIndex) {
-      this.crud.headerSort(oldIndex, newIndex);
     },
   },
 });
