@@ -15,11 +15,17 @@
 
     <link rel="stylesheet" href="../../../dist/index.css" />
     <script src="../../../dist/tvue.js"></script>
+    <style>
+      body ,#app{
+        margin: 0;
+        width: 100%;
+        height: 50vh;
+      }
+    </style>
   </head>
 
   <body>
     <div id="app">
-      {{obj}} {{search}}
       <tvue-crud
         :option="option"
         v-model="obj"
@@ -48,123 +54,109 @@
           search: {},
           data: [],
           option: {
-            column: [
+            excelBtn: true,
+            border: true,
+            index: true,
+            expandLevel: 3,
+            headerAlign: 'center',
+            align: 'center',
+            tree: true,
+            labelWidth: 100,
+            height: 'auto',
+            card: true,
+            column: [{
+              width: 130,
+              label: '姓名',
+              prop: 'name',
+              search: true,
+              display: false
+            }, {
+              label: '性别1',
+              prop: 'sex',
+              display: false
+            },
               {
-                label: "姓名",
-                search: true,
-                prop: "name",
-              },
-            ],
-            tabs: true,
-            group: [
-              {
-                label: "用户信息",
-                prop: "jbxx",
-                icon: "el-icon-edit-outline",
-                column: [
-                  {
-                    label: "姓名",
-                    prop: "name",
-                  },
-                  {
-                    label: "日期",
-                    prop: "date",
-                    type: "date",
-                  },
-                ],
-              },
-              {
-                label: "退款申请",
-                prop: "tksq",
-                icon: "el-icon-view",
-                column: [
-                  {
-                    label: "省份",
-                    prop: "province",
-                    type: "select",
-                    search: true,
-                    props: {
-                      label: "name",
-                      value: "code",
-                    },
-                    cascader: ["city"],
-                    dicUrl: `${baseUrl}/getProvince`,
-                    rules: [
-                      {
-                        required: true,
-                        message: "请选择省份",
-                        trigger: "blur",
-                      },
-                    ],
-                  },
-                  {
-                    label: "城市",
-                    prop: "city",
-                    type: "select",
-                    cascader: ["area"],
-                    search: true,
-                    props: {
-                      label: "name",
-                      value: "code",
-                    },
-                    dicUrl: `${baseUrl}/getCity/{{key}}`,
-                    rules: [
-                      {
-                        required: true,
-                        message: "请选择城市",
-                        trigger: "blur",
-                      },
-                    ],
-                  },
-                  {
-                    label: "地区",
-                    prop: "area",
-                    type: "select",
-                    props: {
-                      label: "name",
-                      value: "code",
-                    },
-                    dicUrl: `${baseUrl}/getArea/{{key}}`,
-                    rules: [
-                      {
-                        required: true,
-                        message: "请选择地区",
-                        trigger: "blur",
-                      },
-                    ],
-                  },
-                  {
-                    label: "多选",
-                    prop: "checkbox",
-                    type: "checkbox",
-                    props: {
-                      label: "name",
-                      value: "code",
-                    },
-                    span: 24,
-                    dicUrl: `${baseUrl}/getProvince`,
-                  },
-                ],
-              },
-              {
-                label: "用户信息",
-                prop: "yhxxs",
-                icon: "el-icon-edit-outline",
-                column: [
-                  {
-                    label: "测试长度",
-                    prop: "len",
-                    search: true,
-                    maxlength: 5,
-                  },
-                  {
-                    labelWidth: 120,
-                    label: "测试自定义",
-                    prop: "names",
-                  },
-                ],
-              },
-            ],
+                label: '自定义图标',
+                prop: 'icon',
+                type: "icon",
+                iconList: [{
+                  label: '基本图表',
+                  list: ['el-icon-time', 'el-icon-bell', 'el-icon-star-on']
+                }],
+                display: false
+              }, {
+                label: '多级表头',
+                display: false,
+                children: [{
+                  label: '信息',
+                  display: false,
+                  children: [{
+                    label: '年龄',
+                    prop: 'age',
+                    display: false
+                  }, {
+                    label: '手机号',
+                    prop: 'phone',
+                    display: false
+                  }]
+                }, {
+                  label: '级别',
+                  prop: 'grade',
+                  type: 'select',
+                  display: false,
+                  dicData: [{
+                    label: '测试',
+                    value: 1
+                  }]
+                }]
+              }, {
+                label: '测试',
+                prop: 'test',
+                display: false
+              }],
+            group: [{
+              label: '用户信息',
+              prop: 'jbxx',
+              icon: 'el-icon-edit-outline',
+              column: [
+                {
+                  label: '姓名',
+                  prop: 'name'
+                },
+                {
+                  label: '年龄',
+                  prop: 'age'
+                }
+              ]
+            }, {
+              label: '其他信息',
+              prop: 'jbxxs',
+              icon: 'el-icon-edit-outline',
+              column: [
+                {
+                  label: '级别',
+                  prop: 'grade',
+                  type: 'select',
+                  dicData: [{
+                    label: '测试',
+                    value: 1
+                  }]
+                },
+                {
+                  label: '手机信息',
+                  prop: 'phone'
+                },
+                {
+                  label: '自定义图标',
+                  prop: 'icon',
+                  type: "icon",
+                  iconList: [{
+                    label: '基本图表',
+                    list: ['el-icon-time', 'el-icon-bell', 'el-icon-star-on']
+                  }]
+                },
+              ]
+            }]
           },
         };
       },

@@ -336,6 +336,7 @@ export default create({
       })
     },
     nodeContextmenu (e, data, node, obj) {
+      if(!this.option.nodeContextmenu) return;
       this.node = node;
       this.client.x = e.clientX;
       this.client.y = e.clientY;
