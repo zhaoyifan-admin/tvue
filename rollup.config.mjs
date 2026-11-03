@@ -31,7 +31,7 @@ const banner =
   JSON.parse(fs.readFileSync(path.resolve(root, "package.json"), "utf8")).version +
   " | (c) 2024-" +
   new Date().getFullYear() +
-  " Zhaoyifannan | Released under the MIT License. */";
+  " MORISHIMA | Released under the MIT License. */";
 
 const aliasMap = {
   src: path.resolve(root, "src"),
@@ -482,8 +482,6 @@ function createBasePlugins({
         __VUE_OPTIONS_API__: JSON.stringify(true),
         __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
-        'process.env.NODE_ENV': JSON.stringify(env),
-        'process.browser': JSON.stringify(browser),
       },
     }),
     vue({
@@ -500,6 +498,9 @@ function createBasePlugins({
       noEmitOnError: false,
       sourceMap,
       inlineSources: false,
+      // tsconfig 开启了 allowJs：plugin-typescript >= 12.2 在未配置 outDir 时
+      // 会自动创建系统临时目录作为 outDir，导致 "outDir must be located inside
+      // Rollup 'dir' option" 校验失败。显式传入各构建目标的输出目录即可。
       compilerOptions: {
         outDir: outDir || undefined,
         noEmit: !outDir,
