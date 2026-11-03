@@ -26,7 +26,6 @@ import InputCron from 'packages/element-plus/input-cron';
 import InputOtp from 'packages/element-plus/input-otp';
 import Mention from 'packages/element-plus/mention';
 import Captcha from 'packages/element-plus/captcha';
-import Verifys from 'packages/element-plus/verify';
 import Switchs from 'packages/element-plus/switch';
 import Rate from 'packages/element-plus/rate';
 import Upload from 'packages/element-plus/upload';
@@ -76,7 +75,6 @@ export {
   InputOtp,
   Mention,
   Captcha,
-  Verifys,
   Switchs,
   Rate,
   Upload,
@@ -136,7 +134,6 @@ const elementComponents = {
   Dynamic,
   Video,
   Captcha,
-  Verifys,
   textEllipsis,
   Sign,
   Login,

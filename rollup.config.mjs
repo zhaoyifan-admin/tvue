@@ -196,6 +196,9 @@ function selectedTargets() {
   if (buildTarget === "esm") return ["es"];
   if (buildTarget === "cjs") return ["lib"];
   if (buildTarget === "browser") return ["dist"];
+  // watch 模式只覆盖写入 dist/tvue.js 与 index.css，不清理 dist，
+  // 保留上次完整构建的 tvue.min.js（watch 不产出压缩版）。
+  if (buildTarget === "watch") return ["es", "lib"];
   return ["es", "lib", "dist"];
 }
 
@@ -494,17 +497,14 @@ function createBasePlugins({
     }),
     typescript({
       tsconfig: path.resolve(root, "tsconfig.json"),
+      // tsconfig 开启了 allowJs 且未配置 outDir，插件会回退到系统临时目录作为
+      // outDir，导致 validatePaths 校验失败（outDir 必须位于 Rollup dir 内）。
+      // 这里按各构建目标显式指定 outDir，与 Rollup 输出目录保持一致。
+      outDir,
       declaration: false,
       noEmitOnError: false,
       sourceMap,
       inlineSources: false,
-      // tsconfig 开启了 allowJs：plugin-typescript >= 12.2 在未配置 outDir 时
-      // 会自动创建系统临时目录作为 outDir，导致 "outDir must be located inside
-      // Rollup 'dir' option" 校验失败。显式传入各构建目标的输出目录即可。
-      compilerOptions: {
-        outDir: outDir || undefined,
-        noEmit: !outDir,
-      },
       include: ["src/**/*.ts", "src/**/*.tsx", "packages/**/*.ts", "packages/**/*.tsx"],
       exclude: ["**/*.vue", "node_modules/**", "examples/**"],
     }),
@@ -555,7 +555,6 @@ function createModuleExternal(format) {
 function createModuleConfig({ format, dir, esmLodash }) {
   const ext = format === "es" ? ".mjs" : ".js";
   const totalModules = Object.keys(collectModuleInputs()).length;
-  const outputDir = path.resolve(root, dir);
 
   return {
     input: collectModuleInputs(),
@@ -572,7 +571,7 @@ function createModuleConfig({ format, dir, esmLodash }) {
         esmAxios: format === "es",
         browser: false,
         sourceMap: false,
-        outDir: outputDir,
+        outDir: path.resolve(root, dir),
       }),
       createSupplementalOutputsPlugin({
         outputDir: dir,
@@ -583,7 +582,7 @@ function createModuleConfig({ format, dir, esmLodash }) {
       }),
     ],
     output: {
-      dir: outputDir,
+      dir: path.resolve(root, dir),
       format,
       exports: "named",
       preserveModules: true,
@@ -602,8 +601,6 @@ function createDistExternal(id) {
 
 function createDistConfig({ minify, env, writeStyles }) {
   const totalModules = Object.keys(collectModuleInputs()).length;
-  const outputFile = path.resolve(root, "dist", minify ? "tvue.min.js" : "tvue.js");
-  const outputDir = path.dirname(outputFile);
 
   return {
     input: "virtual:tvue-dist-entry",
@@ -620,7 +617,7 @@ function createDistConfig({ minify, env, writeStyles }) {
         esmLodash: false,
         browser: true,
         sourceMap: !minify,
-        outDir: outputDir,
+        outDir: path.resolve(root, "dist"),
       }),
       babel({
         babelHelpers: "runtime",
@@ -646,7 +643,7 @@ function createDistConfig({ minify, env, writeStyles }) {
       }),
     ],
     output: {
-      file: outputFile,
+      file: path.resolve(root, "dist", minify ? "tvue.min.js" : "tvue.js"),
       format: "umd",
       name: "TVUE",
       exports: "default",
