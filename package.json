@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "2.13.2",
+  "version": "2.13.3",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/tvue.min.js",
   "unpkg": "lib/tvue.min.js",
@@ -11,10 +11,7 @@
     "analyz": "NODE_ENV=production npm_config_report=true npm run build",
     "dev": "yarn gen:version && cross-env TARGET=dev UINAME=element-ui gulp watch",
     "build": "yarn gen:version && cross-env TARGET=prod UINAME=element-ui gulp build",
-    "all": "yarn build && yarn dev",
-    "release": "node scripts/build.js --type=release --github=origin:2.x",
-    "hotfix": "node scripts/build.js --type=hotfix --github=origin:2.x",
-    "default": "node scripts/build.js --type=default --github=origin:2.x"
+    "all": "yarn build && yarn dev"
   },
   "keywords": [
     "vue",
