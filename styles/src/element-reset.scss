@@ -1,4 +1,7 @@
 .tvue-form{
+  .el-form-item__label {
+    overflow: hidden;
+  }
   .el-form-item__content>div{
     width: 100%;
   }

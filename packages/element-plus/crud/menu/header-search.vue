@@ -107,7 +107,7 @@ export default create({
         list = this.deepClone(list);
         let column = [];
         let count = 0;
-        list = list.sort((a, b) => (b.searchOrder || 0) - (a.searchOrder || 0))
+        list = list.sort((a, b) => (a.searchOrder || 0) - (b.searchOrder || 0))
         list.forEach(ele => {
           if (ele.search) {
             let isCount = count < this.searchIndex

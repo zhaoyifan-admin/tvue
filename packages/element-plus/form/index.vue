@@ -433,7 +433,7 @@ export default create({
           groupItem.column = calcCascader(groupItem.column);
 
           groupItem.column = groupItem.column.sort(
-            (a, b) => (b.order || 0) - (a.order || 0)
+            (a, b) => (a.order || 0) - (b.order || 0)
           );
         });
       };
