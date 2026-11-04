@@ -266,7 +266,9 @@ export default create({
       btnDisabledList: {},
       btnDisabled: false,
       default: {},
-      gridShow: false
+      gridShow: false,
+      // 各列 hide 值快照，用于检测列显隐变化
+      columnHideSnapshot: null
     };
   },
   created () {
@@ -398,6 +400,25 @@ export default create({
     data: {
       handler () {
         this.dataInit();
+      },
+      deep: true
+    },
+    // 列显隐（hide）变化时重建表格：el-table-column 按挂载顺序注册，
+    // v-if 重新显示的列会被追加到末尾，必须整表重建才能恢复列位置
+    objectOption: {
+      handler (val) {
+        const hideMap = {};
+        Object.keys(val).forEach(prop => {
+          hideMap[prop] = val[prop]?.hide === true;
+        });
+        if (this.columnHideSnapshot === null) {
+          this.columnHideSnapshot = hideMap;
+          return;
+        }
+        const changed = Object.keys(hideMap).some(prop => this.columnHideSnapshot[prop] !== hideMap[prop]) ||
+          Object.keys(this.columnHideSnapshot).some(prop => !(prop in hideMap));
+        this.columnHideSnapshot = hideMap;
+        if (changed) this.refreshTable();
       },
       deep: true
     }

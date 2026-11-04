@@ -52,8 +52,7 @@
                   }) "></slot>
         </template>
       </tvue-form>
-      <span class="tvue-dialog__footer"
-            :class="'tvue-dialog__footer--'+dialogMenuPosition">
+      <div slot="footer">
         <el-button v-if="vaildData(option.mockBtn,false) && !isView"
                    type="primary"
                    @click="($refs.tableForm || {}).handleMock"
@@ -77,7 +76,7 @@
                    :icon="option.emptyIcon">{{option.emptyText}}</el-button>
         <slot name="menuForm"
               v-bind="menuParams()"></slot>
-      </span>
+      </div>
     </component>
   </div>
 
