@@ -19,9 +19,13 @@ export interface TvueColumnState {
 }
 
 const getStorage = (type = 'localStorage') => {
-  if (typeof window === 'undefined') return null;
-  const storage = type === 'sessionStorage' ? window.sessionStorage : window.localStorage;
-  return storage || null;
+  try {
+    if (typeof window === 'undefined') return null;
+    const storage = type === 'sessionStorage' ? window.sessionStorage : window.localStorage;
+    return storage || null;
+  } catch {
+    return null;
+  }
 };
 
 const normalizeColumns = (columns: AnyRecord[] | AnyRecord = []) => {
@@ -92,7 +96,7 @@ export const loadColumnState = (key: string, storageType?: string) => {
   try {
     const value = storage.getItem(getColumnStateStorageKey(key));
     return value ? (JSON.parse(value) as TvueColumnState) : null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -106,7 +110,9 @@ export const saveColumnState = (
   if (!storage || !key) return;
   try {
     storage.setItem(getColumnStateStorageKey(key), JSON.stringify(state));
-  } catch (error) {}
+  } catch {
+    // Persistence is optional when browser storage is blocked or full.
+  }
 };
 
 export const removeColumnState = (key: string, storageType?: string) => {
@@ -114,5 +120,7 @@ export const removeColumnState = (key: string, storageType?: string) => {
   if (!storage || !key) return;
   try {
     storage.removeItem(getColumnStateStorageKey(key));
-  } catch (error) {}
+  } catch {
+    // A blocked cache must not prevent resetting the in-memory columns.
+  }
 };

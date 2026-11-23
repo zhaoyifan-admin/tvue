@@ -2,6 +2,82 @@ import type { App, Component, Plugin } from "vue";
 
 type AnyRecord = Record<string, any>;
 
+export interface TvueCrudDataColumn<Row extends AnyRecord = AnyRecord> extends AnyRecord {
+  prop?: keyof Row & string | string;
+  children?: TvueCrudDataColumn<Row>[];
+  label?: string;
+  bind?: string;
+  import?: boolean;
+  rules?: AnyRecord[];
+}
+export interface TvueCrudFieldIssue {
+  prop: string;
+  message?: string;
+  code?: string;
+}
+export interface TvueCrudImportContext {
+  filename: string;
+  sheetName: string;
+  mapping: Array<{ source: string; target: string }>;
+  rowNumber?: number;
+}
+export interface TvueCrudImportOptions<Row extends AnyRecord = AnyRecord> {
+  maxRows?: number;
+  /** Maximum input file size in bytes. Defaults to 10 MiB. */
+  maxFileSize?: number;
+  /** Zero-based worksheet header row. */
+  headerRow?: number;
+  sheetName?: string;
+  sheetIndex?: number;
+  transform?: (row: Row, context: TvueCrudImportContext) => Row | void | Promise<Row | void>;
+  validate?: (row: Row, context: TvueCrudImportContext) => boolean | string | TvueCrudFieldIssue[] | void | Promise<boolean | string | TvueCrudFieldIssue[] | void>;
+}
+export interface TvueCrudQueryView {
+  version: 1;
+  id: string;
+  name: string;
+  search: AnyRecord;
+  emptySearchFields?: string[];
+  searchDatePaths?: string[][];
+  fields: string[];
+  sort: { prop: string; order: 'ascending' | 'descending' } | null;
+  filters: Record<string, any[]>;
+  columns: { version: number; columns: Array<{ prop: string; order: number; [key: string]: any }> };
+  pageSize?: number;
+}
+export interface TvueCrudFeatureOptions<Row extends AnyRecord = AnyRecord> {
+  /** Options passed to the built-in print button. */
+  printOptions?: TvuePrintOptions;
+  /** Show query view tools. Defaults to true. */
+  dataToolsBtn?: boolean;
+  importBtn?: boolean;
+  importOptions?: TvueCrudImportOptions<Row>;
+  importMethod?: (rows: Row[], context: TvueCrudImportContext) => any | Promise<any>;
+  queryViewBtn?: boolean;
+  /** Include the user or tenant identifier when views must be isolated. */
+  queryViewKey?: string;
+  queryViewStorage?: 'localStorage' | 'sessionStorage' | 'local' | 'session';
+  queryViewLoad?: (key: string) => TvueCrudQueryView[] | { version: 1; views: TvueCrudQueryView[] } | null | Promise<TvueCrudQueryView[] | { version: 1; views: TvueCrudQueryView[] } | null>;
+  queryViewSave?: (views: TvueCrudQueryView[], key: string) => void | Promise<void>;
+}
+export interface TvueCrudFeatureInstance {
+  rowImport(): any;
+  queryViews: TvueCrudQueryView[];
+  activeQueryViewId: string;
+  queryViewLoading: boolean;
+  queryViewApplying: boolean;
+  queryViewSort: TvueCrudQueryView['sort'];
+  queryViewFilters: Record<string, any[]>;
+  queryViewError: string;
+  queryViewErrorDetail: any;
+  saveQueryView(name: string, id?: string): Promise<TvueCrudQueryView | null>;
+  applyQueryView(id: string): Promise<boolean>;
+  renameQueryView(id: string, name: string): Promise<TvueCrudQueryView | null>;
+  removeQueryView(id: string): Promise<boolean>;
+  resetQueryView(): Promise<boolean>;
+  reloadQueryViews(): Promise<TvueCrudQueryView[] | null>;
+}
+
 export interface TvueCanvasOptions {
   text?: string;
   fontFamily?: string;
@@ -102,7 +178,7 @@ export interface TvueUtilityExports {
   ): T | undefined;
   validatenull(value: any): boolean;
   downFile(url: string | Blob, saveName?: string): void;
-  loadScript(type?: "js" | "css", url?: string, dom?: "head" | "body"): Promise<void>;
+  loadScript(type?: "js" | "css", url?: string, dom?: "head" | "body", timeout?: number): Promise<void>;
   findObject<T = AnyRecord>(list?: T[], value?: any, prop?: string): T | undefined;
   randomId(): string;
   validateOption(option?: AnyRecord, component?: string): TvueOptionWarning[];
@@ -151,13 +227,41 @@ export interface TvueWatermarkInstance {
 }
 
 export interface TvuePrintOptions extends AnyRecord {
+  /** Open the adjustable preview first. Set false to print directly. Defaults to true. */
+  preview?: boolean;
   noPrint?: string;
   documentTitle?: string;
+  title?: string;
+  showTitle?: boolean;
+  paperSize?: 'A4' | 'A3' | 'Letter';
+  orientation?: 'portrait' | 'landscape';
+  /** Page margin in millimeters, from 0 to 40. Defaults to 12. */
+  margin?: number;
+  /** Print font size in pixels, from 8 to 24. Defaults to 12. */
+  fontSize?: number;
+  /** Original zero-based leaf column indexes of a printable table. */
+  columnIndexes?: number[];
+  hiddenColumnLabels?: string[];
+  emptyText?: string;
   timeout?: number;
   onReady?: () => void;
   onBeforePrint?: () => void;
   onAfterPrint?: () => void;
+  onClose?: () => void;
   onError?: (error: Error) => void;
+}
+
+export interface TvuePrintInstance {
+  /** Returns false while content is loading, printing, or already closed. */
+  print(): boolean;
+  close(): void;
+}
+
+export type TvuePrintTarget = string | HTMLElement | { $el: HTMLElement };
+
+export interface TvuePrintFactory {
+  (dom: TvuePrintTarget, options?: TvuePrintOptions): TvuePrintInstance;
+  new (dom: TvuePrintTarget, options?: TvuePrintOptions): TvuePrintInstance;
 }
 
 export interface TvueExcelPlugin {
@@ -170,7 +274,7 @@ export interface TvuePluginExports extends TvueUtilityExports {
   $DialogForm: TvueDialogFormFactory;
   $ImagePreview: TvueImagePreviewFactory;
   $Export: TvueExcelPlugin;
-  $Print: (dom: string | HTMLElement | { $el: HTMLElement }, options?: TvuePrintOptions) => any;
+  $Print: TvuePrintFactory;
   $Clipboard: (options: TvueClipboardOptions) => Promise<void>;
   $Watermark: (option?: TvueWatermarkOptions) => TvueWatermarkInstance;
   $Log: any;
@@ -266,7 +370,7 @@ export function install(app: App, options?: TvueInstallOptions): void;
 export const $DialogForm: TvueDialogFormFactory;
 export const $ImagePreview: TvueImagePreviewFactory;
 export const $Export: TvueExcelPlugin;
-export const $Print: (dom: string | HTMLElement | { $el: HTMLElement }, options?: TvuePrintOptions) => any;
+export const $Print: TvuePrintFactory;
 export const $Clipboard: (options: TvueClipboardOptions) => Promise<void>;
 export const $Watermark: (option?: TvueWatermarkOptions) => TvueWatermarkInstance;
 export const $Log: any;
@@ -362,7 +466,7 @@ declare module "@vue/runtime-core" {
     $DialogForm: TvueDialogFormOpener;
     $ImagePreview: TvueImagePreviewOpener;
     $Export: TvueExcelPlugin;
-    $Print: (dom: string | HTMLElement | { $el: HTMLElement }, options?: TvuePrintOptions) => any;
+    $Print: TvuePrintFactory;
     $Clipboard: (options: TvueClipboardOptions) => Promise<void>;
     $Watermark: (option?: TvueWatermarkOptions) => TvueWatermarkInstance;
     $Log: any;

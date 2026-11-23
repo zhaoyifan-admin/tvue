@@ -200,7 +200,8 @@
                         :disabled="getDisabled(column)"
                         :enter="tableOption.enter"
                         :size="size"
-                        v-model="form[column.prop]"
+                        :model-value="form[column.prop]"
+                        @update:model-value="setFieldValue(column, $event)"
                         @enter="submit"
                         :column-slot="columnSlot"
                         @change="propChange(item.column, column)"
@@ -250,8 +251,12 @@
 </template>
 
 <script>
-// 移除全局变量，避免内存泄露
+import { cloneModel, isModelEqual, syncModel } from "core/model";
+import get from "lodash/get";
+import has from "lodash/has";
+import toPath from "lodash/toPath";
 import { detail } from "core/detail";
+import { normalizeDicData } from "core/dic";
 import create from "core/create";
 import init from "common/common/init";
 import formTemp from "common/components/form/index";
@@ -269,7 +274,6 @@ import {
   getColumn,
   filterParams,
   clearVal,
-  getAsVal,
   blankVal,
   setAsVal,
 } from "utils/util";
@@ -286,6 +290,7 @@ export default create({
     "tab-click",
     "submit",
     "error",
+    "control-error",
   ],
   components: {
     formTemp,
@@ -300,12 +305,11 @@ export default create({
       tableOption: {},
       form: {},
       formCreate: false,
-      formList: [],
+      formSnapshot: undefined,
+      formOptionSource: null,
+      formUnmounted: false,
+      formCascaderValues: {},
       formBind: {},
-      // 防止内存泄露的计数器，移到组件实例中
-      count: {},
-      // 保存定时器ID，用于清理
-      timers: [],
     };
   },
   provide() {
@@ -314,22 +318,34 @@ export default create({
     };
   },
   watch: {
+    tableOption(value) {
+      if (!this.formCreate || value === this.formOptionSource) return;
+      const defaults = formInitVal(this.propOption);
+      Object.keys(defaults).forEach((prop) => {
+        if (!Object.prototype.hasOwnProperty.call(this.form, prop)) {
+          this.form[prop] = cloneModel(defaults[prop]);
+        }
+      });
+      this.setControl();
+      this.setLabel();
+    },
     modelValue: {
       handler(val) {
         if (this.formCreate) {
-          this.setForm();
+          this.setForm(val);
         }
       },
       deep: true,
     },
     form: {
-      handler(val) {
+      handler() {
         if (this.formCreate) {
           this.setLabel();
           this.setVal();
         }
       },
       deep: true,
+      flush: "post",
     },
     tabsActive: {
       handler(val) {
@@ -399,10 +415,11 @@ export default create({
     },
     dynamicOption() {
       let list = [];
-      this.propOption.forEach((ele) => {
-        if (ele.type == "dynamic" && this.vaildDisplay(ele)) {
-          list.push(ele);
-        }
+      this.columnOption.forEach((group, index) => {
+        if (!this.vaildDisplay(group) || !this.isGroupShow(group, index, this.isVerifyAll)) return;
+        group.column.forEach((ele) => {
+          if (ele.type == "dynamic" && this.vaildDisplay(ele)) list.push(ele);
+        });
       });
       return list;
     },
@@ -433,7 +450,7 @@ export default create({
           groupItem.column = calcCascader(groupItem.column);
 
           groupItem.column = groupItem.column.sort(
-            (a, b) => (a.order || 0) - (b.order || 0)
+            (a, b) => (b.order || 0) - (a.order || 0)
           );
         });
       };
@@ -524,11 +541,7 @@ export default create({
   },
   mounted() {
     this.initFun();
-    // 保存定时器ID，用于清理
-    const timerId = setTimeout(() => {
-      this.dataFormat();
-    });
-    this.timers.push(timerId);
+    this.dataFormat();
   },
   methods: {
     getComponent,
@@ -571,112 +584,198 @@ export default create({
     },
 
     dataFormat() {
-      let formDefault = formInitVal(this.propOption);
-      let formValue = this.modelValue;
-      let form = {};
-      Object.entries(Object.assign(formDefault, formValue)).forEach((ele) => {
-        let key = ele[0],
-          value = ele[1];
-        if (this.validatenull(formValue[key])) {
-          form[key] = value;
-        } else {
-          form[key] = formValue[key];
-        }
+      this.formCreate = false;
+      this.clearFormWatchers();
+      this.form = cloneModel({
+        ...formInitVal(this.propOption),
+        ...(this.modelValue || {}),
       });
-      this.form = form;
+      this.formCascaderValues = {};
       this.setLabel();
       this.setControl();
+      this.formCreate = true;
       this.setVal();
-      // 保存定时器ID，用于清理
-      const timerId = setTimeout(() => {
-        this.formCreate = true;
-        this.clearValidate();
+      this.$nextTick(() => {
+        if (!this.formUnmounted) this.clearValidate();
       });
-      this.timers.push(timerId);
+    },
+    clearFormWatchers() {
+      Object.values(this.formBind).forEach((watchers) => {
+        watchers.forEach((stop) => stop());
+      });
+      this.formBind = {};
     },
     setControl() {
+      this.clearFormWatchers();
+      this.formOptionSource = this.tableOption;
+      this.objectOption = Object.fromEntries(this.propOption.map((column) => [column.prop, column]));
+      const register = (prop, stop) => {
+        (this.formBind[prop] || (this.formBind[prop] = [])).push(stop);
+      };
+      // Resolve bound values before a control callback reads the whole form.
       this.propOption.forEach((column) => {
-        let prop = column.prop;
-        let bind = column.bind;
-        let control = column.control;
-        // 防止重复创建watcher，如果已存在则先清理
-        if (this.formBind[prop]) {
-          this.formBind[prop].forEach((unWatch) => {
-            if (typeof unWatch === "function") {
-              unWatch();
-            }
-          });
-          delete this.formBind[prop];
-        }
-
-        let bindList = [];
+        const { prop, bind } = column;
         if (bind) {
-          let formProp = this.$watch("form." + prop, (n, o) => {
-            setAsVal(this.form, bind, n);
-          });
-          let formDeep = this.$watch("form." + bind, (n, o) => {
-            this.form[prop] = n;
-          });
-          bindList.push(formProp);
-          bindList.push(formDeep);
-          this.form[prop] = getAsVal(this.form, bind);
+          const bound = get(this.form, bind);
+          if (bound === undefined && !has(this.modelValue || {}, toPath(bind))) {
+            setAsVal(this.form, bind, cloneModel(this.form[prop]));
+          } else {
+            this.form[prop] = cloneModel(bound);
+          }
+          register(prop, this.$watch(() => this.form[prop], (value) => {
+            if (!isModelEqual(get(this.form, bind), value)) {
+              setAsVal(this.form, bind, cloneModel(value));
+            }
+          }, { deep: true }));
+          register(prop, this.$watch(() => get(this.form, bind), (value) => {
+            if (!isModelEqual(this.form[prop], value)) {
+              this.form[prop] = cloneModel(value);
+            }
+          }, { deep: true }));
         }
+      });
+      this.propOption.forEach((column) => {
+        const { prop, control } = column;
         if (control) {
+          let active = true;
+          let sequence = 0;
+          let hasValue = false;
+          let previousValue;
+          register(prop, () => { active = false; });
           const callback = () => {
+            if (!active || this.formUnmounted) return;
+            if (hasValue && isModelEqual(previousValue, this.form[prop])) return;
+            const value = cloneModel(this.form[prop]);
+            previousValue = value;
+            hasValue = true;
+            const requestId = ++sequence;
+            const isCurrent = () => active && !this.formUnmounted && requestId === sequence &&
+              isModelEqual(value, this.form[prop]);
             const controlResolve = (list) => {
-              Object.keys(list).forEach((item) => {
-                let ele = Object.assign(
-                  this.objectOption[item] || {},
-                  list[item]
-                );
-                this.objectOption[item] = ele;
-                if (list[item].dicData) this.DIC[item] = list[item].dicData;
+              if (!isCurrent()) return;
+              Object.keys(list || {}).forEach((item) => {
+                const target = this.objectOption[item];
+                if (!target || !list[item]) return;
+                syncModel(target, list[item]);
+                if (Object.prototype.hasOwnProperty.call(list[item], "dicData")) {
+                  this.invalidateDicRequest(`update:${item}`, item);
+                  this.DIC[item] = normalizeDicData(
+                    list[item].dicData || [], target.props, target.dataType,
+                  );
+                }
               });
             };
-            let result = this.form["$" + column.prop] || this.form[column.prop];
-            let controlList =
-              control(this.form[column.prop], this.form, result, column) || {};
-            if (controlList instanceof Promise) {
-              controlList.then((res) => {
-                controlResolve(res);
-              });
-            } else {
-              controlResolve(controlList);
+            const controlReject = (error) => {
+              if (isCurrent()) this.$emit("control-error", { prop, error });
+            };
+            try {
+              // Control callbacks may write through the parent's v-model. Publish
+              // the current edit first so that write cannot restore an older source.
+              if (this.formCreate) {
+                this.setLabel();
+                this.setVal();
+              }
+              const result = this.form["$" + prop] ?? this.form[prop];
+              const list = control(this.form[prop], this.form, result, column);
+              if (list && typeof list.then === "function") {
+                Promise.resolve(list).then(controlResolve).catch(controlReject);
+              } else {
+                controlResolve(list);
+              }
+            } catch (error) {
+              controlReject(error);
             }
           };
-          let formControl = this.$watch("form." + prop, (n, o) => {
-            callback();
-          });
-          bindList.push(formControl);
+          // Publish the edited model before callbacks that use the parent's v-model.
+          register(prop, this.$watch(() => this.form[prop], callback, { deep: true, flush: "post" }));
           callback();
         }
-        if (bindList.length > 0) {
-          this.formBind[prop] = bindList;
+        if (column.cascader && column.cascader.length) {
+          this.formCascaderValues[prop] = cloneModel(this.form[prop]);
+          register(prop, this.$watch(() => this.form[prop], (value) => {
+            if (isModelEqual(value, this.formCascaderValues[prop])) return;
+            this.formCascaderValues[prop] = cloneModel(value);
+            this.handleChange(this.propOption, column);
+          }, { deep: true }));
+          this.handleChange(this.propOption, column, false);
         }
       });
     },
-    setForm() {
-      Object.keys(this.modelValue).forEach((ele) => {
-        this.form[ele] = this.modelValue[ele];
+    setForm(value = this.modelValue) {
+      // A queued parent echo must not overwrite edits made after that emission.
+      if (isModelEqual(value, this.formSnapshot)) return;
+      // Compare both ends before merging. A parent can edit the alias while
+      // carrying an unchanged bound value in the same v-model object.
+      const bindings = this.propOption.map((column) => {
+        const hasAlias = Object.prototype.hasOwnProperty.call(value || {}, column.prop);
+        const hasBound = column.bind &&
+          Object.prototype.hasOwnProperty.call(value || {}, toPath(column.bind)[0]);
+        const boundChanged = hasBound &&
+          !isModelEqual(get(this.form, column.bind), get(value, column.bind));
+        const useAlias = column.bind && hasAlias && !boundChanged &&
+          !isModelEqual(this.form[column.prop], value[column.prop]);
+        return { column, hasAlias, hasBound, useAlias };
+      });
+      if (!syncModel(this.form, value)) return;
+      const preserved = new Set();
+      bindings.forEach(({ column, hasAlias, hasBound, useAlias }) => {
+        if (hasBound || hasAlias) {
+          preserved.add(column.prop);
+        }
+        if (useAlias) {
+          setAsVal(this.form, column.bind, cloneModel(this.form[column.prop]));
+        } else if (hasBound) {
+          const bound = get(this.form, column.bind);
+          if (!isModelEqual(this.form[column.prop], bound)) {
+            this.form[column.prop] = cloneModel(bound);
+          }
+        }
+      });
+      const changed = this.propOption.filter((column) =>
+        column.cascader && column.cascader.length &&
+        !isModelEqual(this.form[column.prop], this.formCascaderValues[column.prop]));
+      const affected = new Set();
+      // Detail responses retain explicit child values; partial parent patches
+      // clear omitted descendants before any new dictionary captures the form.
+      changed.forEach((column) => {
+        const visited = new Set([column.prop]);
+        this.clearCascader(this.propOption, column, visited, preserved);
+        visited.forEach((prop) => affected.add(prop));
+      });
+      this.propOption.forEach((column) => {
+        if (!affected.has(column.prop) || !column.cascader || !column.cascader.length) return;
+        this.formCascaderValues[column.prop] = cloneModel(this.form[column.prop]);
+        this.handleChange(this.propOption, column, false, preserved);
       });
     },
+    setFieldValue(column, value) {
+      if (!isModelEqual(this.form[column.prop], value)) {
+        this.form[column.prop] = cloneModel(value);
+      }
+    },
     setVal() {
-      this.$emit("update:modelValue", this.form);
-      this.$emit("change", this.form);
+      if (this.formUnmounted) return;
+      const snapshot = cloneModel(this.form);
+      if (this.tableOption.filterNull === true) filterParams(snapshot, [""], false);
+      if (isModelEqual(this.formSnapshot, snapshot)) return;
+      this.formSnapshot = snapshot;
+      this.$emit("update:modelValue", cloneModel(snapshot));
+      this.$emit("change", cloneModel(snapshot));
     },
     setLabel() {
-      if (this.tableOption.filterNull === true) {
-        this.form = filterParams(this.form, [""], false);
-      }
       if (this.tableOption.filterDic == true) {
         this.form = filterParams(this.form, ["$"], false);
       } else {
         this.propOption.forEach((column) => {
           let result;
           let DIC = this.DIC[column.prop];
-          if (this.validatenull(DIC)) return;
+          if (!Object.prototype.hasOwnProperty.call(this.DIC, column.prop)) return;
+          if (this.validatenull(DIC)) {
+            delete this.form[`$${column.prop}`];
+            return;
+          }
           result = detail(this.form, column, this.tableOption, DIC);
-          if (result) {
+          if (!this.validatenull(result)) {
             this.form[`$${column.prop}`] = result;
           } else {
             delete this.form[`$${column.prop}`];
@@ -708,83 +807,67 @@ export default create({
     getPropRef(prop) {
       return this.$refs[prop][0];
     },
-    handleChange(list, column) {
-      this.$nextTick(() => {
-        const cascader = column.cascader;
-        const str = cascader.join(",");
-        cascader.forEach((item) => {
-          const columnNextProp = item;
-          const value = this.form[column.prop];
-          // 下一个节点
-          const columnNext = this.findObject(list, columnNextProp);
-          if (this.validatenull(columnNext)) return;
-          // 如果不是首次加载则清空全部关联节点的属性值和字典值
-          if (this.formList.includes(str)) {
-            //清空子类字典列表和值
-            cascader.forEach((ele) => {
-              this.form[ele] = blankVal(this.form[ele]);
-              this.DIC[ele] = [];
-            });
-          }
-          /**
-           * 1.判断当前节点是否有下级节点
-           * 2.判断当前节点是否有值
-           */
-          if (
-            this.validatenull(cascader) ||
-            this.validatenull(value) ||
-            this.validatenull(columnNext)
-          ) {
-            return;
-          }
-          // 根据当前节点值获取下一个节点的字典
-          this.requestDic(
-            {
-              column: columnNext,
-              value: value,
-              form: this.form,
-            },
-            `form-cascader:${columnNextProp}`
-          ).then((res) => {
-            if (!res) return;
-            //首次加载的放入队列记录
-            if (!this.formList.includes(str)) this.formList.push(str);
-            // 修改字典
-            const dic = res || [];
-            this.DIC[columnNextProp] = dic;
-            if (
-              !this.validatenull(dic) &&
-              !this.validatenull(dic) &&
-              !this.validatenull(columnNext.cascaderIndex) &&
-              this.validatenull(this.form[columnNextProp])
-            ) {
-              this.form[columnNextProp] =
-                dic[columnNext.cascaderIndex][
-                (columnNext.props || {}).value || DIC_PROPS.value
-                  ];
+    clearCascader(list, column, visited = new Set(), preserved = new Set()) {
+      (column.cascader || []).forEach((prop) => {
+        if (visited.has(prop)) return;
+        visited.add(prop);
+        this.invalidateDicRequest(`form-cascader:${prop}`, prop);
+        const child = this.findObject(list, prop);
+        if (!preserved.has(prop)) {
+          const value = blankVal(this.form[prop]);
+          this.formCascaderValues[prop] = cloneModel(value);
+          if (!isModelEqual(this.form[prop], value)) this.form[prop] = value;
+          if (child && child.bind) setAsVal(this.form, child.bind, cloneModel(value));
+        }
+        this.DIC[prop] = [];
+        if (child) this.clearCascader(list, child, visited, preserved);
+      });
+    },
+    handleChange(list, column, clear = true, preserved = new Set()) {
+      if (this.formUnmounted) return;
+      if (clear) this.clearCascader(list, column, new Set([column.prop]), preserved);
+      const value = cloneModel(this.form[column.prop]);
+      (column.cascader || []).forEach((prop) => {
+        const child = this.findObject(list, prop);
+        if (!child || prop === column.prop) return;
+        this.invalidateDicRequest(`form-cascader:${prop}`, prop);
+        this.DIC[prop] = [];
+        if (this.validatenull(value)) return;
+        this.requestDic({
+          column: child,
+          value,
+          form: this.form,
+        }, `form-cascader:${prop}`).then((dic) => {
+          if (!dic || this.formUnmounted) return;
+          this.DIC[prop] = dic;
+          const selected = dic[child.cascaderIndex];
+          if (selected && !preserved.has(prop) && this.validatenull(this.form[prop])) {
+            this.form[prop] = cloneModel(
+              selected[(child.props || {}).value || DIC_PROPS.value],
+            );
+            if (child.bind) setAsVal(this.form, child.bind, cloneModel(this.form[prop]));
+            if (preserved.size && child.cascader && child.cascader.length) {
+              this.formCascaderValues[prop] = cloneModel(this.form[prop]);
+              this.handleChange(list, child, false, preserved);
             }
-          });
+          }
         });
       });
     },
     handlePrint() {
       this.$Print(this.$el);
     },
-    propChange(option, column) {
+    propChange(_option, column) {
       let key = column.prop;
-      // 使用组件实例的count而不是全局变量
-      // 当字段类型为 cascader 或 upload 时，值发生变化需要进行字段验证
       if (column.type === "cascader" || column.type === "upload") {
         this.$nextTick(() => {
-          // 调用validateField方法验证当前字段
-          this.validateField(key).catch((error) => {});
+          if (this.formUnmounted) return;
+          const validation = this.validateField(key);
+          if (validation && typeof validation.catch === "function") {
+            validation.catch(() => {});
+          }
         });
       }
-      if (!this.count[key]) {
-        if (column.cascader) this.handleChange(option, column);
-      }
-      this.count[key] = true;
-      this.$nextTick(() => (this.count[key] = false));
     },
     handleMock() {
       if (!this.isMock) return;
@@ -854,43 +937,72 @@ export default create({
         });
       });
     },
-    validate(callback) {
-      this.$refs.form.validate((valid, msg) => {
-        let dynamicList = [];
-        let dynamicName = [];
-        let dynamicError = {};
-        this.dynamicOption.forEach((ele) => {
-          let isForm = ele.children.type === "form";
-          dynamicName.push(ele.prop);
-          if (isForm) {
-            if (
-              !this.validatenull(this.$refs[ele.prop][0].$refs.temp.$refs.main)
-            ) {
-              this.$refs[ele.prop][0].$refs.temp.$refs.main.forEach((ele) => {
-                dynamicList.push(ele.validateCellForm());
-              });
-            }
-          } else {
-            dynamicList.push(
-              this.$refs[ele.prop][0].$refs.temp.$refs.main.validateCellForm()
-            );
-          }
-        });
-        Promise.all(dynamicList).then((res) => {
-          res.forEach((error, index) => {
-            if (!this.validatenull(error)) {
-              dynamicError[dynamicName[index]] = error;
-            }
-          });
-          let result = Object.assign(dynamicError, msg);
-          if (this.validatenull(result)) {
-            this.show();
-            callback && callback(true, this.hide, result);
-          } else {
-            callback && callback(false, this.hide, result);
-          }
-        });
+    async validate(callback) {
+      // Tab switches and v-if updates must finish before collecting child refs.
+      await this.$nextTick();
+      if (this.formUnmounted) return;
+      const active = this.activeName;
+      const current = () => !this.formUnmounted && (this.isVerifyAll || this.activeName === active);
+      const failure = (error) => {
+        if (error && error.fields) return cloneModel(error.fields);
+        if (error && typeof error === "object" && !(error instanceof Error) && !error.message) return cloneModel(error);
+        return { _error: [{ message: String(error?.message || error || "Validation failed") }] };
+      };
+      const parent = await new Promise((resolve) => {
+        const done = (valid, errors) => resolve({ valid, errors: errors || {} });
+        try {
+          const pending = this.$refs.form.validate(done);
+          if (pending && typeof pending.catch === "function") pending.catch(error => done(false, failure(error)));
+        } catch (error) {
+          done(false, failure(error));
+        }
       });
+      if (!current()) return;
+      const tasks = [];
+      const enqueue = (prop, child, rowIndex) => {
+        tasks.push(Promise.resolve().then(() => {
+          if (!child || typeof child.validateCellForm !== "function") throw new Error(`Dynamic form "${prop}" is unavailable`);
+          return child.validateCellForm();
+        }).catch(failure).then(errors => ({ prop, rowIndex, errors })));
+      };
+      this.dynamicOption.forEach((column) => {
+        if (this.$slots[column.prop]) return;
+        const wrapper = this.$refs[column.prop];
+        const field = Array.isArray(wrapper) ? wrapper[0] : wrapper;
+        const main = field?.$refs.temp?.$refs.main;
+        if (column.children?.type === "form") {
+          const rows = Array.isArray(main) ? main : main ? [main] : [];
+          rows.forEach((child, index) => {
+            const rowIndex = Number.isInteger(child.tableData?.index) ? child.tableData.index : index;
+            enqueue(column.prop, child, rowIndex);
+          });
+          if (!rows.length && this.form[column.prop]?.length) enqueue(column.prop);
+        } else enqueue(column.prop, main);
+      });
+      const results = await Promise.all(tasks);
+      if (!current()) return;
+      const result = cloneModel(parent.errors);
+      results.forEach(({ prop, rowIndex, errors }) => {
+        if (this.validatenull(errors)) return;
+        let fields = cloneModel(errors);
+        if (rowIndex !== undefined) {
+          fields = {};
+          Object.keys(errors).forEach((key) => {
+            const path = `${rowIndex}.${key}`;
+            const issues = Array.isArray(errors[key]) ? errors[key] : [errors[key]];
+            fields[path] = issues.map(issue => ({
+              ...(issue && typeof issue === "object" ? cloneModel(issue) : { message: String(issue) }),
+              field: `${prop}.${path}`, rowIndex,
+            }));
+          });
+        }
+        const previous = result[prop];
+        result[prop] = { ...(Array.isArray(previous) ? { _self: previous } : previous), ...fields };
+      });
+      const valid = parent.valid && this.validatenull(result);
+      if (valid) this.show();
+      callback && callback(valid, this.hide, result);
+      return valid;
     },
     resetForm(reset = true) {
       if (reset) {
@@ -915,7 +1027,8 @@ export default create({
     submit() {
       this.validate((valid, hide, msg) => {
         if (valid) {
-          this.$emit("submit", filterParams(this.form, ["$"]), this.hide);
+          const filters = this.tableOption.filterNull === true ? ["", "$"] : ["$"];
+          this.$emit("submit", filterParams(this.form, filters), this.hide);
         } else {
           this.$emit("error", msg);
         }
@@ -931,38 +1044,8 @@ export default create({
     },
   },
   beforeUnmount() {
-    // 清理所有定时器，防止内存泄露
-    this.timers.forEach((timerId) => {
-      if (timerId) {
-        clearTimeout(timerId);
-      }
-    });
-    this.timers = [];
-
-    // 清理所有watcher
-    Object.keys(this.formBind).forEach((ele) => {
-      this.formBind[ele].forEach((unWatch) => {
-        if (typeof unWatch === "function") {
-          unWatch();
-        }
-      });
-    });
-
-    // 清理formBind对象
-    this.formBind = {};
-
-    // 清理formList数组
-    this.formList = [];
-
-    // 清理count对象
-    this.count = {};
-
-    // 清理form对象的引用
-    this.form = {};
-  },
-
-  unmounted() {
-    // 保留原有的unmounted钩子以确保兼容性
+    this.formUnmounted = true;
+    this.clearFormWatchers();
   },
 });
 </script>

@@ -14,7 +14,7 @@
       <div>
         <div v-for="(item,index) in text"
              :class="b('row')"
-             :key="index"
+             :key="getRowKey(item)"
              @mouseenter="cellMouseenter({$index:index})"
              @mouseleave="cellMouseLeave({$index:index})">
           <el-button v-if="!readonly && !disabled  && !delBtn && hoverList[index]"
@@ -25,12 +25,13 @@
                      :disabled="disabled"
                      icon="el-icon-delete"
                      circle></el-button>
-          <tvue-form :key="index"
+          <tvue-form :key="getRowKey(item)"
                      ref="main"
                      :table-data="{row:text[index],index}"
                      :option="option"
                      v-bind="$uploadFun(null,this)"
-                     v-model="text[index]">
+                     :model-value="item"
+                     @update:model-value="updateFormRow(item, $event)">
             <template #index="{}">
               <span>{{item.$index+1}}</span>
             </template>
@@ -95,7 +96,10 @@ export default create({
   data () {
     return {
       reload: Math.random(),
-      hoverList: []
+      hoverList: [],
+      rowKeys: new WeakMap(),
+      deleteRevision: 0,
+      dynamicUnmounted: false
     }
   },
   props: {
@@ -250,10 +254,35 @@ export default create({
       };
     }
   },
+  watch: {
+    boxType () {
+      this.deleteRevision++;
+    },
+    children () {
+      this.deleteRevision++;
+    }
+  },
   mounted () {
     this.initData();
   },
+  beforeUnmount () {
+    this.dynamicUnmounted = true;
+    this.deleteRevision++;
+  },
   methods: {
+    getRowKey (row) {
+      if (!this.rowKeys.has(row)) this.rowKeys.set(row, Symbol('dynamic-row'));
+      return this.rowKeys.get(row);
+    },
+    updateFormRow (row, value) {
+      if (this.dynamicUnmounted) return;
+      const key = this.getRowKey(row);
+      const index = this.text.findIndex(item => this.getRowKey(item) === key);
+      if (index < 0) return;
+      // A child Form publishes copies; keep its row identity outside the model.
+      this.rowKeys.set(value, key);
+      this.text[index] = value;
+    },
     validParams (column, type, value) {
       function replaceStr (str) { // 正则法
         str = str.toLowerCase();
@@ -315,14 +344,29 @@ export default create({
       })
     },
     delRow (index) {
+      if (!Number.isInteger(index) || index < 0 || index >= this.text.length) return;
+      const row = this.text[index];
+      const key = this.getRowKey(row);
+      const revision = this.deleteRevision;
+      let settled = false;
       const callback = () => {
-        let list = this.deepClone(this.text)
-        list.splice(index, 1);
-        this.text = list;
-        this.reload = Math.random();
+        if (settled) return;
+        settled = true;
+        // Allow pending parent updates to replace this local model first.
+        this.$nextTick(() => {
+          if (this.dynamicUnmounted || revision !== this.deleteRevision || this.disabled || this.readonly) return;
+          const currentIndex = this.text.findIndex(item => this.getRowKey(item) === key);
+          if (currentIndex < 0) return;
+          // Keep surviving row identities for other outstanding confirmations.
+          const list = this.text.slice();
+          list.splice(currentIndex, 1);
+          this.text = list;
+          this.initData();
+          this.reload = Math.random();
+        });
       }
       if (typeof this.rowDel === 'function') {
-        this.rowDel(this.text[index], callback);
+        this.rowDel(row, callback);
       } else {
         callback();
       }

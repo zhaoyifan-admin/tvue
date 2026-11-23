@@ -67,10 +67,10 @@ const normalizeColumn = (
   }
   if (isObject(column)) {
     return Object.keys(column).map((prop) => ({
-      item: {
+      item: isObject(column[prop]) ? {
         ...column[prop],
         prop: column[prop].prop || prop,
-      },
+      } : column[prop],
       path: `${path}.${prop}`,
     }));
   }
@@ -142,10 +142,10 @@ const visitColumns = (
       });
     }
 
-    if (item.dicData !== undefined && !Array.isArray(item.dicData)) {
+    if (item.dicData !== undefined && !Array.isArray(item.dicData) && typeof item.dicData !== 'function') {
       warnings.push({
         path: `${itemPath}.dicData`,
-        message: 'dicData 应为数组',
+        message: 'dicData 应为数组或返回数组的函数（支持异步返回）',
       });
     }
 

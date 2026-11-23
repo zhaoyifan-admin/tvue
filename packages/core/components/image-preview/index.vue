@@ -146,7 +146,6 @@ export default create({
     handleDownload() {
       const currentItem = this.datas[this.count];
       if (!currentItem || !currentItem.url) return;
-
       const link = document.createElement('a');
       link.href = currentItem.url;
       link.download = currentItem.name || this.getName(currentItem.url);

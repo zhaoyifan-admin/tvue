@@ -148,15 +148,17 @@ export default function () {
     watch: {
       text: {
         handler(val: any) {
-          this.handleChange(val);
+          const changed = this.handleChange(val);
           this.handleTextValue && this.handleTextValue(val);
+          return changed;
         },
         deep: true,
       },
       modelValue: {
         handler(val: any) {
-          this.initVal();
-          this.handleModelValue && this.handleModelValue(val);
+          if (this.initVal() !== false) {
+            this.handleModelValue && this.handleModelValue(val);
+          }
         },
         deep: true,
       },
@@ -235,6 +237,11 @@ export default function () {
     },
     created() {
       this.initVal();
+    },
+    mounted() {
+      // Native controls can validate immediately after emitting their new value.
+      // Publish replacements first, while keeping deep mutations and hooks batched.
+      this.$watch('text', (value: any) => this.handleChange(value), { flush: 'sync' });
     },
   };
 }

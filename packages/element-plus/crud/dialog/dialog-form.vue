@@ -36,7 +36,8 @@
       </div>
     </template>
     <tvue-form
-      v-model="crud.tableForm"
+      :model-value="crud.tableForm"
+      @update:model-value="handleModelValue"
       v-model:status="disabled"
       ref="tableForm"
       @change="handleChange"
@@ -60,39 +61,40 @@
         ></slot>
       </template>
     </tvue-form>
-    <template #footer>
-      <div class="tvue-dialog__footer" :class="'tvue-dialog__footer--' + dialogMenuPosition">
-        <slot name="menu-form-before" v-bind="menuParams()"></slot>
-        <el-button
-          type="primary"
-          @click="($refs.tableForm || {}).handleMock"
-          :loading="disabled || loading"
-          :size="crud.size"
-          :icon="option.mockIcon"
-          v-if="validData(option.mockBtn, false) && !isView"
-        >
-          {{ option.mockText }}
-        </el-button>
-        <el-button
-          v-if="validData(option.submitBtn, true) && !isView"
-          @click="submit"
-          :loading="disabled || loading"
-          :size="crud.size"
-          :icon="option.submitIcon"
-          type="primary"
-        >{{ option.submitText }}</el-button
-        >
-        <el-button
-          v-if="validData(option.emptyBtn, true) && !isView"
-          @click="reset"
-          :disabled="disabled || loading"
-          :size="crud.size"
-          :icon="option.emptyIcon"
-        >{{ option.emptyText }}</el-button
-        >
-        <slot name="menu-form" v-bind="menuParams()"></slot>
-      </div>
-    </template>
+    <span
+      class="tvue-dialog__footer"
+      :class="'tvue-dialog__footer--' + dialogMenuPosition"
+    >
+      <slot name="menu-form-before" v-bind="menuParams()"></slot>
+      <el-button
+        type="primary"
+        @click="($refs.tableForm || {}).handleMock"
+        :loading="disabled || loading"
+        :size="crud.size"
+        :icon="option.mockIcon"
+        v-if="validData(option.mockBtn, false) && !isView"
+      >
+        {{ option.mockText }}
+      </el-button>
+      <el-button
+        v-if="validData(option.submitBtn, true) && !isView"
+        @click="submit"
+        :loading="disabled || loading"
+        :size="crud.size"
+        :icon="option.submitIcon"
+        type="primary"
+      >{{ option.submitText }}</el-button
+      >
+      <el-button
+        v-if="validData(option.emptyBtn, true) && !isView"
+        @click="reset"
+        :disabled="disabled || loading"
+        :size="crud.size"
+        :icon="option.emptyIcon"
+      >{{ option.emptyText }}</el-button
+      >
+      <slot name="menu-form" v-bind="menuParams()"></slot>
+    </span>
   </component>
 </template>
 
@@ -100,6 +102,7 @@
 import create from "core/create";
 import locale from "core/locale";
 import config from "../config";
+import { cloneModel } from "core/model";
 import { filterParams } from "utils/util";
 export default create({
   name: "crud",
@@ -154,13 +157,13 @@ export default create({
     params() {
       let result = this.isDrawer
         ? {
-            size: this.fullscreen ? "100%" : this.width,
-            direction: this.crud.tableOption.dialogDirection,
-          }
+          size: this.fullscreen ? "100%" : this.width,
+          direction: this.crud.tableOption.dialogDirection,
+        }
         : {
-            width: this.width,
-            fullscreen: this.fullscreen,
-          };
+          width: this.width,
+          fullscreen: this.fullscreen,
+        };
       return Object.assign(result, this.$uploadFun({}, this.crud));
     },
     option() {
@@ -231,6 +234,9 @@ export default create({
     getSlotName(item) {
       return item.replace("-form", "");
     },
+    handleModelValue(value) {
+      this.crud.handleFormModelValue(value);
+    },
     handleChange() {
       this.crud.setVal();
     },
@@ -265,7 +271,7 @@ export default create({
     rowSave(hide) {
       this.crud.$emit(
         "row-save",
-        filterParams(this.crud.tableForm, ["$"]),
+        cloneModel(filterParams(this.crud.tableForm, ["$"])),
         this.closeDialog,
         hide
       );
@@ -274,7 +280,7 @@ export default create({
     rowUpdate(hide) {
       this.crud.$emit(
         "row-update",
-        filterParams(this.crud.tableForm, ["$"]),
+        cloneModel(filterParams(this.crud.tableForm, ["$"])),
         this.crud.tableIndex,
         this.closeDialog,
         hide
@@ -314,7 +320,7 @@ export default create({
         done && done();
         this.crud.tableIndex = -1;
         this.crud.tableForm = {};
-        this.crud.setVal();
+        this.crud.setVal(true);
         this.boxVisible = false;
       };
       if (typeof this.crud.beforeClose === "function") {

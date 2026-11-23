@@ -1,4 +1,9 @@
+import crudImport from '../messages/crud-import';
+import queryView from '../messages/query-view';
+import printPreview from '../messages/print-preview';
+
 export default {
+  printPreview: printPreview['zh-cn'],
   common: {
     submitBtn: '确定',
     cancelBtn: '取消',
@@ -218,6 +223,8 @@ export default {
     }
   },
   crud: {
+    import: crudImport['zh-cn'],
+    queryView: queryView['zh-cn'],
     excel: {
       name: '文件名',
       type: '数据范围',

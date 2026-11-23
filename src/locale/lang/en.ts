@@ -1,4 +1,9 @@
+import crudImport from '../messages/crud-import';
+import queryView from '../messages/query-view';
+import printPreview from '../messages/print-preview';
+
 export default {
+  printPreview: printPreview.en,
   common: {
     submitBtn: 'Confirm',
     cancelBtn: 'Cancel',
@@ -218,6 +223,8 @@ export default {
     }
   },
   crud: {
+    import: crudImport.en,
+    queryView: queryView.en,
     excel: {
       name: 'File Name',
       type: 'Data Scope',

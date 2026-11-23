@@ -1,5 +1,5 @@
 <template>
-  <div :class="b('header')">
+  <div :class="[b('header'), { 'tvue-crud__header--data-operations': crud.queryViewEnabled || crud.tableOption.importBtn }]">
     <div :class="b('left')"
          v-if="validData(crud.tableOption.menuLeft,true)">
       <el-button type="primary"
@@ -39,6 +39,16 @@
                  :size="crud.size"></tvue-date>
       <slot name="menu-right"
             :size="crud.size"></slot>
+      <el-tooltip :content="t('crud.import.title')"
+                  placement="top"
+                  v-if="validData(crud.tableOption.importBtn,config.importBtn)">
+        <el-button :icon="crud.getBtnIcon('importBtn')"
+                   :aria-label="t('crud.import.title')"
+                   circle
+                   :size="crud.size"
+                   @click="crud.rowImport"
+                   v-permission="crud.getPermission('importBtn')"></el-button>
+      </el-tooltip>
       <el-tooltip :content="t('crud.excelBtn')"
                   placement="top"
                   v-if="validData(crud.tableOption.excelBtn,config.excelBtn)">
@@ -114,7 +124,8 @@
                    @click="crud.handleGridShow()"
                    v-permission="crud.getPermission('gridBtn')"></el-button>
       </el-tooltip>
-
+      <query-views v-if="crud.queryViewEnabled"
+                   v-permission="crud.getPermission('queryViewBtn')"></query-views>
     </div>
   </div>
 </template>
@@ -126,9 +137,12 @@ import packages from "core/packages";
 import permission from 'common/directive/permission';
 import { validData, getAsVal } from "utils/util";
 import config from "../config";
+import queryViews from "./query-views";
+import { markRaw } from "vue";
 export default create({
   name: "crud",
   mixins: [locale],
+  components: { queryViews },
   directives: {
     permission
   },
@@ -137,6 +151,7 @@ export default create({
     return {
       dateCreate: false,
       printLoading: false,
+      printInstance: null,
       shortcuts: [
         {
           text: this.t('date.t'),
@@ -175,6 +190,9 @@ export default create({
       }
     }
   },
+  beforeUnmount () {
+    this.printInstance?.close()
+  },
   methods: {
     //日期组件回调
     dateChange (val) {
@@ -194,14 +212,20 @@ export default create({
     },
     rowPrint () {
       if (this.printLoading) return
+      this.printInstance?.close()
       this.printLoading = true
+      const printOptions = this.crud.tableOption.printOptions || {}
       try {
-        this.$Print(this.crud.$refs.table, {
+        const instance = this.$Print(this.crud.$refs.table, {
           title: this.crud.tableOption.title,
           hiddenColumnLabels: [this.crud.tableOption.menuTitle || this.t('crud.menu')],
-          onReady: () => { this.printLoading = false },
-          onError: () => { this.printLoading = false }
+          ...printOptions,
+          onReady: () => { this.printLoading = false; printOptions.onReady?.() },
+          onError: (error) => { this.printLoading = false; printOptions.onError?.(error) },
+          onClose: () => { this.printLoading = false; this.printInstance = null; printOptions.onClose?.() }
         })
+        this.printInstance = instance && instance.state !== 'closed' ? markRaw(instance) : null
+        return instance
       } catch {
         this.printLoading = false
       }

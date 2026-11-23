@@ -30,7 +30,7 @@
         <div :class="b('content')" v-if="box">
           <el-input
             :class="b('content-input')"
-            id="map__input"
+            :id="mapInputId"
             :size="size"
             @clear="clear"
             :readonly="disabled"
@@ -40,11 +40,11 @@
           ></el-input>
           <div :class="b('content-box')">
             <div
-              id="map__container"
+              :id="mapContainerId"
               :class="b('content-container')"
               tabindex="0"
             ></div>
-            <div id="map__result" :class="b('content-result')"></div>
+            <div :id="mapResultId" :class="b('content-result')"></div>
           </div>
         </div>
         <span class="tvue-dialog__footer">
@@ -54,7 +54,7 @@
             icon="el-icon-check"
             v-if="!(disabled || readonly)"
             @click="handleSubmit"
-            >{{ t("common.submitBtn") }}</el-button
+          >{{ t("common.submitBtn") }}</el-button
           >
         </span>
       </el-dialog>
@@ -67,6 +67,7 @@ import create from "core/create";
 import props from "common/common/props";
 import event from "common/common/event";
 import locale from "core/locale";
+import { uuid } from "utils/util";
 export default create({
   name: "input-map",
   mixins: [props(), event(), locale],
@@ -93,6 +94,7 @@ export default create({
     },
   },
   data() {
+    const mapId = uuid();
     return {
       formattedAddress: "",
       address: "",
@@ -100,6 +102,16 @@ export default create({
       marker: null,
       map: null,
       box: false,
+      mapInputId: `map-input-${mapId}`,
+      mapContainerId: `map-container-${mapId}`,
+      mapResultId: `map-result-${mapId}`,
+      mapRequestId: 0,
+      mapSession: 0,
+      mapUnmounted: false,
+      poiPicker: null,
+      poiPickedHandler: null,
+      mapClickHandler: null,
+      mapCloseTimer: null,
     };
   },
   watch: {
@@ -108,11 +120,13 @@ export default create({
     },
     modelValue(val) {
       if (this.validatenull(val)) {
+        this.clearMarker();
         this.poi = {};
         this.address = "";
       }
     },
     text(val) {
+      this.mapRequestId++;
       if (!this.validatenull(val)) {
         this.poi = {
           longitude: val[0],
@@ -125,25 +139,35 @@ export default create({
     box: {
       handler() {
         if (this.box) {
-          this.$nextTick(() =>
+          this.$nextTick(() => {
+            if (this.mapUnmounted || !this.box) return;
             this.init(() => {
-              if (this.longitude && this.latitude) {
+              if (this.hasCoordinates) {
                 this.addMarker(this.longitude, this.latitude);
                 this.getAddress(this.longitude, this.latitude);
               }
-            })
-          );
-        }
+            });
+          });
+        } else this.destroyMap();
       },
       immediate: true,
     },
   },
+  beforeUnmount() {
+    this.mapUnmounted = true;
+    if (this.mapCloseTimer !== null) clearTimeout(this.mapCloseTimer);
+    this.destroyMap();
+  },
   computed: {
     longitude() {
-      return this.text[0];
+      return this.text?.[0];
     },
     latitude() {
-      return this.text[1];
+      return this.text?.[1];
+    },
+    hasCoordinates() {
+      return [this.longitude, this.latitude].every(value =>
+        value !== undefined && value !== null && value !== '' && Number.isFinite(Number(value)));
     },
     title() {
       return this.disabled || this.readonly ? this.t('common.view') : this.t('common.select');
@@ -151,6 +175,7 @@ export default create({
   },
   methods: {
     handleTextValue(val) {
+      this.mapRequestId++;
       if (!this.validatenull(val)) {
         this.poi = {
           longitude: val[0],
@@ -161,7 +186,7 @@ export default create({
       }
     },
     handleModelValue(val) {
-      if (this.validatenull(val)) this.poi = {};
+      if (this.validatenull(val)) this.clear();
     },
     clear() {
       this.poi = {};
@@ -173,10 +198,12 @@ export default create({
     },
     handleClear() {
       this.text = [];
-      this.poi = {};
+      this.clear();
       this.handleChange(this.text);
-      setTimeout(() => {
-        this.box = false;
+      if (this.mapCloseTimer !== null) clearTimeout(this.mapCloseTimer);
+      this.mapCloseTimer = setTimeout(() => {
+        this.mapCloseTimer = null;
+        if (!this.mapUnmounted) this.box = false;
       }, 0);
     },
     setVal() {
@@ -188,6 +215,9 @@ export default create({
       this.handleChange(this.text);
     },
     handleShow() {
+      if (this.mapUnmounted) return;
+      if (this.mapCloseTimer !== null) clearTimeout(this.mapCloseTimer);
+      this.mapCloseTimer = null;
       this.$refs.main.blur();
       this.box = true;
     },
@@ -201,6 +231,7 @@ export default create({
     },
     //清空坐标
     clearMarker() {
+      this.mapRequestId++;
       if (this.marker) {
         this.marker.setMap(null);
         this.marker = null;
@@ -208,13 +239,20 @@ export default create({
     },
     //获取坐标
     getAddress(R, P) {
-      //回调函数
+      const requestId = ++this.mapRequestId;
+      const marker = this.marker;
+      const map = this.map;
+      const session = this.mapSession;
+      const current = () => !this.mapUnmounted && this.box && requestId === this.mapRequestId &&
+        session === this.mapSession && marker && marker === this.marker && map === this.map;
       let geocoder = new window.AMap.Geocoder({});
       geocoder.getAddress([R, P], (status, result) => {
-        if (status === "complete" && result.info === "OK") {
+        if (!current()) return;
+        if (status === "complete" && result?.info === "OK" && result.regeocode) {
           this.mapChange && this.mapChange(result);
+          if (!current()) return;
           const regeocode = result.regeocode;
-          this.poi = Object.assign(regeocode, {
+          this.poi = Object.assign({}, regeocode, {
             longitude: R,
             latitude: P,
           });
@@ -230,37 +268,59 @@ export default create({
           // 点标记中的文本
           var markerSpan = document.createElement("span");
           markerSpan.className = "tvue-input-map__marker";
-          markerSpan.innerHTML = this.poi.formattedAddress;
+          markerSpan.textContent = this.poi.formattedAddress;
           markerContent.appendChild(markerSpan);
-          this.marker.setContent(markerContent); //更新点标记内容
+          marker.setContent(markerContent); //更新点标记内容
         }
       });
     },
     handleClose() {
-      window.poiPicker.clearSearchResults();
+      this.destroyMap();
+    },
+    destroyMap() {
+      this.mapSession++;
+      this.clearMarker();
+      if (this.poiPicker) {
+        this.poiPicker.off?.('poiPicked', this.poiPickedHandler);
+        this.poiPicker.clearSearchResults?.();
+        this.poiPicker.destroy?.();
+      }
+      if (this.map) {
+        this.map.off?.('click', this.mapClickHandler);
+        this.map.destroy?.();
+      }
+      this.map = null;
+      this.poiPicker = null;
+      this.poiPickedHandler = null;
+      this.mapClickHandler = null;
     },
     addClick() {
-      this.map.on("click", (e) => {
+      const map = this.map;
+      this.mapClickHandler = (e) => {
+        if (this.mapUnmounted || !this.box || this.map !== map) return;
         if (this.disabled || this.readonly) return;
         const lnglat = e.lnglat;
         const P = lnglat.lat;
         const R = lnglat.lng;
         this.addMarker(R, P);
         this.getAddress(R, P);
-      });
+      };
+      map.on("click", this.mapClickHandler);
     },
     init(callback) {
+      if (this.mapUnmounted || !this.box) return;
+      this.destroyMap();
       if (!window.AMap) {
         packages.logs("Map");
         return;
       }
       this.map = new window.AMap.Map(
-        "map__container",
+        this.mapContainerId,
         Object.assign(
           {
             zoom: 13,
             center: (() => {
-              if (this.longitude && this.latitude)
+              if (this.hasCoordinates)
                 return [this.longitude, this.latitude];
             })(),
           },
@@ -276,27 +336,31 @@ export default create({
         packages.logs("MapUi");
         return;
       }
+      const map = this.map;
+      const session = this.mapSession;
       window.AMapUI.loadUI(["misc/PoiPicker"], (PoiPicker) => {
+        if (this.mapUnmounted || !this.box || this.map !== map || this.mapSession !== session) return;
         var poiPicker = new PoiPicker({
-          input: "map__input",
+          input: this.mapInputId,
           placeSearchOptions: {
             map: this.map,
             pageSize: 10,
           },
-          searchResultsContainer: "map__result",
+          searchResultsContainer: this.mapResultId,
         });
         //初始化poiPicker
         this.poiPickerReady(poiPicker);
       });
     },
     poiPickerReady(poiPicker) {
-      window.poiPicker = poiPicker;
+      this.poiPicker = poiPicker;
       //选取了某个POI
-      poiPicker.on("poiPicked", (poiResult) => {
+      this.poiPickedHandler = (poiResult) => {
+        if (this.mapUnmounted || !this.box || this.poiPicker !== poiPicker) return;
         this.clearMarker();
         var source = poiResult.source,
           poi = poiResult.item;
-        this.poi = Object.assign(poi, {
+        this.poi = Object.assign({}, poi, {
           formattedAddress: poi.name,
           longitude: poi.location.lng,
           latitude: poi.location.lat,
@@ -304,7 +368,8 @@ export default create({
         if (source !== "search") {
           poiPicker.searchByKeyword(poi.name);
         }
-      });
+      };
+      poiPicker.on("poiPicked", this.poiPickedHandler);
     },
   },
 });

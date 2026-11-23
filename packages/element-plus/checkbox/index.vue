@@ -33,6 +33,7 @@ import locale from "core/locale";
 import create from "core/create";
 import props from "common/common/props";
 import event from "../../core/common/event";
+import { cloneModel, isModelEqual } from "core/model";
 export default create({
   name: "checkbox",
   props: {
@@ -52,14 +53,19 @@ export default create({
     };
   },
   watch: {
-    dic () {
-      this.handleCheckChange();
+    dic: {
+      handler () { this.handleCheckChange(); },
+      deep: true
     },
     text: {
-      handler (val) {
+      handler () {
         this.handleCheckChange();
-      }
+      },
+      deep: true
     },
+    valueKey () { this.handleCheckChange(); },
+    disabledKey () { this.handleCheckChange(); },
+    all () { this.handleCheckChange(); },
   },
   created () { },
   mounted () { },
@@ -67,15 +73,25 @@ export default create({
     handleCheckAll (val) {
       if (!this.all) return
       const availableOptions = this.dic.filter(item => !item[this.disabledKey]);
-      this.text = val ? availableOptions.map(ele => ele[this.valueKey]) : [];
-      this.isIndeterminate = false;
+      const selected = Array.isArray(this.text) ? cloneModel(this.text) : [];
+      const values = availableOptions.map(item => item[this.valueKey]);
+      if (val) {
+        values.forEach(value => {
+          if (!selected.some(item => isModelEqual(item, value))) selected.push(cloneModel(value));
+        });
+        this.text = selected;
+      } else {
+        this.text = selected.filter(value => !values.some(item => isModelEqual(item, value)));
+      }
+      this.handleCheckChange();
     },
     handleCheckChange () {
-      let value = this.text;
       if (!this.all) return
-      const availableCount = this.dic.filter(item => !item[this.disabledKey]).length;
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === availableCount;
+      const selected = Array.isArray(this.text) ? this.text : [];
+      const available = this.dic.filter(item => !item[this.disabledKey]);
+      const availableCount = available.length;
+      const checkedCount = available.filter(item => selected.some(value => isModelEqual(value, item[this.valueKey]))).length;
+      this.checkAll = availableCount > 0 && checkedCount === availableCount;
       this.isIndeterminate = checkedCount > 0 && checkedCount < availableCount;
     }
   }

@@ -73,7 +73,7 @@ export default create({
   },
   methods: {
     handleChange(value) {
-      this.$emit("update:modelValue", value);
+      return this.emitModelValue(value);
     },
     handleNativeChange(value) {
       this.bindEvent("change", { value });

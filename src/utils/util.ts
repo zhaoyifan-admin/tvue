@@ -45,36 +45,7 @@ export function setAsVal(obj: any, bind = '', value?: any) {
   return obj;
 }
 
-export const loadScript = (type = 'js', url?: string, dom = 'body') => {
-  let flag = false;
-  return new Promise<void>((resolve) => {
-    const head =
-      dom == 'head' ? document.getElementsByTagName('head')[0] : document.body;
-    for (let i = 0; i < head.children.length; i++) {
-      const ele = head.children[i] as HTMLScriptElement & HTMLLinkElement;
-      if (((ele as any).src || '').indexOf(url) !== -1) {
-        flag = true;
-        resolve();
-      }
-    }
-    if (flag) return;
-    let script: HTMLScriptElement | HTMLLinkElement;
-    if (type === 'js') {
-      script = document.createElement('script');
-      script.type = 'text/javascript';
-      (script as HTMLScriptElement).src = url || '';
-    } else {
-      script = document.createElement('link');
-      (script as HTMLLinkElement).rel = 'stylesheet';
-      script.type = 'text/css';
-      (script as HTMLLinkElement).href = url || '';
-    }
-    head.appendChild(script);
-    script.onload = function () {
-      resolve();
-    };
-  });
-};
+export { loadScript } from './load-script';
 
 export function downFile(url: string | Blob, saveName?: string) {
   if (typeof url === 'object' && url instanceof Blob) {
@@ -294,12 +265,12 @@ export const getDicValue = (list: AnyRecord[], value: any, props: AnyRecord = {}
       const arrayResult: any[] = [];
       val.forEach((arrayVal) => {
         const obj = findNode(dic, props, arrayVal) || {};
-        arrayResult.push(obj[labelKey] || arrayVal);
+        arrayResult.push(validatenull(obj[labelKey]) ? arrayVal : obj[labelKey]);
       });
       result.push(arrayResult);
     } else {
       const obj = findNode(dic, props, val) || {};
-      result.push(obj[labelKey] || val);
+      result.push(validatenull(obj[labelKey]) ? val : obj[labelKey]);
     }
   });
   return isArray ? result : result.join('');

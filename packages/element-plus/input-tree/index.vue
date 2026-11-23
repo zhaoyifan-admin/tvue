@@ -56,8 +56,9 @@
 import create from "core/create";
 import props from "common/common/props";
 import event from "common/common/event";
-import { DIC_SHOW_SPLIT } from 'global/variable';
 import { DIC_PROPS } from 'global/variable';
+import { cloneModel } from 'core/model';
+import { findNode } from 'utils/util';
 export default create({
   name: "input-tree",
   mixins: [props(), event()],
@@ -65,6 +66,8 @@ export default create({
     return {
       netDic: [],
       loading: false,
+      lazyRevision: 0,
+      lazyUnmounted: false,
     };
   },
   props: {
@@ -123,49 +126,43 @@ export default create({
   watch: {
     dic: {
       handler (val) {
-        this.netDic = val;
+        this.lazyRevision++;
+        this.netDic = cloneModel(Array.isArray(val) ? val : []);
       },
-      immediate: true
-    },
-    netDic: {
-      handler () {
-        this.init();
-      },
-      immediate: true
+      immediate: true,
+      deep: true
     },
   },
   computed: {
     keysList () {
-      return this.multiple ? this.text : [this.text || '']
+      return this.multiple ? this.text : [this.text ?? '']
     },
     treeProps () {
+      const disabled = this.props.disabled || DIC_PROPS.disabled;
       return Object.assign(this.deepClone(DIC_PROPS), this.props, {
-        isLeaf: this.leafKey
+        isLeaf: this.leafKey,
+        disabled: (data, node) => {
+          const original = typeof disabled === 'function' ? disabled(data, node) : data[disabled];
+          const children = data[this.childrenKey];
+          const isParent = (Array.isArray(children) && children.length > 0) ||
+            data[this.leafKey] === false || (node && node.isLeaf === false);
+          return Boolean(original || (!this.parent && isParent));
+        }
       })
     }
   },
+  beforeUnmount () {
+    this.lazyUnmounted = true;
+    this.lazyRevision++;
+  },
   methods: {
-    handleTextValue (value) {
-      this.init();
+    getDicData () {
+      return this.netDic;
     },
     getHalfList () {
       let list = this.$refs.tree.getCheckedNodes(false, true)
       list = list.map(ele => ele[this.valueKey])
       return list;
-    },
-    init () {
-      this.disabledParentNode(this.dic, this.parent);
-    },
-    disabledParentNode (dic, parent) {
-      dic.forEach(ele => {
-        const children = ele[this.childrenKey];
-        if (!this.validatenull(children)) {
-          if (!parent) {
-            ele.disabled = true;
-          }
-          this.disabledParentNode(children, parent);
-        }
-      });
     },
     checkChange (checkedNodes, checkedKeys, halfCheckedNodes, halfCheckedKeys) {
       if (typeof this.checked === "function") this.checked(checkedNodes, checkedKeys, halfCheckedNodes, halfCheckedKeys);
@@ -174,18 +171,22 @@ export default create({
       if (typeof this.nodeClick === "function") this.nodeClick(data, node, nodeComp);
     },
     handleLoad (node, resolve) {
-      let callback = (list) => {
-        let findDic = (list, value, children) => {
-          list.forEach(ele => {
-            if (ele[this.valueKey] == value) {
-              ele[this.childrenKey] = children
-            } else if (ele[this.childrenKey]) {
-              findDic(ele[this.childrenKey])
-            }
-          })
-        }
-        findDic(this.netDic, node.key, list)
-        resolve(list);
+      const revision = this.lazyRevision;
+      let settled = false;
+      const callback = (list) => {
+        if (settled) return;
+        settled = true;
+        const children = cloneModel(Array.isArray(list) ? list : []);
+        this.$nextTick(() => {
+          if (this.lazyUnmounted || revision !== this.lazyRevision) return;
+          if (node.level === 0) {
+            this.netDic = children;
+          } else {
+            const target = findNode(this.netDic, this.props, node.key);
+            if (target) target[this.childrenKey] = children;
+          }
+          resolve(children);
+        });
       }
       this.treeLoad && this.treeLoad(node, callback)
     }

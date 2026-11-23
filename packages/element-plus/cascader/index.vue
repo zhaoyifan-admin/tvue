@@ -1,10 +1,9 @@
 <template>
   <el-cascader
     ref="cascader"
-    :options="dic"
+    :options="netDic"
     :class="b()"
     @click="handleClick"
-    @change="handleValueChange"
     v-model="text"
     :placeholder="placeholder"
     :props="allProps"
@@ -38,9 +37,14 @@
 import create from "core/create";
 import props from "common/common/props";
 import event from "common/common/event";
+import { cloneModel } from "core/model";
+import { findNode } from "utils/util";
 export default create({
   name: "cascader",
   mixins: [props(), event()],
+  data() {
+    return { netDic: [], lazyRevision: 0, lazyUnmounted: false };
+  },
   props: {
     clearValidate: Function,
     effect: {
@@ -94,6 +98,16 @@ export default create({
       type: String,
     },
   },
+  watch: {
+    dic: {
+      handler(value) {
+        this.lazyRevision++;
+        this.netDic = cloneModel(Array.isArray(value) ? value : []);
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
   computed: {
     allProps() {
       return {
@@ -104,23 +118,26 @@ export default create({
         checkStrictly: this.checkStrictly,
         multiple: this.multiple,
         emitPath: this.emitPath,
-        expandTrigger: this.props.expandTrigger,
         hoverThreshold: this.props.hoverThreshold,
         leaf: this.leafKey,
         lazy: this.lazy,
         lazyLoad: (node, resolve) => {
-          let callback = (list) => {
-            let findDic = (list, value, children) => {
-              list.forEach((ele) => {
-                if (ele[this.valueKey] == value) {
-                  ele[this.childrenKey] = children;
-                } else if (ele[this.childrenKey]) {
-                  findDic(ele[this.childrenKey]);
-                }
-              });
-            };
-            findDic(this.dic, node[this.valueKey], list);
-            resolve(list);
+          const revision = this.lazyRevision;
+          let settled = false;
+          const callback = (list) => {
+            if (settled) return;
+            settled = true;
+            const children = cloneModel(Array.isArray(list) ? list : []);
+            this.$nextTick(() => {
+              if (this.lazyUnmounted || revision !== this.lazyRevision) return;
+              if (node.root || node.level === 0) {
+                this.netDic = children;
+              } else {
+                const target = findNode(this.netDic, this.props, node.value);
+                if (target) target[this.childrenKey] = children;
+              }
+              resolve(children);
+            });
           };
           this.lazyLoad && this.lazyLoad(node, callback);
         },
@@ -130,13 +147,13 @@ export default create({
   },
   created() {},
   mounted() {},
+  beforeUnmount() {
+    this.lazyUnmounted = true;
+    this.lazyRevision++;
+  },
   methods: {
-    handleValueChange(val) {
-      setTimeout(() => {
-        if (!this.validatenull(val) && this.rules && this.clearValidate) {
-          this.clearValidate(this.prop);
-        }
-      });
+    getDicData() {
+      return this.netDic;
     },
     getCheckedNodes(leafOnly = false) {
       return this.$refs.cascader.getCheckedNodes(leafOnly);

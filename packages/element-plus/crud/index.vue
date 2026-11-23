@@ -198,6 +198,7 @@
     <dialog-excel ref="dialogExcel"></dialog-excel>
     <dialog-column ref="dialogColumn"></dialog-column>
     <dialog-filter ref="dialogFilter"></dialog-filter>
+    <dialog-import v-if="tableOption.importBtn" ref="dialogImport"></dialog-import>
   </div>
 </template>
 <script>
@@ -215,6 +216,8 @@ import dialogColumn from "./dialog/dialog-column";
 import dialogFilter from "./dialog/dialog-filter";
 import dialogForm from "./dialog/dialog-form";
 import dialogExcel from "./dialog/dialog-excel";
+import dialogImport from "./dialog/dialog-import";
+import queryView from "packages/element-plus/crud/query-view";
 import column from "./column/column";
 import columnMenu from "./column/column-menu";
 import columnDefault from "./column/column-default";
@@ -227,12 +230,13 @@ import {
   saveColumnState,
 } from "core/column-state";
 import { calcCascader, formInitVal } from "core/dataformat";
+import { cloneModel, isModelEqual } from "core/model";
 import { DIC_PROPS } from "global/variable";
 import { CommonProps } from "element-plus";
 import { getColumn } from "utils/util";
 export default create({
   name: "crud",
-  mixins: [init("crud"), locale],
+  mixins: [init("crud"), locale, queryView],
   emits: [
     "update:modelValue",
     "tree-load",
@@ -278,6 +282,9 @@ export default create({
     "scroll",
     "column-state-change",
     "column-state-reset",
+    "import-submit",
+    "import-success",
+    "query-view-change",
   ],
   directives: {
     permission,
@@ -300,6 +307,7 @@ export default create({
     dialogFilter, //过滤器
     dialogForm, //分页
     dialogExcel, //导出
+    dialogImport,
   },
   data() {
     return {
@@ -311,6 +319,7 @@ export default create({
       list: [],
       listError: {},
       tableForm: {},
+      tableFormSnapshot: null,
       tableHeight: undefined,
       tableIndex: -1,
       tableSelect: [],
@@ -332,6 +341,12 @@ export default create({
     this.initFun();
   },
   computed: {
+    dataToolsEnabled() {
+      return this.validData(this.tableOption.dataToolsBtn, config.dataToolsBtn);
+    },
+    queryViewEnabled() {
+      return this.dataToolsEnabled && this.validData(this.tableOption.queryViewBtn, config.queryViewBtn);
+    },
     columnVirtualizeOption() {
       return this.columnOption.map((ele) => {
         return {
@@ -483,7 +498,13 @@ export default create({
   watch: {
     modelValue: {
       handler(val) {
-        this.tableForm = val;
+        // The parent may echo an emitted snapshot after another local edit.
+        // That acknowledgment must not replace the newer editable values.
+        if (this.tableFormSnapshot !== null && isModelEqual(val, this.tableFormSnapshot)) return;
+        if (!isModelEqual(val, this.tableForm)) {
+          this.tableForm = cloneModel(val);
+          this.tableFormSnapshot = null;
+        }
       },
       immediate: true,
       deep: true,
@@ -591,6 +612,7 @@ export default create({
         "setCurrentRow",
         "clearFilter",
         "clearSort",
+        "sort",
       ]);
     },
     initTableMethods(methods) {
@@ -803,10 +825,14 @@ export default create({
     },
     //筛选回调用
     filterChange(filters) {
+      this.captureQueryFilters(filters);
+      if (this.queryViewApplying) return;
       this.$emit("filter-change", filters);
     },
     // 排序回调
     sortChange(val) {
+      this.captureQuerySort(val);
+      if (this.queryViewApplying) return;
       this.$emit("sort-change", val);
     },
     // 行双击
@@ -958,30 +984,42 @@ export default create({
     getPropRef(prop) {
       return this.$refs.dialogForm.$refs.tableForm.getPropRef(prop);
     },
-    setVal() {
-      this.$emit("update:modelValue", this.tableForm);
-      this.$emit("change", this.tableForm);
+    rowImport() {
+      return this.$refs.dialogImport?.handleShow();
+    },
+    handleFormModelValue(value) {
+      if (!isModelEqual(value, this.tableForm)) {
+        this.tableForm = cloneModel(value);
+      }
+      this.setVal();
+    },
+    setVal(force = false) {
+      if (!force && isModelEqual(this.tableForm, this.tableFormSnapshot)) return;
+      const snapshot = cloneModel(this.tableForm);
+      this.tableFormSnapshot = snapshot;
+      this.$emit("update:modelValue", cloneModel(snapshot));
+      this.$emit("change", cloneModel(snapshot));
     },
     // 编辑
     rowEdit(row, index) {
-      this.tableForm = this.deepClone(row);
+      this.tableForm = cloneModel(row);
       this.tableIndex = index;
-      this.setVal();
+      this.setVal(true);
       this.$refs.dialogForm.show("edit");
     },
     //复制
     rowCopy(row) {
-      this.tableForm = this.deepClone(row);
+      this.tableForm = cloneModel(row);
       delete this.tableForm[this.rowKey];
       this.tableIndex = -1;
-      this.setVal();
+      this.setVal(true);
       this.$refs.dialogForm.show("add");
     },
     //查看
     rowView(row, index) {
-      this.tableForm = this.deepClone(row);
+      this.tableForm = cloneModel(row);
       this.tableIndex = index;
-      this.setVal();
+      this.setVal(true);
       this.$refs.dialogForm.show("view");
     },
     // 删除

@@ -1,6 +1,131 @@
 $color-blue: #2196f3;
 $space-width: 15px;
 
+.tvue-crud__header.tvue-crud__header--data-operations {
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  overflow: visible;
+
+  > .tvue-crud__left,
+  > .tvue-crud__right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  > .tvue-crud__right {
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+
+  .el-button + .el-button {
+    margin-left: 0;
+  }
+
+  @media (max-width: 768px) {
+    > .tvue-crud__right {
+      flex: 1 1 100%;
+      justify-content: flex-start;
+      margin-left: 0;
+      gap: 4px;
+    }
+  }
+}
+
+.tvue-crud-import {
+  > * + * {
+    margin-top: 16px;
+  }
+
+  &__step {
+    padding: 12px;
+    color: var(--el-color-primary);
+    background: var(--el-fill-color-light);
+  }
+
+  &__upload {
+    padding: 20px 0;
+  }
+
+  &__issue {
+    color: var(--el-color-danger);
+    word-break: break-word;
+  }
+
+  .el-select {
+    width: 100%;
+  }
+}
+
+.tvue-query-views {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+
+  &__popover.el-popover {
+    box-sizing: border-box;
+    max-width: calc(100% - 24px);
+    padding: 16px;
+  }
+
+  &__title {
+    color: var(--el-text-color-primary);
+    font-size: var(--el-font-size-base);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  &__select {
+    width: 100%;
+  }
+
+  &__editor {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  &__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+
+    .el-button {
+      width: 100%;
+      min-width: 0;
+      height: auto;
+      min-height: var(--el-button-size, var(--el-component-size));
+      margin: 0;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    &--footer {
+      padding-top: 12px;
+      border-top: 1px solid var(--el-border-color-lighter);
+    }
+  }
+
+  &__save {
+    grid-column: 1 / -1;
+  }
+
+  &__status {
+    padding: 8px 10px;
+    border-radius: var(--el-border-radius-base);
+    background: var(--el-color-warning-light-9);
+    color: var(--el-color-warning);
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+}
+
+
 .tvue-crud {
   margin: 0 auto;
   width: 100%;

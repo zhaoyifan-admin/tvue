@@ -1,8 +1,15 @@
-import { detailDataType, getAsVal } from 'utils/util';
+import { deepClone, detailDataType, getAsVal } from 'utils/util';
 import { validatenull } from 'utils/validate';
 import { DIC_PROPS } from 'global/variable';
 
 const key = 'key';
+type DicErrorHandler = (error: any, prop: string) => void;
+
+const settleDic = <T>(task: Promise<T>, prop: string, onError?: DicErrorHandler) =>
+  task.catch((error) => {
+    if (onError) onError(error, prop);
+    return null;
+  });
 
 const getDicTemplateKeys = (column: Record<string, any>) => {
   const values = [
@@ -59,17 +66,24 @@ export const getRowDicRequests = (
   return requests;
 };
 
-function getDataType(list: Record<string, any>[] = [], props: Record<string, any> = {}, type: any) {
+export const normalizeDicData = (
+  list: Record<string, any>[] = [],
+  props: Record<string, any> = {},
+  type?: any,
+) => {
   const valueKey = props.value || DIC_PROPS.value;
   const childrenKey = props.children || DIC_PROPS.children;
-  list.forEach((ele) => {
-    ele[valueKey] = detailDataType(ele[valueKey], type);
-    if (ele[childrenKey]) getDataType(ele[childrenKey], props, type);
+  if (!Array.isArray(list)) return list;
+  return list.map((ele) => {
+    const item = { ...ele, [valueKey]: detailDataType(ele[valueKey], type) };
+    if (Array.isArray(ele[childrenKey])) {
+      item[childrenKey] = normalizeDicData(ele[childrenKey], props, type);
+    }
+    return item;
   });
-  return list;
-}
+};
 
-function getResData(data: any, props: Record<string, any>, dataType: any) {
+function getResData(data: any, props: Record<string, any>) {
   const bind = props.res;
   let res = data;
   const deep = data.data;
@@ -78,13 +92,13 @@ function getResData(data: any, props: Record<string, any>, dataType: any) {
   } else if (deep) {
     res = Array.isArray(deep) ? deep : [deep];
   }
-  if (dataType) res = getDataType(res, props, dataType);
   return res;
 }
 
 export const loadCascaderDic = async (
   columnOption: Record<string, any>[] = [],
   safe: any,
+  onError?: DicErrorHandler,
 ) => {
   const columnList = columnOption.filter((ele) => ele.parentProp);
   const tasks: Promise<{ prop: string; data: any[]; index: number }>[] = [];
@@ -100,7 +114,7 @@ export const loadCascaderDic = async (
       }
 
       tasks.push(
-        sendDic(
+        settleDic(sendDic(
           {
             url: column.dicUrl,
             props: column.props,
@@ -113,7 +127,7 @@ export const loadCascaderDic = async (
             value,
           },
           safe,
-        ).then((data) => ({ prop: column.prop, data, index })),
+        ).then((data) => ({ prop: column.prop, data, index })), column.prop, onError),
       );
     });
   });
@@ -121,13 +135,16 @@ export const loadCascaderDic = async (
   const result: Record<string, any> = {};
   const data = await Promise.all(tasks);
   data.forEach((item) => {
+    if (!item) return;
     if (!result[item.index]) result[item.index] = {};
     result[item.index][item.prop] = item.data;
   });
   return result;
 };
 
-export const loadDic = async (option: Record<string, any>, safe: any, rowScoped = false) => {
+export const loadDic = async (
+  option: Record<string, any>, safe: any, rowScoped = false, onError?: DicErrorHandler,
+) => {
   let notList: string[] = [];
   const tasks: Promise<{ prop: string; data: any[] }>[] = [];
   const column = option.column || [];
@@ -141,7 +158,7 @@ export const loadDic = async (option: Record<string, any>, safe: any, rowScoped 
     if (!url || parentProp || flag || (rowScoped && isRowDicColumn(ele))) return;
 
     tasks.push(
-      sendDic(
+      settleDic(sendDic(
         {
           url,
           name: prop,
@@ -151,21 +168,24 @@ export const loadDic = async (option: Record<string, any>, safe: any, rowScoped 
           props: ele.props,
           dataType: ele.dataType,
           query: ele.dicQuery,
+          form: safe.tableForm || safe.form || {},
+          value: (safe.tableForm || safe.form || {})[prop],
         },
         safe,
-      ).then((data) => ({ prop, data })),
+      ).then((data) => ({ prop, data })), prop, onError),
     );
   });
 
   const result: Record<string, any> = {};
   const data = await Promise.all(tasks);
   data.forEach((item) => {
+    if (!item) return;
     result[item.prop] = item.data;
   });
   return result;
 };
 
-export const loadLocalDic = (option: Record<string, any>) => {
+export const loadLocalDic = (option: Record<string, any>, onError?: DicErrorHandler) => {
   const columnData: Record<string, any> = {};
   const optionData = option.dicData || {};
   const tasks: Promise<{ prop: string; data: any[] }>[] = [];
@@ -178,19 +198,21 @@ export const loadLocalDic = (option: Record<string, any>) => {
         const dicResult = dic(ele);
         if (dicResult && typeof dicResult.then === 'function') {
           tasks.push(
-            Promise.resolve(dicResult).then((res: any[]) => ({
+            settleDic(Promise.resolve(dicResult).then((res: any[]) => ({
               prop,
-              data: getDataType(res, ele.props, ele.dataType),
-            })),
+              data: normalizeDicData(res, ele.props, ele.dataType),
+            })), prop, onError),
           );
         } else {
-          columnData[prop] = getDataType(dicResult, ele.props, ele.dataType);
+          columnData[prop] = normalizeDicData(dicResult, ele.props, ele.dataType);
         }
       } catch (error) {
-        tasks.push(Promise.reject(error));
+        tasks.push(settleDic(Promise.reject(error), prop, onError));
       }
     } else if (dic instanceof Array) {
-      columnData[prop] = getDataType(dic, ele.props, ele.dataType);
+      columnData[prop] = normalizeDicData(dic, ele.props, ele.dataType);
+    } else if (Object.prototype.hasOwnProperty.call(optionData, prop)) {
+      columnData[prop] = normalizeDicData(optionData[prop], ele.props, ele.dataType);
     }
   });
 
@@ -198,6 +220,7 @@ export const loadLocalDic = (option: Record<string, any>) => {
     data: { ...optionData, ...columnData },
     pending: Promise.all(tasks).then((items) => {
       return items.reduce((result, item) => {
+        if (!item) return result;
         result[item.prop] = item.data;
         return result;
       }, {} as Record<string, any>);
@@ -224,7 +247,10 @@ export const sendDic = (params: Record<string, any>, safe: any) => {
   query = column.dicQuery || query || {};
   formatter = column.dicFormatter || formatter;
   props = column.props || props || {};
+  dataType = column.dataType === undefined ? dataType : column.dataType;
   if (!url) return Promise.resolve([]);
+  // Request templates and formatters must observe the same form snapshot.
+  form = deepClone(form);
 
   const list = url.match(/[^\{\}]+(?=\})/g) || [];
   list.forEach((ele: string) => {
@@ -253,27 +279,23 @@ export const sendDic = (params: Record<string, any>, safe: any) => {
     return { data };
   };
 
+  const requestConfig = Object.assign(
+    { url, method, headers: getKey(headers) },
+    getData(),
+  );
+
   return Promise.resolve()
     .then(() =>
-      safe.$axios(
-        Object.assign(
-          {
-            url,
-            method,
-            headers: getKey(headers),
-          },
-          getData(),
-        ),
-      ),
+      safe.$axios(requestConfig),
     )
-    .then((res: any) => {
+    .then(async (res: any) => {
       let currentList: any[] = [];
       res = res.data || {};
       if (typeof formatter === 'function') {
-        currentList = formatter(res, form);
+        currentList = await formatter(res, form);
       } else {
-        currentList = getResData(res, props, dataType);
+        currentList = getResData(res, props);
       }
-      return currentList;
+      return normalizeDicData(currentList, props, dataType);
     });
 };

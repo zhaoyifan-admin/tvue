@@ -153,7 +153,7 @@ export default {
         list.forEach((ele, index) => {
           let children = ele.children
           if (children && !Array.isArray(children)) delete ele.children
-          else if (ele.showColumn === false || ele.excel === false) count.push(index)
+          if (ele.showColumn === false || ele.excel === false) count.push(index)
           else {
             ele.prop = ele.prop || uuid()
             prop.push(ele.prop)
@@ -174,16 +174,15 @@ export default {
       if (!this.form.params) return []
       if (this.form.params.includes('headers')) {
         const findProp = (list = []) => {
-          list.forEach((ele, index) => {
-            if (!props.includes(ele.prop)) {
-              list.splice(index, 1);
-            } else if (ele.children) {
-              findProp(ele.children)
+          return list.filter(ele => {
+            if (Array.isArray(ele.children)) {
+              ele.children = findProp(ele.children)
+              return ele.children.length > 0
             }
+            return props.includes(ele.prop)
           })
         }
-        findProp(columns);
-        return columns
+        return findProp(columns)
       } else {
         let result = [];
         const findProp = (list = []) => {

@@ -181,21 +181,37 @@ export default create({
       check: null,
       form: {},
       sending: false,
-      syncing: false
+      syncing: false,
+      sendRequestId: 0,
+      sendTimer: null,
+      sendUnmounted: false
     }
   },
   beforeUnmount () {
+    this.sendUnmounted = true;
+    this.cancelSend();
     this.clearTimer();
   },
   methods: {
     onSend () {
-      if (this.sendDisabled || this.disabled || this.loading) return;
+      if (this.sendUnmounted || this.sendDisabled || this.disabled || this.loading) return;
+      const listeners = this.$?.vnode.props || {};
+      const listener = listeners.onSend || (!this.$?.emitted?.onSend && listeners.onSendOnce);
+      if (!listener || (Array.isArray(listener) && !listener.length)) return;
+      const requestId = ++this.sendRequestId;
       this.sending = true;
       let completed = false;
-      const done = () => {
-        if (completed) return;
+      const finish = () => {
+        if (completed || this.sendUnmounted || requestId !== this.sendRequestId) return false;
         completed = true;
+        if (this.sendTimer !== null) clearTimeout(this.sendTimer);
+        this.sendTimer = null;
         this.sending = false;
+        return true;
+      };
+      const fail = () => { finish(); };
+      const done = (success = true) => {
+        if (!finish() || success === false) return;
         this.clearTimer();
         this.nowtime = this.time;
         this.check = setInterval(() => {
@@ -203,10 +219,16 @@ export default create({
           if (this.nowtime <= 0) this.clearTimer();
         }, 1000);
       };
-      this.$emit('send', done, { ...this.form });
-      this.$nextTick(() => {
-        if (!completed) this.sending = false;
-      });
+      const configuredTimeout = Number(this.option.sendTimeout);
+      const timeout = Number.isFinite(configuredTimeout) && configuredTimeout > 0 ? configuredTimeout : 30000;
+      this.sendTimer = setTimeout(fail, timeout);
+      this.$emit('send', done, { ...this.form }, fail);
+    },
+    cancelSend () {
+      this.sendRequestId++;
+      if (this.sendTimer !== null) clearTimeout(this.sendTimer);
+      this.sendTimer = null;
+      this.sending = false;
     },
     onRefresh () {
       if (!this.disabled && !this.loading) this.$emit('refresh');

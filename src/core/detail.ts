@@ -32,9 +32,7 @@ export const detail = (
             result = result.split(separator || DIC_SPLIT);
           }
         }
-        result.forEach((ele: any, index: number) => {
-          result[index] = detailDataType(ele, column.dataType);
-        });
+        result = result.map((ele: any) => detailDataType(ele, column.dataType));
       } else {
         result = detailDataType(result, column.dataType);
       }

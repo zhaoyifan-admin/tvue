@@ -102,7 +102,7 @@
         :size="size"
         :disabled="disabled"
         type="primary"
-        >{{ fileText || t("upload.upload") }}</el-button
+      >{{ fileText || t("upload.upload") }}</el-button
       >
     </template>
     <template #tip>
@@ -241,6 +241,9 @@ export default create({
       res: "",
       menu: false,
       reload: Math.random(),
+      uploadTasks: [],
+      uploadTaskId: 0,
+      uploadUnmounted: false,
     };
   },
   props: {
@@ -402,7 +405,55 @@ export default create({
       this.setSort();
     }
   },
+  beforeUnmount() {
+    this.uploadUnmounted = true;
+    this.uploadTasks.slice().forEach((task) => this.finishUploadTask(task, true));
+  },
   methods: {
+    matchesUploadFile(entry, file) {
+      if (!entry || !file) return false;
+      const source = entry.raw || entry;
+      const target = file.raw || file;
+      return source === target || (entry.uid !== undefined && file.uid !== undefined && entry.uid === file.uid);
+    },
+    isUploadTaskActive(task) {
+      return !this.uploadUnmounted && task.active;
+    },
+    clearUploadTimer(task) {
+      if (task.timer !== null && task.timer !== undefined) clearInterval(task.timer);
+      task.timer = null;
+    },
+    abortUploadTask(task) {
+      if (task.abortCalled || typeof task.abort !== "function") return;
+      task.abortCalled = true;
+      try {
+        task.abort();
+      } catch (_error) {
+        // A failed transport abort must not reactivate a canceled upload.
+      }
+    },
+    setUploadRequest(task, request, fallbackAbort) {
+      task.abort = request && typeof request.abort === "function" ? () => request.abort()
+        : request && typeof request.cancel === "function" ? () => request.cancel() : fallbackAbort;
+      if (task.cancelled || this.uploadUnmounted) this.abortUploadTask(task);
+    },
+    finishUploadTask(task, cancel = false) {
+      if (!task.active) return false;
+      task.active = false;
+      task.cancelled = cancel;
+      this.clearUploadTimer(task);
+      task.fileState.loading = false;
+      this.uploadTasks = this.uploadTasks.filter((item) => item.id !== task.id);
+      if (cancel) this.abortUploadTask(task);
+      return true;
+    },
+    cancelUpload(file) {
+      this.uploadTasks.slice().forEach((task) => {
+        if (this.matchesUploadFile(task.fileState, file)) this.finishUploadTask(task, true);
+      });
+      this.uploadCacheList = this.uploadCacheList.filter((entry) => !this.matchesUploadFile(entry, file));
+      this.uploadList = this.uploadList.filter((entry) => !this.matchesUploadFile(entry, file));
+    },
     handleMouseover() {
       this.menu = true;
     },
@@ -449,11 +500,11 @@ export default create({
       }
     },
     handleRemove(file) {
-      if (isFileReady(file)) {
-        let index = this.uploadList.findIndex((ele) => ele.raw == file);
-        this.uploadList.splice(index, 1);
+      if (isFileReady(file) || this.uploadTasks.some((task) => this.matchesUploadFile(task.fileState, file))) {
+        this.cancelUpload(file);
       } else {
-        this.beforeRemove(file).then(() => {
+        Promise.resolve(this.beforeRemove(file)).then((allowed) => {
+          if (allowed === false || this.uploadUnmounted) return;
           this.text.forEach((ele, index) => {
             let url = this.isObject ? ele[this.valueKey] : ele;
             if (getFileUrl(this.homeUrl, url) === file.url) {
@@ -461,7 +512,7 @@ export default create({
             }
           });
           this.menu = false;
-        });
+        }).catch(() => undefined);
       }
     },
     handleFileChange(file, fileList) {
@@ -469,35 +520,59 @@ export default create({
       this.uploadCacheList.push(file);
     },
     httpUpload(config) {
+      if (this.uploadUnmounted) return;
       let { file } = config;
-      let fileIndex = this.uploadCacheList.findIndex((ele) => ele.raw === file);
-      let fileState = this.uploadCacheList[fileIndex] || {};
+      const sourceFile = file;
+      let fileIndex = this.uploadCacheList.findIndex((ele) => this.matchesUploadFile(ele, sourceFile));
+      let fileState = this.uploadCacheList[fileIndex] || { raw: sourceFile, uid: sourceFile.uid, status: FILE_STATUS_READY };
+      const task = { id: ++this.uploadTaskId, active: true, fileState, timer: null, started: false, resultReceived: false };
+      this.uploadTasks.push(task);
+      let response = {};
       const deleteUploadCacheFile = () => {
-        const cacheIndex = this.uploadCacheList.findIndex(
-          (ele) => ele.raw === file
-        );
-        const index = this.uploadList.findIndex((ele) => ele.raw === file);
-        if (cacheIndex !== -1) this.uploadCacheList.splice(cacheIndex, 1);
-        if (index !== -1) this.uploadList.splice(index, 1);
+        this.uploadCacheList = this.uploadCacheList.filter((entry) => !this.matchesUploadFile(entry, sourceFile));
+        this.uploadList = this.uploadList.filter((entry) => !this.matchesUploadFile(entry, sourceFile));
       };
 
       const show = (data) => {
+        if (!this.isUploadTaskActive(task) || !this.finishUploadTask(task)) return;
         deleteUploadCacheFile();
-        this.res = data || this.res;
+        this.res = data || response;
         this.handleSuccess(this.res);
       };
       const hide = (msg) => {
+        if (!this.isUploadTaskActive(task) || !this.finishUploadTask(task)) return;
         deleteUploadCacheFile();
         this.handleError(msg);
       };
       if (typeof this.httpRequest === "function") {
         deleteUploadCacheFile();
-        this.httpRequest(config, this.column);
+        const success = (result) => {
+          if (!this.isUploadTaskActive(task) || !this.finishUploadTask(task)) return;
+          if (typeof config.onSuccess === "function") config.onSuccess(result);
+        };
+        const failure = (error) => {
+          if (!this.isUploadTaskActive(task) || !this.finishUploadTask(task)) return;
+          if (typeof config.onError === "function") config.onError(error);
+          else this.handleError(error);
+        };
+        try {
+          const request = this.httpRequest({
+            ...config, onSuccess: success, onError: failure,
+            onProgress: (event) => {
+              if (this.isUploadTaskActive(task) && typeof config.onProgress === "function") config.onProgress(event);
+            },
+          }, this.column);
+          this.setUploadRequest(task, request);
+          if (request && typeof request.then === "function") Promise.resolve(request).then(success, failure);
+          else return request;
+        } catch (error) {
+          failure(error);
+        }
         return;
       }
       const fileSize = file.size / 1024;
       if (!this.validatenull(fileSize) && fileSize > this.fileSize) {
-        deleteUploadCacheFile();
+        hide();
         this.handleSized(file, this.text);
         return;
       }
@@ -511,6 +586,8 @@ export default create({
       let client = {};
       let param = new FormData();
       const done = () => {
+        if (!this.isUploadTaskActive(task) || task.prepared) return;
+        task.prepared = true;
         this.oss ? (fileState.loading = true) : (fileState.percentage = 0);
         let url = this.action;
         //附加属性
@@ -519,13 +596,16 @@ export default create({
         }
         let uploadFile;
         const handleUploadResult = (res) => {
-          this.res = {};
+          if (!this.isUploadTaskActive(task) || task.resultReceived) return;
+          task.resultReceived = true;
+          this.clearUploadTimer(task);
           if (this.isQiniuOss) {
             let key = res.data.key;
             res.data.url = oss_config.url + key;
             res.data.name = key;
           }
-          this.res = getAsVal(this.isAliOss ? res : res.data, this.resKey);
+          response = getAsVal(this.isAliOss ? res : res.data, this.resKey);
+          this.res = response;
           if (typeof this.uploadAfter === "function") {
             this.uploadAfter(this.res, show, hide, this.column);
           } else {
@@ -538,23 +618,35 @@ export default create({
         };
 
         const uploadToDefault = () => {
-          let timer = null;
-          this.$axios({
+          const controller = typeof AbortController === "function" ? new AbortController() : null;
+          const cancelSource = this.$axios.CancelToken && this.$axios.CancelToken.source();
+          const abort = () => {
+            if (cancelSource) cancelSource.cancel("Upload canceled");
+            if (controller) controller.abort();
+          };
+          const request = this.$axios({
             url,
             method: "post",
             data: param,
             headers,
+            ...(controller ? { signal: controller.signal } : {}),
+            ...(cancelSource ? { cancelToken: cancelSource.token } : {}),
             onUploadProgress: (progressEvent) => {
+              if (!this.isUploadTaskActive(task) || task.resultReceived) return;
               let complete =
                 (progressEvent.loaded / progressEvent.total) * 100 || 0;
               if (complete >= 80) {
-                if (timer) return;
-                timer = setInterval(() => {
+                if (task.timer !== null) return;
+                task.timer = setInterval(() => {
+                  if (!this.isUploadTaskActive(task)) {
+                    this.clearUploadTimer(task);
+                    return;
+                  }
                   complete += (100 - complete) * 0.2;
                   if (fileState)
                     fileState.percentage = parseFloat(complete.toFixed(2));
                   if (complete > 99) {
-                    timer && clearInterval(timer);
+                    this.clearUploadTimer(task);
                   }
                 }, 1000);
               } else {
@@ -562,9 +654,9 @@ export default create({
                   fileState.percentage = parseFloat(complete.toFixed(2));
               }
             },
-          })
-            .then(handleUploadResult)
-            .catch(handleUploadError);
+          });
+          this.setUploadRequest(task, request, abort);
+          Promise.resolve(request).then(handleUploadResult).catch(handleUploadError);
         };
 
         const uploadToCos = () => {
@@ -574,31 +666,38 @@ export default create({
             return;
           }
           oss_config = this.cos || this.$TVUE.cos;
-          oss = new COS({
+          oss = new window.COS({
             SecretId: oss_config.SecretId,
             SecretKey: oss_config.SecretKey,
           });
 
-          oss.uploadFile(
+          const request = oss.uploadFile(
             {
               Bucket: oss_config.Bucket,
               Region: oss_config.Region,
               Key: uploadFile.name,
               Body: uploadFile,
+              onTaskReady: (taskId) => {
+                this.setUploadRequest(task, null, () => {
+                  if (typeof oss.cancelTask === "function") oss.cancelTask(taskId);
+                });
+              },
             },
-            function (err, data) {
+            (err, data) => {
+              if (!this.isUploadTaskActive(task)) return;
               if (err) {
                 handleUploadError(err);
               } else {
                 handleUploadResult({
                   data: {
                     name: data.ETag,
-                    url: location.protocol + "//" + data.Location,
+                    url: window.location.protocol + "//" + data.Location,
                   },
                 });
               }
             }
           );
+          if (request) this.setUploadRequest(task, request, task.abort);
         };
 
         const uploadToQiniu = () => {
@@ -625,33 +724,37 @@ export default create({
           oss_config = this.ali || this.$TVUE.ali;
           client = getClient(oss_config);
 
-          client
-            .put(uploadFile.name, uploadFile, {
-              headers: this.headers,
-            })
-            .then(handleUploadResult)
-            .catch(handleUploadError);
+          const request = client.put(uploadFile.name, uploadFile, {
+            headers: this.headers,
+          });
+          this.setUploadRequest(task, request, typeof client.cancel === "function" ? () => client.cancel() : undefined);
+          Promise.resolve(request).then(handleUploadResult).catch(handleUploadError);
         };
         const callback = (newFile) => {
-          fileIndex = this.uploadCacheList.findIndex((ele) => ele.raw === file);
+          if (!this.isUploadTaskActive(task) || task.started) return;
+          task.started = true;
+          fileIndex = this.uploadCacheList.findIndex((ele) => this.matchesUploadFile(ele, sourceFile));
           if (fileIndex !== -1) {
             let list = this.uploadCacheList.splice(fileIndex, 1);
             this.uploadList = this.uploadList.concat(list);
           }
           uploadFile = newFile || file;
           param.append(this.fileName, uploadFile);
-          if (this.isCosOss) {
-            uploadToCos();
-          } else if (this.isQiniuOss) {
-            uploadToQiniu();
-          } else if (this.isAliOss) {
-            uploadToAliOss();
-          } else {
-            uploadToDefault();
+          try {
+            if (this.isCosOss) uploadToCos();
+            else if (this.isQiniuOss) uploadToQiniu();
+            else if (this.isAliOss) uploadToAliOss();
+            else uploadToDefault();
+          } catch (error) {
+            hide(error);
           }
         };
         if (typeof this.uploadBefore === "function") {
-          this.uploadBefore(file, callback, hide, this.column);
+          try {
+            this.uploadBefore(file, callback, hide, this.column);
+          } catch (error) {
+            hide(error);
+          }
         } else {
           callback();
         }
@@ -661,11 +764,13 @@ export default create({
       } else {
         //处理水印图片
         const canvasDone = () => {
+          if (!this.isUploadTaskActive(task)) return;
           if (!this.validatenull(this.canvasOption)) {
             detailImg(file, this.canvasOption).then((res) => {
+              if (!this.isUploadTaskActive(task)) return;
               file = res;
               done();
-            });
+            }).catch(hide);
           } else {
             done();
           }
@@ -673,17 +778,19 @@ export default create({
         //处理图片剪裁
         const canvasCrop = () => {
           fileToBase64(file, (res) => {
-            let option = Object.assign(this.cropperOption, {
+            if (!this.isUploadTaskActive(task)) return;
+            let option = { ...this.cropperOption,
               img: res,
               type: "file",
               callback: (res) => {
+                if (!this.isUploadTaskActive(task)) return;
                 file = res;
                 canvasDone();
               },
               cancel: () => {
-                if (fileState) this.uploadList.splice(fileIndex, 1);
+                this.cancelUpload(sourceFile);
               },
-            });
+            };
             this.$ImageCropper(option);
           });
         };
@@ -696,12 +803,12 @@ export default create({
     },
     handleSized(files, fileList) {
       this.uploadSized &&
-        this.uploadSized(this.fileSize, files, fileList, this.column);
+      this.uploadSized(this.fileSize, files, fileList, this.column);
       this.handleError("size");
     },
     handleExceed(files, fileList) {
       this.uploadExceed &&
-        this.uploadExceed(this.limit, files, fileList, this.column);
+      this.uploadExceed(this.limit, files, fileList, this.column);
       this.handleError("exceed");
     },
     handlePreview(file) {

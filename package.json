@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "3.9.6",
+  "version": "3.9.7",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/index.js",
   "module": "es/index.mjs",
@@ -69,6 +69,7 @@
     "vue": ">=3.2.0"
   },
   "dependencies": {
+    "async-validator": "4.2.5",
     "axios": "^0.21.1",
     "countup.js": "^1.9.3",
     "dayjs": "^1.10.4",

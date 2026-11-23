@@ -51,14 +51,20 @@
         </template>
       </template>
       <template v-else>
+        <div :class="b('check')" v-if="all && multiple">
+          <el-checkbox v-model="checked" :disabled="disabled" :indeterminate="indeterminate" @change="checkChange">
+            {{ t('check.checkAll') }}
+          </el-checkbox>
+        </div>
         <template v-if="isGroup">
           <el-option-group
             v-for="(item, index) in netDic"
             :key="index"
             :label="getLabelText(item)"
+            :disabled="item[disabledKey]"
           >
             <el-option
-              v-for="(citem, cindex) in item[groupsKey]"
+              v-for="citem in item[groupsKey]"
               :key="citem[valueKey]"
               :class="citem[classNameKey]"
               :disabled="citem[disabledKey]"
@@ -84,19 +90,8 @@
           </el-option-group>
         </template>
         <template v-else>
-          <div :class="b('check')">
-            <el-checkbox
-              v-if="all && multiple"
-              v-model="checked"
-              :disabled="disabled"
-              :indeterminate="indeterminate"
-              @change="checkChange"
-            >{{ t('check.checkAll') }}</el-checkbox
-            >
-          </div>
-
           <el-option
-            v-for="(item, index) in netDic"
+            v-for="item in netDic"
             :key="item[valueKey]"
             :class="item[classNameKey]"
             :disabled="item[disabledKey]"
@@ -133,6 +128,7 @@ import event from "common/common/event";
 import locale from "core/locale";
 import { sendDic } from "core/dic";
 import { DIC_SPLIT } from "global/variable";
+import { cloneModel, isModelEqual } from "core/model";
 export default create({
   name: "select",
   mixins: [props(), event(), locale],
@@ -213,8 +209,29 @@ export default create({
       },
       immediate: true,
     },
+    text: {
+      handler() { this.updateCheckState(); },
+      deep: true,
+    },
+    netDic: {
+      handler() { this.updateCheckState(); },
+      deep: true,
+    },
+    valueKey() { this.updateCheckState(); },
+    disabledKey() { this.updateCheckState(); },
+    groupsKey() { this.updateCheckState(); },
+    multiple() { this.updateCheckState(); },
   },
   computed: {
+    isGroup() {
+      return this.netDic.some(item => Array.isArray(item[this.groupsKey]));
+    },
+    checkableOptions() {
+      const options = this.isGroup
+        ? this.netDic.reduce((list, group) => group[this.disabledKey] ? list : list.concat(group[this.groupsKey] || []), [])
+        : this.netDic;
+      return options.filter(item => !item[this.disabledKey]);
+    },
     classNameKey() {
       return this.props.className || "className";
     },
@@ -236,7 +253,7 @@ export default create({
     this.sortable = null;
   },
   methods: {
-    handleModelValue(val) {
+    handleModelValue() {
       if (!this.validatenull(this.text)) {
         if (this.remote && !this.created) {
           this.created = true;
@@ -245,17 +262,15 @@ export default create({
           );
         }
       }
-      if (this.multiple) {
-        if (this.text.length == 0) {
-          this.checked = false;
-          this.indeterminate = false;
-        } else if (this.text.length == this.netDic.length) {
-          this.checked = true;
-          this.indeterminate = false;
-        } else {
-          this.indeterminate = true;
-        }
-      }
+      this.updateCheckState();
+    },
+    updateCheckState() {
+      if (!this.multiple) return;
+      const selected = Array.isArray(this.text) ? this.text : [];
+      const available = this.checkableOptions;
+      const count = available.filter(item => selected.some(value => isModelEqual(value, item[this.valueKey]))).length;
+      this.checked = available.length > 0 && count === available.length;
+      this.indeterminate = count > 0 && count < available.length;
     },
     setSort() {
       if (!window.Sortable) {
@@ -268,8 +283,19 @@ export default create({
       this.sortable = window.Sortable.create(el, {
         animation: 100,
         onEnd: (evt) => {
-          const targetRow = this.modelValue.splice(evt.oldIndex, 1)[0];
-          this.modelValue.splice(evt.newIndex, 0, targetRow);
+          const { oldIndex, newIndex } = evt || {};
+          if (
+            !Array.isArray(this.text) ||
+            !Number.isInteger(oldIndex) ||
+            !Number.isInteger(newIndex) ||
+            oldIndex < 0 || newIndex < 0 ||
+            oldIndex >= this.text.length || newIndex >= this.text.length ||
+            oldIndex === newIndex
+          ) return;
+          const values = [...this.text];
+          const [targetRow] = values.splice(oldIndex, 1);
+          values.splice(newIndex, 0, targetRow);
+          this.text = values;
         },
       });
     },
@@ -301,14 +327,17 @@ export default create({
         });
     },
     checkChange(val) {
-      this.text = [];
-      this.checked = val;
-      this.indeterminate = false;
+      const selected = Array.isArray(this.text) ? cloneModel(this.text) : [];
+      const values = this.checkableOptions.map(item => item[this.valueKey]);
       if (val) {
-        this.text = this.netDic
-          .filter((ele) => !ele[this.disabledKey])
-          .map((ele) => ele[this.valueKey]);
+        values.forEach(value => {
+          if (!selected.some(item => isModelEqual(item, value))) selected.push(cloneModel(value));
+        });
+        this.text = selected;
+      } else {
+        this.text = selected.filter(value => !values.some(item => isModelEqual(item, value)));
       }
+      this.updateCheckState();
     },
     handleremoveTag(tagValue) {
       if (this.removeTag && typeof this.removeTag === 'function') {

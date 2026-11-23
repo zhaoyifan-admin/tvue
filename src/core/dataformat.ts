@@ -10,7 +10,7 @@ import {
   SELECT_LIST,
   RANGE_LIST,
 } from 'global/variable';
-import { detailDataType, findObject, createObj } from 'utils/util';
+import { detailDataType, findObject, getAsVal, setAsVal } from 'utils/util';
 import { t } from '../locale';
 
 let count = 0;
@@ -66,9 +66,7 @@ export const initVal = (value: any, safe: Record<string, any>) => {
         }
       }
     }
-    list.forEach((ele: any, index: number) => {
-      list[index] = detailDataType(ele, dataType);
-    });
+    list = list.map((ele: any) => detailDataType(ele, dataType));
     if (ARRAY_LIST.includes(type) && validatenull(list) && alone) list = [''];
   } else {
     list = detailDataType(list, dataType);
@@ -159,7 +157,9 @@ export const formInitVal = (list: Record<string, any>[] = []) => {
       tableForm[ele.prop] = '';
     }
     if (ele.bind) {
-      tableForm = createObj(tableForm, ele.bind);
+      if (getAsVal(tableForm, ele.bind) === undefined) {
+        setAsVal(tableForm, ele.bind, undefined);
+      }
     }
     if (!validatenull(ele.value)) {
       tableForm[ele.prop] = ele.value;

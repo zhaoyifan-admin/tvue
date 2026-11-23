@@ -47,7 +47,7 @@
           :size="size"
           icon="el-icon-check"
           @click="handleSubmit()"
-          >{{ t("common.submitBtn") }}</el-button
+        >{{ t("common.submitBtn") }}</el-button
         >
       </span>
     </el-dialog>
@@ -59,9 +59,11 @@ import create from "core/create";
 import props from "common/common/props";
 import event from "common/common/event";
 import locale from "core/locale";
+import { cloneModel, isModelEqual } from "core/model";
 export default create({
   name: "input-table",
   mixins: [props(), event(), locale],
+  emits: ["load-error"],
   data() {
     return {
       object: [],
@@ -72,7 +74,15 @@ export default create({
       box: false,
       created: false,
       data: [],
+      listRequestId: 0,
+      valueRequestId: 0,
+      loadUnmounted: false,
     };
+  },
+  watch: {
+    box(value) {
+      if (!value) this.cancelListLoad();
+    },
   },
   props: {
     beforeClose: Function,
@@ -131,8 +141,45 @@ export default create({
     },
   },
   methods: {
+    cancelListLoad() {
+      this.listRequestId++;
+      this.loading = false;
+    },
+    loadData(type, params, resolve, onError) {
+      if (this.loadUnmounted || typeof this.onLoad !== "function") return;
+      const field = type === "list" ? "listRequestId" : "valueRequestId";
+      const requestId = ++this[field];
+      const value = type === "value" ? cloneModel(params.value) : undefined;
+      let failed = false;
+      const isCurrent = () => !failed && !this.loadUnmounted && this[field] === requestId &&
+        (type !== "list" || this.box) &&
+        (type !== "value" || isModelEqual(value, this.text));
+      const reject = (error) => {
+        if (!isCurrent()) return;
+        failed = true;
+        if (type === "list") this.loading = false;
+        if (onError) onError();
+        this.$emit("load-error", { type, error });
+      };
+      try {
+        const result = this.onLoad(cloneModel(params), (data) => {
+          if (!isCurrent()) return;
+          try {
+            resolve(data, isCurrent);
+          } catch (error) {
+            reject(error);
+          }
+        });
+        if (result && typeof result.then === "function") {
+          Promise.resolve(result).catch(reject);
+        }
+      } catch (error) {
+        reject(error);
+      }
+    },
     handelBeforeClose(done) {
       const callback = () => {
+        this.cancelListLoad();
         this.active = [];
         done();
       };
@@ -171,29 +218,33 @@ export default create({
     },
     handleModelValue(val) {
       if (this.validatenull(val)) {
+        this.valueRequestId++;
         this.active = [];
         this.object = [];
       }
     },
     handleTextValue(val) {
-      if (typeof this.onLoad == "function") {
-        this.onLoad({ value: this.text }, (data) => {
-          let result = Array.isArray(data) ? data : [data];
-          const valArray = Array.isArray(val) ? val : [val];
-          const activeObjArray = valArray && valArray.length
-              ? result.filter((item) =>valArray.some((val) => val === item[this.valueKey]))
-              : [];
-          this.active = this.deepClone(activeObjArray)
-
-          const activeObjArray2 = valArray && valArray.length
-              ? valArray.map((item) =>{
-                const resultIndex = result.findIndex((val) => item === val[this.valueKey])
-                return resultIndex < 0 ? {[this.labelKey]: item, [this.valueKey]: item} : result[resultIndex]
-              })
-              : [];
-          this.object = this.deepClone(activeObjArray2)
-        });
+      if (this.validatenull(val)) {
+        this.valueRequestId++;
+        this.active = [];
+        this.object = [];
+        return;
       }
+      const value = cloneModel(val);
+      this.loadData("value", { value }, (data) => {
+        const result = (Array.isArray(data) ? data : [data]).filter(Boolean);
+        const valArray = Array.isArray(value) ? value : [value];
+        const activeObjArray = result.filter((item) =>
+          valArray.some((val) => val === item[this.valueKey])
+        );
+        this.active = cloneModel(activeObjArray);
+
+        const activeObjArray2 = valArray.map((item) => {
+          const selected = result.find((row) => item === row[this.valueKey]);
+          return selected || { [this.labelKey]: item, [this.valueKey]: item };
+        });
+        this.object = cloneModel(activeObjArray2);
+      });
     },
     handleClear() {
       this.setVal([]);
@@ -202,6 +253,7 @@ export default create({
     handleShow() {
       this.$refs.main.blur();
       if (this.disabled || this.readonly) return;
+      this.cancelListLoad();
       this.search = {};
       this.page = {
         currentPage: 1,
@@ -221,6 +273,7 @@ export default create({
       }
     },
     setVal(value) {
+      this.valueRequestId++;
       this.object = this.deepClone(value || this.active);
       this.text = this.object.map((ele) => ele[this.valueKey]);
       this.box = false;
@@ -241,39 +294,48 @@ export default create({
       }
     },
     handleSearchChange(form, done) {
-      this.loading = true;
+      if (this.loadUnmounted) return;
       this.page.currentPage = 1;
       this.onList({}, () => {
         done && done();
       });
     },
     onList(params, callback) {
+      if (this.loadUnmounted) return;
+      if (!this.box) {
+        this.loading = false;
+        callback && callback();
+        return;
+      }
       this.loading = true;
-      if (typeof this.onLoad == "function") {
-        this.onLoad({ page: this.page, data: this.search }, (data) => {
-          callback && callback();
-          this.page.total = data.total;
-          this.data = data.data;
-          this.loading = false;
+      if (typeof this.onLoad !== "function") {
+        this.loading = false;
+        callback && callback();
+        return;
+      }
+      this.loadData("list", { page: this.page, data: this.search }, (result, isCurrent) => {
+        this.page.total = result?.total ?? 0;
+        this.data = cloneModel(Array.isArray(result?.data) ? result.data : []);
+        this.loading = false;
+        callback && callback();
+        this.$nextTick(() => {
+          const crud = this.$refs.crud;
+          if (!isCurrent() || !crud) return;
           if (this.isMultiple) {
-            let ids = this.object.map((ele) => ele[this.valueKey]);
-            let data = this.data.filter((ele) =>
-              ids.includes(ele[this.valueKey])
-            );
-            this.$nextTick(() => {
-              this.$refs.crud.toggleSelection(data, true);
-            });
+            const ids = this.object.map((ele) => ele[this.valueKey]);
+            const selected = this.data.filter((ele) => ids.includes(ele[this.valueKey]));
+            crud.toggleSelection(selected, true);
           } else {
-            let active = this.data.find(
-              (ele) => ele[this.valueKey] == this.text
-            );
-            setTimeout(() => {
-              this.$refs.crud.setCurrentRow(active);
-            });
+            crud.setCurrentRow(this.data.find((ele) => ele[this.valueKey] == this.text));
           }
         });
-      }
+      }, () => { callback && callback(); });
     },
+  },
+  beforeUnmount() {
+    this.loadUnmounted = true;
+    this.cancelListLoad();
+    this.valueRequestId++;
   },
 });
 </script>

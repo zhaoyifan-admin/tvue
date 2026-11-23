@@ -375,6 +375,8 @@ export default create({
       textLoading: false,
       requestSeed: 0,
       requestController: null,
+      fileManagerUnmounted: false,
+      uploadTasks: [],
     };
   },
   computed: {
@@ -459,7 +461,9 @@ export default create({
     },
   },
   beforeUnmount() {
+    this.fileManagerUnmounted = true;
     this.abortTextRequest();
+    this.uploadTasks.slice().forEach((task) => this.cancelFileUpload(task.id));
     this.localFiles.forEach((file) => this.revokeObjectUrl(file));
   },
   methods: {
@@ -507,6 +511,7 @@ export default create({
       const nextFiles = this.normalizeFiles(files);
       this.localFiles.forEach((file) => {
         if (!nextFiles.some((next) => next.id === file.id && next.url === file.url)) {
+          this.cancelFileUpload(file.id);
           this.revokeObjectUrl(file);
         }
       });
@@ -572,10 +577,12 @@ export default create({
       const files = Array.from(event.target.files || []);
       event.target.value = "";
       for (const file of files) {
+        if (this.fileManagerUnmounted) break;
         await this.addFile(file);
       }
     },
     async addFile(rawFile) {
+      if (this.fileManagerUnmounted) return;
       if (this.maxSize > 0 && rawFile.size > this.maxSize * 1024 * 1024) {
         const error = new Error(`${rawFile.name} 超过 ${this.maxSize}MB 限制`);
         this.$emit("error", error, rawFile);
@@ -598,12 +605,19 @@ export default create({
       this.emitFiles();
       this.$emit("upload", rawFile, this.toExternalFile(entry));
 
-      if (typeof this.uploadRequest !== "function") return;
+      if (typeof this.uploadRequest !== "function" || this.fileManagerUnmounted || !this.localFiles.some((file) => file.id === entry.id)) return;
+      const task = { id: entry.id, active: true, request: null, aborted: false };
+      this.uploadTasks.push(task);
+      const isCurrent = () => !this.fileManagerUnmounted && task.active && this.localFiles.some((file) => file.id === entry.id);
       try {
-        const result = await this.uploadRequest(rawFile, {
+        task.request = this.uploadRequest(rawFile, {
           folderId: this.activeFolderId,
           file: this.toExternalFile(entry),
         });
+        if (!isCurrent()) this.abortFileUploadRequest(task);
+        const result = await task.request;
+        await this.$nextTick();
+        if (!isCurrent()) return;
         const data = typeof result === "string" ? { url: result } : (result || {});
         const target = this.localFiles.find((file) => file.id === entry.id);
         if (!target) return;
@@ -611,14 +625,40 @@ export default create({
         Object.assign(target, data, { status: data.status || "success", _objectUrl: data.url ? "" : target._objectUrl });
         this.emitFiles();
       } catch (error) {
+        await this.$nextTick();
+        if (!isCurrent()) return;
         const target = this.localFiles.find((file) => file.id === entry.id);
         if (target) {
           target.status = "error";
-          target.errorMessage = error.message || "上传失败";
+          target.errorMessage = (error && error.message) || "上传失败";
           this.emitFiles();
         }
         this.$emit("error", error, rawFile);
+      } finally {
+        task.active = false;
+        this.uploadTasks = this.uploadTasks.filter((item) => item.id !== task.id);
       }
+    },
+    abortFileUploadRequest(task) {
+      if (task.aborted || !task.request) return;
+      const request = task.request;
+      const abort = typeof request.abort === "function" ? () => request.abort()
+        : typeof request.cancel === "function" ? () => request.cancel() : null;
+      if (!abort) return;
+      task.aborted = true;
+      try {
+        abort();
+      } catch (_error) {
+        // The task stays invalid even if its transport cannot be canceled.
+      }
+    },
+    cancelFileUpload(id) {
+      this.uploadTasks.slice().forEach((task) => {
+        if (task.id !== id) return;
+        task.active = false;
+        this.abortFileUploadRequest(task);
+      });
+      this.uploadTasks = this.uploadTasks.filter((task) => task.id !== id);
     },
     revokeObjectUrl(file) {
       if (file && file._objectUrl && typeof URL !== "undefined" && URL.revokeObjectURL) {
@@ -649,6 +689,7 @@ export default create({
     removeSelectedFile() {
       if (!this.selectedFile || this.isDisabled) return;
       const file = this.selectedFile;
+      this.cancelFileUpload(file.id);
       this.localFiles = this.localFiles.filter((item) => item.id !== file.id);
       this.revokeObjectUrl(file);
       this.selectedFileId = "";
@@ -788,12 +829,14 @@ export default create({
       return `${(value / 1024 / 1024 / 1024).toFixed(1)} GB`;
     },
     abortTextRequest() {
+      this.requestSeed += 1;
       if (this.requestController) {
         this.requestController.abort();
         this.requestController = null;
       }
     },
     async loadTextContent(file) {
+      if (this.fileManagerUnmounted) return;
       this.abortTextRequest();
       this.textContent = "";
       this.textError = "";
@@ -806,23 +849,27 @@ export default create({
       }
       if (!file.url || typeof fetch !== "function") return;
 
-      const requestId = ++this.requestSeed;
+      const requestId = this.requestSeed;
       const controller = new AbortController();
       this.requestController = controller;
       this.textLoading = true;
 
       try {
         const response = await fetch(file.url, { signal: controller.signal });
+        await this.$nextTick();
+        if (this.fileManagerUnmounted || requestId !== this.requestSeed) return;
         if (!response.ok) throw new Error(`请求失败（${response.status}）`);
         const content = await response.text();
-        if (requestId !== this.requestSeed) return;
+        await this.$nextTick();
+        if (this.fileManagerUnmounted || requestId !== this.requestSeed) return;
         this.textContent = content;
       } catch (error) {
-        if (error.name === "AbortError" || requestId !== this.requestSeed) return;
-        this.textError = error.message || "无法读取文件内容";
+        await this.$nextTick();
+        if (this.fileManagerUnmounted || (error && error.name === "AbortError") || requestId !== this.requestSeed) return;
+        this.textError = (error && error.message) || "无法读取文件内容";
         this.$emit("error", error, file);
       } finally {
-        if (requestId === this.requestSeed) {
+        if (!this.fileManagerUnmounted && requestId === this.requestSeed) {
           this.textLoading = false;
           this.requestController = null;
         }

@@ -5,7 +5,6 @@
     @click="handleClick"
     @focus="handleFocus"
     @blur="handleBlur"
-    @change="handleValueChange"
     :placeholder="placeholder"
     :size="size"
     :min="min"
@@ -66,14 +65,5 @@ export default create({
   },
   created() {},
   mounted() {},
-  methods: {
-    handleValueChange(val) {
-      setTimeout(() => {
-        if (!this.validatenull(val) && this.rules && this.clearValidate) {
-          this.clearValidate(this.prop);
-        }
-      });
-    },
-  },
 });
 </script>
