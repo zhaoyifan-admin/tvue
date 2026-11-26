@@ -117,9 +117,9 @@
           :header-row-style="headerRowStyle"
           :header-cell-style="headerCellStyle"
           :max-height="isAutoHeight ? tableHeight : tableOption.maxHeight"
-          :height="height ? height : tableHeight"
+          :height="virtualTableHeight"
           ref="table"
-          :width="width ? width : setPx(tableOption.width, config.width)"
+          :width="virtualTableWidth"
           :border="tableOption.border"
           v-loading.lock="tableLoading"
           :element-loading-text="tableOption.loadingText"
@@ -231,8 +231,10 @@ import {
 } from "core/column-state";
 import { calcCascader, formInitVal } from "core/dataformat";
 import { cloneModel, isModelEqual } from "core/model";
+import { detail } from "core/detail";
 import { DIC_PROPS } from "global/variable";
 import { CommonProps } from "element-plus";
+import { h, resolveComponent } from "vue";
 import { getColumn } from "utils/util";
 export default create({
   name: "crud",
@@ -321,6 +323,8 @@ export default create({
       tableForm: {},
       tableFormSnapshot: null,
       tableHeight: undefined,
+      virtualWidth: 0,
+      resizeTimer: null,
       tableIndex: -1,
       tableSelect: [],
       sumsList: {},
@@ -338,7 +342,15 @@ export default create({
   mounted() {
     this.dataInit();
     this.getTableHeight();
+    this.$nextTick(() => {
+      this.virtualWidth = this.$el && this.$el.clientWidth ? this.$el.clientWidth : 800;
+    });
+    window.addEventListener("resize", this.handleResize);
     this.initFun();
+  },
+  beforeUnmount() {
+    if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    window.removeEventListener("resize", this.handleResize);
   },
   computed: {
     dataToolsEnabled() {
@@ -348,16 +360,47 @@ export default create({
       return this.dataToolsEnabled && this.validData(this.tableOption.queryViewBtn, config.queryViewBtn);
     },
     columnVirtualizeOption() {
-      return this.columnOption.map((ele) => {
+      const columns = this.columnOption.map((ele) => {
         return {
           ...ele,
-          ...{
-            key: ele.prop,
-            title: ele.label,
-            dataKey: ele.prop,
-          },
+          key: ele.prop,
+          title: ele.label,
+          dataKey: ele.prop,
+          width: Number(ele.width) || 150,
+          cellRenderer: (params) => this.renderVirtualCell(ele, params),
         };
       });
+      if (
+        this.virtualize &&
+        this.validData(this.tableOption.menu, config.menu)
+      ) {
+        columns.push({
+          key: "menu",
+          dataKey: "menu",
+          title: this.tableOption.menuTitle || this.t("crud.menu"),
+          width: Number(this.tableOption.menuWidth) || config.menuWidth,
+          fixed: this.validData(this.tableOption.menuFixed, config.menuFixed),
+          align: this.validData(this.tableOption.menuAlign, config.menuAlign),
+          cellRenderer: (params) => this.renderVirtualMenu(params),
+        });
+      }
+      return columns;
+    },
+    //虚拟表格必须显式高度，未配置时用默认值，保证数据行可渲染
+    virtualTableHeight() {
+      const value = this.height || this.tableHeight;
+      if (this.virtualize && !value) return 400;
+      return value;
+    },
+    //el-table-v2 的 width 必须是数字，虚拟表格下不传百分比字符串，交由组件自适应容器
+    virtualTableWidth() {
+      if (!this.virtualize) {
+        return this.width ? this.width : this.setPx(this.tableOption.width, config.width);
+      }
+      const value = this.width || this.tableOption.width;
+      const num = Number(value);
+      if (Number.isFinite(num) && num > 0) return num;
+      return this.virtualWidth || 800;
     },
     tableName() {
       if (this.virtualize) {
@@ -689,6 +732,14 @@ export default create({
         return true;
       }
     },
+    //窗口尺寸变化时防抖重算表格高度，同时更新虚拟表格宽度
+    handleResize() {
+      if (this.resizeTimer) clearTimeout(this.resizeTimer);
+      this.resizeTimer = setTimeout(() => {
+        this.getTableHeight();
+        this.virtualWidth = this.$el && this.$el.clientWidth ? this.$el.clientWidth : 800;
+      }, 100);
+    },
     getTableHeight() {
       this.$nextTick(() => {
         if (this.isAutoHeight) {
@@ -696,7 +747,9 @@ export default create({
           const calcHeight = this.calcHeight || 0;
           const tableRef = this.$refs.table;
           const tablePageRef = this.$refs.tablePage;
-          let tableHeight = clientHeight - calcHeight;
+          // body 默认下外边距不计入 clientHeight，auto 高度需扣除，否则页面出现滚动条
+          const bodyGap = parseFloat(getComputedStyle(document.body).marginBottom) || 0;
+          let tableHeight = clientHeight - calcHeight - bodyGap;
           if (tableRef) {
             const height = tableRef.$el.offsetTop || 0;
             tableHeight -= height;
@@ -737,6 +790,76 @@ export default create({
       return this.tableOption[name]
         ? this.tableOption[name].trim()
         : config[name];
+    },
+    //虚拟表格单元格渲染：兼容列插槽、render 与字典格式化
+    renderVirtualCell(column, params) {
+      const { rowData, rowIndex } = params || {};
+      const row = rowData || {};
+      const scope = {
+        row,
+        column,
+        index: rowIndex,
+        dic: this.getRowDic(row, column),
+      };
+      const slotName = this.getSlotName(column, "F");
+      const slot = this.$slots[column.prop] || this.$slots[slotName];
+      if (slot) return h("span", slot(scope));
+      if (typeof column.render === "function") {
+        return h("span", column.render(scope));
+      }
+      const value = detail(row, column, this.tableOption, scope.dic);
+      if (column.html) return h("span", { innerHTML: value });
+      return h("span", String(value == null ? "" : value));
+    },
+    //虚拟表格操作列渲染：普通模式下由 column-menu 提供
+    renderVirtualMenu(params) {
+      const { rowData, rowIndex } = params || {};
+      const row = rowData || {};
+      const buttons = [];
+      const addButton = (key, visible, handler) => {
+        if (!visible || !this.getPermission(key, row, rowIndex)) return;
+        buttons.push(
+          h(
+            resolveComponent("el-button"),
+            {
+              key,
+              text: true,
+              type: "primary",
+              size: this.size,
+              icon: this.getBtnIcon(key),
+              disabled: this.btnDisabled,
+              onClick: (event) => {
+                event.stopPropagation();
+                handler();
+              },
+            },
+            () => this.menuIcon(key),
+          ),
+        );
+      };
+      addButton(
+        "viewBtn",
+        this.validData(this.tableOption.viewBtn, config.viewBtn),
+        () => this.rowView(row, rowIndex),
+      );
+      addButton(
+        "copyBtn",
+        this.validData(this.tableOption.copyBtn, config.copyBtn),
+        () => this.rowCopy(row),
+      );
+      addButton(
+        "editBtn",
+        this.validData(this.tableOption.editBtn, config.editBtn) &&
+          !row.$cellEdit,
+        () => this.rowEdit(row, rowIndex),
+      );
+      addButton(
+        "delBtn",
+        this.validData(this.tableOption.delBtn, config.delBtn) &&
+          !row.$cellEdit,
+        () => this.rowDel(row, rowIndex),
+      );
+      return h("div", buttons);
     },
     //对部分表单字段进行校验的方法
     validateField(val, fn) {
@@ -899,7 +1022,11 @@ export default create({
       }
       delete this.cascaderDicList[index];
       delete this.cascaderFormList[index];
-      this.cascaderIndexList.splice(this.cascaderIndexList.indexOf(index), 1);
+      this.removeCascaderIndex(index);
+    },
+    removeCascaderIndex(index) {
+      const position = this.cascaderIndexList.indexOf(index);
+      if (position > -1) this.cascaderIndexList.splice(position, 1);
     },
     //行编辑点击
     rowCell(row, index) {
@@ -916,14 +1043,15 @@ export default create({
         this.btnDisabled = false;
         row.$cellEdit = false;
         this.list[index] = row;
-        this.cascaderIndexList.splice(this.cascaderIndexList.indexOf(index), 1);
+        this.removeCascaderIndex(index);
         delete this.cascaderFormList[index];
       };
       const loading = () => {
         this.btnDisabledList[index] = false;
         this.btnDisabled = false;
       };
-      this.validateCellField(index).then(() => {
+      this.validateCellField(index).then((valid) => {
+        if (!valid) return;
         this.btnDisabledList[index] = true;
         this.btnDisabled = true;
         if (this.validatenull(row[this.rowKey])) {
@@ -950,7 +1078,7 @@ export default create({
       });
     },
     validateCellField(index) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         this.$refs.cellForm.validate((valid, msg = {}) => {
           let result = true;
           let list = [];
@@ -962,7 +1090,7 @@ export default create({
             }
           });
           if (!this.validatenull(list)) this.$refs.cellForm.clearValidate(list);
-          if (result) resolve();
+          resolve(result);
         });
       });
     },

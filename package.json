@@ -1,6 +1,6 @@
 {
   "name": "@zhaoyifannan/tvue",
-  "version": "3.9.7",
+  "version": "3.9.10",
   "description": "A Magic Configurable Web Framework",
   "main": "lib/index.js",
   "module": "es/index.mjs",
@@ -35,7 +35,7 @@
   "bugs": {
     "url": ""
   },
-  "homepage": "",
+  "homepage": "https://tvue-guide.app.workbuddy.host/docs/guide/index.html",
   "devDependencies": {
     "@babel/core": "^7.11.4",
     "@babel/plugin-transform-runtime": "^7.12.1",
