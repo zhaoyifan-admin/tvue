@@ -1,5 +1,5 @@
 <template>
-  <div :class="b({ card: !option.card })">
+  <div :class="b({ card: !option.card, dark: validData(tableOption.dark, false) })">
     <component
       :is="tableOption.titleSize || 'h2'"
       :style="tableOption.titleStyle"
@@ -325,6 +325,7 @@ export default create({
       tableHeight: undefined,
       virtualWidth: 0,
       resizeTimer: null,
+      heightTimer: null,
       tableIndex: -1,
       tableSelect: [],
       sumsList: {},
@@ -346,10 +347,16 @@ export default create({
       this.virtualWidth = this.$el && this.$el.clientWidth ? this.$el.clientWidth : 800;
     });
     window.addEventListener("resize", this.handleResize);
+    //height:'auto' 时搜索区为异步渲染，首次计算时其高度与相邻卡片的 8px margin 尚未稳定，
+    //延迟重算一次以避免少扣高度导致容器出现滚动条
+    if (this.isAutoHeight) {
+      this.heightTimer = setTimeout(() => this.getTableHeight(), 300);
+    }
     this.initFun();
   },
   beforeUnmount() {
     if (this.resizeTimer) clearTimeout(this.resizeTimer);
+    if (this.heightTimer) clearTimeout(this.heightTimer);
     window.removeEventListener("resize", this.handleResize);
   },
   computed: {
@@ -740,25 +747,76 @@ export default create({
         this.virtualWidth = this.$el && this.$el.clientWidth ? this.$el.clientWidth : 800;
       }, 100);
     },
+    //height:'auto' 时优先定位最近的固定高度祖先容器；无容器则回退视口计算
+    getHeightContainer() {
+      const viewportHeight = document.documentElement.clientHeight;
+      let el = this.$el && this.$el.parentElement;
+      while (el && el !== document.body && el !== document.documentElement) {
+        const style = window.getComputedStyle(el);
+        const clientHeight = el.clientHeight;
+        const clipped = /auto|scroll|hidden|overlay/.test(style.overflowY) && clientHeight > 0;
+        const overflowed = el.scrollHeight > clientHeight + 1 && clientHeight > 0;
+        if ((clipped || overflowed) && clientHeight < viewportHeight) return el;
+        el = el.parentElement;
+      }
+      return null;
+    },
     getTableHeight() {
       this.$nextTick(() => {
         if (this.isAutoHeight) {
-          const clientHeight = document.documentElement.clientHeight;
           const calcHeight = this.calcHeight || 0;
           const tableRef = this.$refs.table;
           const tablePageRef = this.$refs.tablePage;
-          // body 默认下外边距不计入 clientHeight，auto 高度需扣除，否则页面出现滚动条
-          const bodyGap = parseFloat(getComputedStyle(document.body).marginBottom) || 0;
-          let tableHeight = clientHeight - calcHeight - bodyGap;
-          if (tableRef) {
-            const height = tableRef.$el.offsetTop || 0;
-            tableHeight -= height;
+          const container = this.getHeightContainer();
+          let tableHeight;
+          if (container) {
+            //容器模式：以容器内容区底部为基准，避免 crud 撑高容器产生滚动条
+            const containerRect = container.getBoundingClientRect();
+            const style = window.getComputedStyle(container);
+            const borderTop = parseFloat(style.borderTopWidth) || 0;
+            const paddingBottom = parseFloat(style.paddingBottom) || 0;
+            const contentBottom = containerRect.top + borderTop + container.clientHeight - paddingBottom;
+            if (tableRef) {
+              const tableRect = tableRef.$el.getBoundingClientRect();
+              //表格底部之后的尾部空间：表格卡片内表格下方的 padding/border，
+              //以及其后所有兄弟卡片（分页等）的高度与纵向 margin。
+              //显式累加 .el-card + .el-card 的 margin-top（card 模式下为 8px），
+              //避免依赖 crud 底部实时快照——初次渲染时相邻卡片 margin 尚未稳定，
+              //会导致少扣 8px 而使容器出现滚动条。
+              let tail = 0;
+              const tableCard = tableRef.$el.closest(".el-card");
+              if (tableCard) {
+                const cardRect = tableCard.getBoundingClientRect();
+                tail += Math.max(cardRect.bottom - tableRect.bottom, 0);
+                let sibling = tableCard.nextElementSibling;
+                while (sibling) {
+                  const siblingStyle = window.getComputedStyle(sibling);
+                  tail += parseFloat(siblingStyle.marginTop) || 0;
+                  tail += parseFloat(siblingStyle.marginBottom) || 0;
+                  tail += sibling.getBoundingClientRect().height || 0;
+                  sibling = sibling.nextElementSibling;
+                }
+              }
+              const crudStyle = window.getComputedStyle(this.$el);
+              tail += parseFloat(crudStyle.paddingBottom) || 0;
+              tail += parseFloat(crudStyle.borderBottomWidth) || 0;
+              tableHeight = contentBottom - tableRect.top - tail - calcHeight;
+            } else {
+              tableHeight = contentBottom - calcHeight;
+            }
+          } else {
+            //视口模式（原有逻辑）：body 默认下外边距不计入 clientHeight，需扣除
+            const clientHeight = document.documentElement.clientHeight;
+            const bodyGap = parseFloat(getComputedStyle(document.body).marginBottom) || 0;
+            tableHeight = clientHeight - calcHeight - bodyGap;
+            if (tableRef) {
+              tableHeight -= tableRef.$el.offsetTop || 0;
+            }
+            if (tablePageRef) {
+              tableHeight -= tablePageRef.$el.offsetHeight || 0;
+            }
           }
-          if (tablePageRef) {
-            const height = tablePageRef.$el.offsetHeight || 0;
-            tableHeight -= height;
-          }
-          this.tableHeight = tableHeight;
+          this.tableHeight = Math.max(Math.floor(tableHeight), 0);
         } else {
           this.tableHeight = this.tableOption.height;
         }

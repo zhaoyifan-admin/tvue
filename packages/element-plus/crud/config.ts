@@ -59,6 +59,8 @@ export default {
   dialogDrag: false,
   formFullscreen: false,
   pageBackground: true,
+  // 暗色表格：在当前 crud 作用域覆盖 Element Plus 主题变量，不依赖 html.dark
+  dark: false,
   page: true,
   menu: true,
   indexLabel: '#',
