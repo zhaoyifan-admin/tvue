@@ -216,6 +216,15 @@ $space-width: 15px;
   }
 
   &__search {
+    // el-card 及其 body 默认 overflow 会在搜索项较多时产生内部滚动条，
+    // 搜索区应随内容自然撑开，不在卡片内部滚动。
+    overflow: visible;
+
+    .el-card__body {
+      overflow: visible;
+      flex-shrink: 0;
+    }
+
     .el-form-item--medium.el-form-item {
       margin-bottom: 22px;
     }
